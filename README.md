@@ -1,4 +1,4 @@
-# AegisAI: VietHeritage Map
+# LimitlessX: VietHeritage Map
 ## Changing the world. One thing at a time
 
 LimitlessX: VietHeritage Map is an AI-powered cultural heritage platform that maps, explains, and brings to life Vietnam's tangible and intangible heritage. It combines an interactive heritage map, AI-guided artisan chat, ethnomusicological audio analysis, and voice interaction so that learners, researchers, and tourists can explore centuries of Vietnamese craft, music, and storytelling in one place—online or offline.
