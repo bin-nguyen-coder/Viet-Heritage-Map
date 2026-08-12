@@ -1,9 +1,9 @@
 # AegisAI: VietHeritage Map
 ## Changing the world. One thing at a time
 
-AegisAI: VietHeritage Map is an AI-powered cultural heritage platform that maps, explains, and brings to life Vietnam's tangible and intangible heritage. It combines an interactive heritage map, AI-guided artisan chat, ethnomusicological audio analysis, and voice interaction so that learners, researchers, and tourists can explore centuries of Vietnamese craft, music, and storytelling in one place—online or offline.
+LimitlessX: VietHeritage Map is an AI-powered cultural heritage platform that maps, explains, and brings to life Vietnam's tangible and intangible heritage. It combines an interactive heritage map, AI-guided artisan chat, ethnomusicological audio analysis, and voice interaction so that learners, researchers, and tourists can explore centuries of Vietnamese craft, music, and storytelling in one place—online or offline.
 
-The project was built for the **VAIC-26 AegisAI** effort to preserve and democratize access to Vietnamese cultural treasures using modern, cost-efficient AI running primarily on local hardware.
+The project was built for the **Build@Hub Hackathon 2026** effort to preserve and democratize access to Vietnamese cultural treasures using modern, cost-efficient AI running primarily on local hardware.
 
 ---
 
@@ -117,7 +117,7 @@ The project was built for the **VAIC-26 AegisAI** effort to preserve and democra
 ## Repository Layout
 
 ```
-aegisai_vaic-26/
+Viet-Heritage-Map/
 ├── docker-compose.yml          # Postgres + Ollama + MinIO
 ├── run_local.bat               # One-click Windows local launch
 ├── backend/
@@ -159,8 +159,8 @@ aegisai_vaic-26/
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/PearTr0191/aegisai_vaic-26.git
-cd aegisai_vaic-26
+git clone https://github.com/bin-nguyen-coder/Viet-Heritage-Map.git
+cd Viet-Heritage-Map
 ```
 
 2. **Start infrastructure services**
@@ -358,7 +358,7 @@ Visit `http://localhost:5173/artisan/{personaId}`. The persona will respond in t
 
 The application is deployed as a single service on Render:
 
-- **Web** → [Render](https://aegisai-vaic-26.onrender.com) (`render.yaml`, `backend/Dockerfile.prod`)
+- **Web** → [Render](add later) (`render.yaml`, `backend/Dockerfile.prod`)
   - Full-stack deployment (FastAPI serves the React frontend build)
   - Production database: SQLite (`vietheritage.db`)
   - Demo `OPENROUTER_API_KEY` pre-configured in `backend/render.yaml`
@@ -402,5 +402,5 @@ This project is licensed under the **MIT License** — see the repository for th
 ---
 
 <p align="center">
-  <em>AegisAI · VietHeritage Map — Preserving Vietnamese heritage, one story at a time.</em>
+  <em>LimitlessX · VietHeritage Map — Preserving Vietnamese heritage, one story at a time.</em>
 </p>
