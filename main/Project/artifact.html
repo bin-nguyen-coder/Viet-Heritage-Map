@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bảo vật — Chi tiết</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --hero-bg:    #7a1f1f;
+      --hero-deep:  #5c1616;
+      --page-bg:    #f7f3ec;
+      --card-bg:    #fdfaf5;
+      --border:     #d9cfc0;
+      --text:       #2a1f0f;
+      --muted:      #7a6a52;
+      --heading:    #1a1008;
+      --red:        #7a1f1f;
+      --red-btn:    #8b2222;
+      --gold:       #8a6a20;
+      --gold-light: #b8922c;
+      --nav-bg:     #0a0900;
+      --nav-border: rgba(201,168,76,0.14);
+      --nav-gold:   #c9a84c;
+      --nav-muted:  #8a7c5e;
+      --nav-text:   #e8dfc8;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--page-bg); color:var(--text); font-family:'Merriweather',serif; min-height:100vh; }
+
+    /* ── NAV ── */
+    nav {
+      position:sticky; top:0; z-index:200; height:62px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 48px;
+      background:var(--nav-bg); border-bottom:1px solid var(--nav-border);
+    }
+    .nav-logo {
+      display:flex; align-items:center; gap:10px; text-decoration:none;
+      color:var(--nav-text); font-family:'Merriweather',serif;
+      font-size:1.05rem; font-weight:700;
+    }
+    .nav-logo svg { color:var(--nav-gold); }
+    .nav-links {
+      display:flex; gap:32px; list-style:none;
+      position:absolute; left:50%; transform:translateX(-50%);
+    }
+    .nav-links a {
+      text-decoration:none; font-size:11px; font-weight:500;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--nav-muted); transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--nav-gold); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .lang-toggle {
+      display:flex; gap:3px;
+      background:rgba(255,255,255,0.04); border:1px solid #2c2507;
+      border-radius:20px; padding:3px;
+    }
+    .lang-btn {
+      background:transparent; border:none; color:var(--nav-muted);
+      padding:4px 12px; border-radius:16px; font-size:11px; font-weight:500;
+      font-family:'Merriweather',serif; cursor:pointer; transition:all .2s;
+    }
+    .lang-btn:hover  { color:var(--nav-gold); }
+    .lang-btn.active { background:var(--nav-gold); color:#1a1400; }
+
+    /* ── HERO ── */
+    .hero {
+      background:linear-gradient(135deg, var(--hero-bg) 0%, var(--hero-deep) 100%);
+      padding:32px 48px 44px;
+      display:grid; grid-template-columns:1fr auto;
+      gap:32px; align-items:center;
+      min-height:280px; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(ellipse 60% 120% at 100% 50%, rgba(201,168,76,0.06), transparent);
+    }
+    .hero-left { position:relative; z-index:1; }
+
+    /* breadcrumb */
+    .breadcrumb {
+      display:flex; align-items:center; gap:7px;
+      font-size:11.5px; color:rgba(245,240,230,0.55);
+      margin-bottom:18px; flex-wrap:wrap;
+    }
+    .breadcrumb a { color:rgba(245,240,230,0.55); text-decoration:none; transition:color .2s; }
+    .breadcrumb a:hover { color:var(--nav-gold); }
+    .breadcrumb-sep { opacity:.45; }
+    .breadcrumb-current { color:rgba(245,240,230,0.85); font-weight:500; }
+
+    /* title block */
+    .hero-title {
+      font-family:'Merriweather',serif;
+      font-size:clamp(2rem,4.5vw,3.4rem); font-weight:700;
+      color:#f5f0e6; line-height:1.1; letter-spacing:-0.02em; margin-bottom:10px;
+    }
+    .hero-subtitle {
+      font-family:'Merriweather',serif; font-style:italic;
+      font-size:clamp(1rem,2vw,1.35rem); color:var(--nav-gold);
+      margin-bottom:22px; display:block;
+    }
+    .hero-badges { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:7px;
+      background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22);
+      color:#f5f0e6; padding:6px 14px; border-radius:4px;
+      font-size:11.5px; font-weight:500; letter-spacing:0.06em;
+    }
+    .hero-location {
+      display:flex; align-items:flex-start; gap:8px;
+      font-size:13.5px; color:rgba(245,240,230,0.75); line-height:1.5;
+    }
+    .hero-location svg { flex-shrink:0; margin-top:2px; color:var(--nav-gold); }
+
+    /* hero image */
+    .hero-img-wrap {
+      position:relative; z-index:1;
+      width:clamp(260px,30vw,420px); flex-shrink:0;
+    }
+    .hero-img-wrap img {
+      width:100%; border-radius:6px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.45);
+      display:block; object-fit:cover; aspect-ratio:4/3;
+    }
+    .hero-img-placeholder {
+      width:100%; aspect-ratio:4/3; border-radius:6px;
+      background:rgba(255,255,255,0.08); border:2px dashed rgba(255,255,255,0.2);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:12px; color:rgba(245,240,230,0.35); font-size:12px; text-align:center;
+      padding:20px; font-family:'Merriweather',serif;
+    }
+    .hero-img-placeholder svg { opacity:.4; }
+
+    /* ── CONTENT SECTION ── */
+    .content-wrap {
+      max-width:1200px; margin:0 auto;
+      display:grid; grid-template-columns:1fr 340px;
+      gap:32px; padding:40px 48px 72px; align-items:start;
+    }
+
+    /* LEFT — description */
+    .desc-card {
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:8px; padding:40px 40px; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    }
+    .desc-card h2 {
+      font-family:'Merriweather',serif; font-size:clamp(1.5rem,2.5vw,2rem);
+      font-weight:700; color:var(--heading); margin-bottom:26px; line-height:1.2;
+    }
+
+    /* quote block — add your poetic intro here */
+    .desc-quote {
+      border-left:3px solid var(--gold-light);
+      padding:16px 22px; margin-bottom:28px;
+      background:rgba(138,106,32,0.05); border-radius:0 4px 4px 0;
+      font-family:'Merriweather',serif; font-style:italic;
+      font-size:15px; color:var(--gold); line-height:1.8;
+    }
+    .desc-quote.empty {
+      color:var(--muted); font-size:13px; font-style:normal;
+      border-left-color:var(--border); background:transparent;
+    }
+
+    /* description text */
+    .desc-body {
+      font-size:14.5px; color:var(--text); line-height:1.85;
+    }
+    .desc-body p { margin-bottom:18px; }
+    .desc-body p:last-child { margin-bottom:0; }
+
+    /* info grid below description */
+    .info-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+      margin-top:32px; padding-top:28px; border-top:1px solid var(--border);
+    }
+    .info-label {
+      font-size:9.5px; font-weight:700; letter-spacing:0.2em;
+      text-transform:uppercase; color:var(--muted); margin-bottom:5px;
+    }
+    .info-value { font-size:13.5px; color:var(--text); }
+    .era-dot {
+      display:inline-block; width:8px; height:8px; border-radius:50%;
+      margin-right:6px; vertical-align:middle;
+    }
+
+    /* RIGHT — sidebar */
+    .sidebar { display:flex; flex-direction:column; gap:20px; }
+
+    .sidebar-card {
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:8px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    }
+    .sidebar-card-header {
+      background:#f0ebe2; border-bottom:1px solid var(--border);
+      padding:14px 20px;
+    }
+    .sidebar-card-header h3 {
+      font-family:'Merriweather',serif; font-size:15px;
+      font-weight:700; color:var(--heading); margin-bottom:3px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .sidebar-card-header p { font-size:12px; color:var(--muted); }
+    .sidebar-card-body { padding:18px 20px; }
+
+    .loc-name {
+      font-family:'Merriweather',serif; font-size:16px;
+      font-weight:700; color:var(--heading); margin-bottom:4px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+    }
+    .loc-type-badge {
+      font-size:9.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+      background:var(--red-btn); color:#fff; padding:3px 9px; border-radius:3px;
+      flex-shrink:0; margin-top:3px;
+    }
+    .loc-city {
+      display:flex; align-items:center; gap:6px;
+      font-size:12px; color:var(--muted); margin-bottom:12px;
+    }
+    .loc-address { font-size:12.5px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
+    .loc-links { display:flex; flex-direction:column; gap:8px; padding-top:14px; border-top:1px solid var(--border); }
+    .loc-link {
+      display:flex; align-items:center; gap:9px;
+      font-size:12.5px; color:var(--gold); text-decoration:none; transition:color .2s;
+    }
+    .loc-link:hover { color:var(--red); }
+    .loc-link-label { font-size:9px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+    .btn-view-map {
+      display:block; text-align:center; background:var(--red-btn); color:#fff;
+      text-decoration:none; padding:13px 20px; font-size:12px; font-weight:600;
+      letter-spacing:0.1em; text-transform:uppercase; font-family:'Merriweather',serif;
+      transition:background .2s;
+    }
+    .btn-view-map:hover { background:#9b2828; }
+
+    /* coords card */
+    .coords-row { display:flex; gap:12px; }
+    .coord-cell { flex:1; background:#f0ebe2; border-radius:5px; padding:10px 12px; }
+    .coord-lbl  { font-size:9px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+    .coord-val  { font-size:12.5px; color:var(--text); font-family:'Merriweather',serif; }
+
+    /* ── 3D EXPERIENCE BUTTON ── */
+    .btn-3d-exp {
+      display:inline-flex; align-items:center; gap:9px;
+      background:rgba(201,168,76,0.12); color:#c9a84c;
+      border:1.5px solid rgba(201,168,76,0.45); border-radius:5px;
+      padding:11px 24px; font-size:11.5px; font-weight:600;
+      letter-spacing:0.12em; text-transform:uppercase;
+      font-family:'Merriweather',serif; cursor:pointer;
+      transition:all .22s; margin-top:20px;
+    }
+    .btn-3d-exp:hover  { background:rgba(201,168,76,0.22); border-color:#c9a84c; }
+    .btn-3d-exp.open   { background:rgba(201,168,76,0.28); border-color:#c9a84c; }
+    .btn-3d-exp svg    { flex-shrink:0; }
+
+    /* ── SCRIPT (INSCRIPTION) BUTTON ── */
+    .btn-script {
+      display:inline-flex; align-items:center; gap:9px;
+      background:rgba(76,175,132,0.10); color:#4caf84;
+      border:1.5px solid rgba(76,175,132,0.4); border-radius:5px;
+      padding:11px 24px; font-size:11.5px; font-weight:600;
+      letter-spacing:0.12em; text-transform:uppercase;
+      font-family:'DM Sans',sans-serif; cursor:pointer;
+      transition:all .22s; margin-top:10px;
+    }
+    .btn-script:hover { background:rgba(76,175,132,0.2); border-color:#4caf84; }
+    .btn-script svg { flex-shrink:0; }
+
+    /* ── SCRIPT MODAL OVERLAY ── */
+    .script-overlay {
+      position:fixed; inset:0; z-index:4000;
+      background:rgba(5,4,0,0.78); backdrop-filter:blur(6px);
+      display:none; align-items:center; justify-content:center; padding:20px;
+    }
+    .script-overlay.visible { display:flex; }
+
+    .script-modal {
+      background:var(--card-bg); border:1px solid var(--border); border-radius:12px;
+      width:100%; max-width:860px; max-height:88vh;
+      display:flex; flex-direction:column;
+      box-shadow:0 24px 70px rgba(0,0,0,0.6);
+      animation:smIn .24s ease-out; overflow:hidden;
+    }
+    @keyframes smIn { from{opacity:0;transform:translateY(12px) scale(0.97)} to{opacity:1;transform:none} }
+
+    /* modal header */
+    .script-modal-header {
+      display:flex; align-items:flex-start; justify-content:space-between;
+      padding:20px 28px 16px; border-bottom:1px solid var(--border);
+      background:var(--heading); flex-shrink:0;
+    }
+    .script-modal-eyebrow {
+      font-size:9px; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
+      color:#8a7c5e; margin-bottom:5px;
+    }
+    .script-modal-title {
+      font-family:'Playfair Display',serif; font-size:1.25rem;
+      font-weight:700; color:#f5f0e6; line-height:1.2;
+    }
+    .script-modal-close {
+      background:none; border:1px solid #2c2507; color:#8a7c5e;
+      border-radius:50%; width:30px; height:30px; font-size:13px;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; transition:all .2s; margin-left:16px; margin-top:2px;
+    }
+    .script-modal-close:hover { color:#c9a84c; border-color:#c9a84c; }
+
+    /* tab bar */
+    .script-tabs {
+      display:flex; gap:0; border-bottom:1px solid var(--border);
+      background:#f0ebe2; flex-shrink:0; padding:0 28px;
+    }
+    .script-tab {
+      background:none; border:none; border-bottom:3px solid transparent;
+      padding:13px 20px 10px; font-size:12px; font-weight:600;
+      letter-spacing:.08em; color:var(--muted);
+      cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s;
+      white-space:nowrap;
+    }
+    .script-tab:hover { color:var(--text); }
+    .script-tab.active { color:var(--red); border-bottom-color:var(--red); }
+
+    /* scrollable body */
+    .script-body {
+      flex:1; overflow-y:auto; padding:28px 32px;
+      scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+    }
+    .script-body::-webkit-scrollbar { width:4px; }
+    .script-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+    /* ── CONTENT STYLES PER TAB ── */
+    /* Chữ Hán — original Chinese characters */
+    .han-text {
+      font-family:'Noto Serif SC','Noto Serif TC','SimSun',serif;
+      font-size:22px; line-height:2.2; color:var(--heading);
+      white-space:pre-wrap; word-break:break-all;
+    }
+    .han-text-hint {
+      font-size:11px; color:var(--muted); margin-bottom:18px;
+      padding:8px 12px; background:#f0ebe2; border-radius:4px;
+      border-left:3px solid var(--border);
+    }
+
+    /* Hán văn — Sino-Vietnamese reading */
+    .hanvan-text {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:16px; line-height:2; color:var(--heading);
+      white-space:pre-wrap;
+    }
+
+    /* Tiếng Việt — annotated Vietnamese */
+    .viet-text {
+      font-size:15px; line-height:2; color:var(--text);
+      white-space:pre-wrap;
+    }
+    /* annotatable word — {word|note} rendered as: */
+    .annotated {
+      color:var(--red); border-bottom:1.5px dotted var(--red);
+      cursor:pointer; transition:background .15s; border-radius:2px; padding:0 1px;
+    }
+    .annotated:hover { background:rgba(122,31,31,0.08); }
+    .annotated.active { background:rgba(122,31,31,0.12); }
+
+    /* annotation popover */
+    .anno-popover {
+      position:absolute; z-index:10;
+      background:var(--heading); color:#e8dfc8;
+      border:1px solid #2c2507; border-radius:6px;
+      padding:12px 16px; max-width:320px; font-size:12.5px; line-height:1.65;
+      box-shadow:0 8px 28px rgba(0,0,0,0.45);
+      pointer-events:none;
+    }
+    .anno-popover::before {
+      content:''; position:absolute; top:-6px; left:16px;
+      width:10px; height:10px; background:var(--heading);
+      border-left:1px solid #2c2507; border-top:1px solid #2c2507;
+      transform:rotate(45deg);
+    }
+
+    /* edit bar for Tiếng Việt tab */
+    .viet-toolbar {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
+      flex-wrap:wrap; gap:8px;
+    }
+    .viet-toolbar-note {
+      font-size:11px; color:var(--muted); line-height:1.5;
+    }
+    .viet-toolbar-note code {
+      background:#f0ebe2; border:1px solid var(--border);
+      padding:1px 5px; border-radius:3px; font-size:11px; color:var(--red);
+    }
+    .btn-edit-script {
+      display:inline-flex; align-items:center; gap:6px;
+      background:transparent; border:1px solid var(--border);
+      color:var(--muted); padding:6px 14px; border-radius:4px;
+      font-size:11px; font-weight:600; letter-spacing:.06em;
+      font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .2s;
+      white-space:nowrap;
+    }
+    .btn-edit-script:hover { border-color:var(--gold); color:var(--gold); }
+    .script-editor {
+      width:100%; min-height:320px; background:#f0ebe2;
+      border:1.5px solid var(--border); border-radius:6px;
+      padding:14px; font-size:13.5px; line-height:1.8;
+      font-family:'Playfair Display',serif; color:var(--heading);
+      resize:vertical; outline:none; transition:border-color .2s;
+    }
+    .script-editor:focus { border-color:var(--red); }
+    .editor-actions {
+      display:flex; gap:10px; margin-top:10px; justify-content:flex-end;
+    }
+    .btn-save-script {
+      background:var(--red); color:#fff; border:none; border-radius:4px;
+      padding:8px 20px; font-size:12px; font-weight:600;
+      font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s;
+    }
+    .btn-save-script:hover { background:#9b2828; }
+    .btn-cancel-edit {
+      background:transparent; border:1px solid var(--border); color:var(--muted);
+      border-radius:4px; padding:8px 16px; font-size:12px;
+      font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .2s;
+    }
+    .btn-cancel-edit:hover { border-color:var(--red); color:var(--red); }
+
+    /* footnotes */
+    .footnotes-section {
+      margin-top:28px; padding-top:20px; border-top:1px solid var(--border);
+    }
+    .footnotes-title {
+      font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:12px;
+    }
+    .footnote-item {
+      font-size:12.5px; color:var(--muted); line-height:1.65;
+      margin-bottom:6px; display:flex; gap:8px;
+    }
+    .footnote-num {
+      font-size:10px; color:var(--red); font-weight:700; flex-shrink:0; padding-top:2px;
+    }
+    .empty-script-note {
+      text-align:center; padding:48px 24px; color:var(--muted);
+      font-size:13.5px; line-height:1.8;
+    }
+    .empty-script-note strong { color:var(--text); display:block; margin-bottom:8px; font-size:15px; }
+
+    /* ── 3D VIEWER SECTION ── */
+    .model-section {
+      display:none; background:#0d0b02;
+      border-top:1px solid #2c2507; border-bottom:1px solid #2c2507;
+      animation:fadeIn .3s ease;
+    }
+    .model-section.visible { display:block; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .model-viewer { width:100%; height:540px; position:relative; }
+    .model-viewer iframe {
+      width:100%; height:100%; border:none; display:block;
+    }
+    .model-attribution {
+      padding:10px 32px; display:flex; align-items:center; gap:8px;
+      font-size:11.5px; color:#5a4e30;
+      border-top:1px solid #2c2507;
+    }
+    .model-attribution a { color:#1CAAD9; text-decoration:none; font-weight:600; }
+    .model-attribution a:hover { text-decoration:underline; }
+    .model-close-bar {
+      display:flex; align-items:center; justify-content:flex-end;
+      padding:8px 16px; background:#0a0900;
+    }
+    .model-close-btn {
+      background:none; border:1px solid #2c2507; border-radius:4px;
+      color:#8a7c5e; font-size:11px; padding:5px 12px;
+      cursor:pointer; font-family:'Merriweather',serif; transition:all .2s;
+    }
+    .model-close-btn:hover { color:#c9a84c; border-color:#c9a84c; }
+
+    /* ── INTERACTIVE IMAGE OVERLAY ── */
+    .exp-overlay {
+      position:fixed; inset:0; z-index:4000;
+      background:rgba(5,4,0,0.88); backdrop-filter:blur(8px);
+      display:none; align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .exp-overlay.visible { display:flex; }
+
+    .exp-container {
+      position:relative;
+      width:100%; max-width:1100px;
+      background:#0a0900; border:1px solid #2c2507;
+      border-radius:12px; overflow:hidden;
+      box-shadow:0 24px 70px rgba(0,0,0,0.7);
+      animation:expIn .3s ease-out;
+    }
+    @keyframes expIn { from{opacity:0;transform:scale(0.95) translateY(10px)} to{opacity:1;transform:none} }
+
+    .exp-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 24px;
+      background:var(--heading); border-bottom:1px solid #2c2507;
+    }
+    .exp-header h2 {
+      font-family:'Merriweather',serif;
+      font-size:16px; font-weight:700; color:#f5f0e6;
+    }
+    .exp-close {
+      background:none; border:1px solid #2c2507; border-radius:50%;
+      width:30px; height:30px; color:#8a7c5e;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:all .2s; flex-shrink:0;
+    }
+    .exp-close:hover { color:#c9a84c; border-color:#c9a84c; }
+
+    .exp-image-wrap {
+      position:relative; width:100%;
+      /* aspect ratio based on image. We'll use 3:2 as a guess for images.jpg */
+      background:#000; overflow:hidden;
+      line-height:0;
+    }
+    .exp-image-wrap img {
+      width:100%; height:auto; display:block;
+    }
+
+    /* Clickable dot */
+    .exp-dot {
+      position:absolute;
+      width:28px; height:28px;
+      margin-left:-14px; margin-top:-14px;
+      border-radius:50%;
+      background:rgba(201,168,76,0.3);
+      border:2.5px solid #c9a84c;
+      box-shadow:0 0 12px rgba(201,168,76,0.3), inset 0 0 6px rgba(201,168,76,0.2);
+      cursor:pointer;
+      transition:all .25s ease;
+      z-index:5;
+    }
+    .exp-dot::after {
+      content:'';
+      position:absolute;
+      top:50%; left:50%;
+      width:8px; height:8px;
+      margin-left:-4px; margin-top:-4px;
+      border-radius:50%;
+      background:#c9a84c;
+      transition:all .25s ease;
+    }
+    .exp-dot:hover {
+      background:rgba(201,168,76,0.5);
+      border-color:#f5e08c;
+      transform:scale(1.15);
+      box-shadow:0 0 20px rgba(201,168,76,0.5);
+    }
+    .exp-dot.active {
+      background:rgba(201,168,76,0.6);
+      border-color:#f5e08c;
+      transform:scale(1.2);
+      box-shadow:0 0 24px rgba(201,168,76,0.6);
+    }
+
+    /* Information tag (tooltip) for each dot */
+    .exp-tag {
+      position:absolute;
+      z-index:10;
+      background:rgba(26,16,8,0.95);
+      border:1px solid #c9a84c;
+      border-radius:8px;
+      padding:14px 18px;
+      min-width:200px;
+      max-width:280px;
+      color:#e8dfc8;
+      font-size:13px;
+      line-height:1.6;
+      font-family:'Merriweather',serif;
+      box-shadow:0 8px 28px rgba(0,0,0,0.6);
+      pointer-events:auto;
+      animation:tagIn .2s ease-out;
+    }
+    @keyframes tagIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+    .exp-tag::before {
+      content:'';
+      position:absolute;
+      width:10px; height:10px;
+      background:rgba(26,16,8,0.95);
+      border-left:1px solid #c9a84c;
+      border-top:1px solid #c9a84c;
+      transform:rotate(45deg);
+    }
+    .exp-tag.pos-top::before { bottom:-6px; left:16px; border-left:none; border-top:none; border-right:1px solid #c9a84c; border-bottom:1px solid #c9a84c; }
+    .exp-tag.pos-bottom::before { top:-6px; left:16px; }
+    .exp-tag-close {
+      position:absolute;
+      top:4px; right:6px;
+      background:none; border:none;
+      color:#8a7c5e; font-size:12px;
+      cursor:pointer; line-height:1; padding:2px;
+      transition:color .2s;
+    }
+    .exp-tag-close:hover { color:#c9a84c; }
+    .exp-tag h4 {
+      font-size:13px; font-weight:700; color:#c9a84c;
+      margin-bottom:5px; padding-right:16px;
+    }
+    .exp-tag p {
+      font-size:12px; color:#e8dfc8; margin-bottom:0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px) {
+      .hero { grid-template-columns:1fr; padding:24px 20px 32px; }
+      .hero-img-wrap { width:100%; max-width:400px; }
+      .content-wrap { grid-template-columns:1fr; padding:24px 20px 48px; }
+      nav { padding:0 20px; }
+      .nav-links { display:none; }
+      .info-grid { grid-template-columns:1fr; }
+      .exp-tag { min-width:160px; max-width:220px; font-size:11.5px; padding:10px 14px; }
+      .exp-dot { width:22px; height:22px; margin-left:-11px; margin-top:-11px; }
+      .exp-dot::after { width:6px; height:6px; margin-left:-3px; margin-top:-3px; }
+    }
+
+    .slider-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 24px;
+    }
+    .slider-slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      will-change: transform;
+    }
+    .slider-slide {
+      min-width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      text-align: center;
+    }
+    .slider-slide img,
+    .slider-slide video {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+    }
+    .slider-slide video {
+      width: 100%;
+      height: auto;
+    }
+
+    /* ═══════════════════════════════════════
+       AUDIO RECORDING & ANALYSIS UI
+    ═══════════════════════════════════════ */
+
+    /* ── Audio Sample Section ── */
+    .modal-audio-section {
+      margin: 16px 0;
+      padding: 14px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .modal-audio-section h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+    .audio-sample-item {
+      margin-bottom: 12px;
+    }
+    .audio-sample-item:last-child {
+      margin-bottom: 0;
+    }
+    .audio-sample-label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .modal-audio-player {
+      width: 100%;
+      height: 36px;
+      border-radius: 6px;
+      outline: none;
+    }
+    .modal-audio-caption {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    /* ── Practice / Recording Section ── */
+    .modal-practice-section {
+      margin: 16px 0;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--card-bg) 0%, #f0ebe2 100%);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .modal-practice-section h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+    }
+    .modal-practice-hint {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    /* ── Recorder Controls ── */
+    .recorder-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .recorder-controls button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Merriweather', serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      background: var(--card-bg);
+      color: var(--text);
+    }
+    .recorder-controls button:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+    .recorder-controls button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ── Record Button (special) ── */
+    .record-btn {
+      border-color: rgba(196,43,43,0.4) !important;
+      color: var(--red) !important;
+    }
+    .record-btn:hover {
+      border-color: var(--red) !important;
+      background: rgba(196,43,43,0.1) !important;
+    }
+    .record-btn.recording {
+      background: var(--red) !important;
+      color: #fff !important;
+      border-color: var(--red) !important;
+      animation: pulse-red 1.5s infinite;
+    }
+    .record-btn.recording .record-icon { display: none; }
+    .record-btn.recording .stop-icon { display: inline-block; }
+    .record-btn .stop-icon { display: none; }
+    .record-btn.recording svg { color: #fff; }
+
+    @keyframes pulse-red {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(196,43,43,0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(196,43,43,0); }
+    }
+
+    /* ── Playback / Analyze / Clear Buttons ── */
+    .playback-btn {
+      border-color: rgba(76,175,132,0.3) !important;
+      color: #4caf84 !important;
+    }
+    .playback-btn:hover {
+      border-color: #4caf84 !important;
+      background: rgba(76,175,132,0.08) !important;
+    }
+    .analyze-btn {
+      border-color: rgba(201,168,76,0.3) !important;
+      color: var(--gold) !important;
+    }
+    .analyze-btn:hover {
+      border-color: var(--gold) !important;
+      background: rgba(201,168,76,0.08) !important;
+    }
+    .clear-btn {
+      border-color: rgba(138,124,94,0.3) !important;
+      color: var(--muted) !important;
+    }
+    .clear-btn:hover {
+      border-color: var(--muted) !important;
+      background: rgba(138,124,94,0.08) !important;
+    }
+
+    /* ── Visualizer ── */
+    .recording-visualizer {
+      background: var(--page-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .recording-visualizer canvas {
+      width: 100%;
+      height: 60px;
+      display: block;
+      border-radius: 4px;
+    }
+
+    /* ── Timer ── */
+    .recording-timer {
+      font-family: 'Merriweather', monospace;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gold-light);
+      text-align: center;
+      padding: 4px 0;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Audio Analysis Results ── */
+    .modal-audio-analysis {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .modal-audio-analysis-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .modal-audio-analysis-header h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      color: var(--gold-light);
+      margin: 0;
+    }
+    .modal-audio-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: color .2s;
+    }
+    .modal-audio-close:hover { color: var(--gold); }
+
+    /* ── Analysis Content ── */
+    .audio-analysis-content { min-height: 60px; }
+
+    .audio-analysis-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .audio-analysis-results {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ── Single Score Display ── */
+    .vocal-score-display {
+      text-align: center;
+      padding: 12px 0;
+    }
+    .vocal-score-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .vocal-score-value.score-excellent { color: #4caf84; }
+    .vocal-score-value.score-good { color: var(--gold-light); }
+    .vocal-score-value.score-fair { color: #c9a84c; }
+    .vocal-score-value.score-poor { color: #d4524a; }
+    .vocal-score-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    .vocal-score-feedback {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    /* ── Error State ── */
+    .audio-analysis-error {
+      text-align: center;
+      padding: 12px 0;
+    }
+    .audio-analysis-error p {
+      font-size: 12px;
+      color: var(--red);
+      margin-bottom: 10px;
+    }
+    .retry-btn {
+      padding: 6px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--gold);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .retry-btn:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor">
+      <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/>
+    </svg>
+    <span>VietHeritage Map</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"    id="nav-home">Trang chủ</a></li>
+    <li><a href="VNMT.html"     id="nav-map">Bản đồ</a></li>
+    <li><a href="database.html" id="nav-db">Kho lưu trữ</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO — filled by JS -->
+<div id="hero-section"></div>
+
+<!-- CONTENT — filled by JS -->
+<div class="content-wrap" id="content-section" style="display:none">
+
+  <!-- LEFT: description -->
+  <div class="desc-card">
+    <h2 id="desc-title"></h2>
+
+    <!-- Quote / poetic intro — add t.quote to data.js for each artifact to fill this -->
+    <div class="desc-quote" id="desc-quote"></div>
+
+    <!-- Main description -->
+    <div class="desc-body" id="desc-body"></div>
+
+    <!-- Slider for artifact media -->
+    <div class="slider-container" id="slider-container" style="margin-top:24px; display:none;">
+      <div class="slider-slides" id="slider-slides">
+        <!-- Slides will be injected by JS -->
+      </div>
+    </div>
+
+    <!-- Audio & Recording Section for singing types -->
+    <div id="audio-section-container" style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border);"></div>
+
+    <!-- Info grid -->
+    <div class="info-grid">
+      <div class="info-cell">
+        <div class="info-label" id="lbl-era">Thời kỳ</div>
+        <div class="info-value" id="info-era"></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label" id="lbl-type">Loại hình</div>
+        <div class="info-value" id="info-type"></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label" id="lbl-century">Thế kỷ</div>
+        <div class="info-value" id="info-century"></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label" id="lbl-year">Niên đại</div>
+        <div class="info-value" id="info-year"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: sidebar -->
+  <div class="sidebar">
+
+    <!-- Visit card -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-header">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span id="lbl-visit">Visit This Treasure</span>
+        </h3>
+        <p id="lbl-visit-sub">Explore the location where this national treasure is held.</p>
+      </div>
+      <div class="sidebar-card-body">
+        <div class="loc-name">
+          <span id="loc-name"></span>
+          <span class="loc-type-badge" id="loc-type-badge"></span>
+        </div>
+        <div class="loc-city">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span id="loc-city"></span>
+        </div>
+        <div class="loc-address" id="loc-address"></div>
+        <div class="loc-links">
+          <div>
+            <div class="loc-link-label" id="lbl-map-link">MAP</div>
+            <a class="loc-link" id="link-maps" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                <line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+              </svg>
+              <span id="lbl-open-maps">Open in Google Maps</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a class="btn-view-map" href="VNMT.html" id="btn-view-map">
+        View on Interactive Map
+      </a>
+    </div>
+
+    <!-- Coordinates card -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-body">
+        <div class="info-label" style="margin-bottom:10px" id="lbl-coords">Tọa độ</div>
+        <div class="coords-row">
+          <div class="coord-cell">
+            <div class="coord-lbl">LAT</div>
+            <div class="coord-val" id="coord-lat">—</div>
+          </div>
+          <div class="coord-cell">
+            <div class="coord-lbl">LNG</div>
+            <div class="coord-val" id="coord-lng">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- 3D VIEWER SECTION (hidden by default, shown when btn-3d clicked) -->
+<div class="model-section" id="model-section">
+  <div class="model-close-bar">
+    <button class="model-close-btn" id="model-close-btn">
+      <span id="lbl-close-3d">Close model</span>
+    </button>
+  </div>
+  <div class="model-viewer">
+    <iframe id="model-iframe" src="about:blank" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen></iframe>
+  </div>
+  <div class="model-attribution" id="model-attribution"></div>
+</div>
+
+<div id="error-state" style="display:none; text-align:center; padding:80px 24px; color:#7a6a52;">
+  <p style="font-size:16px; margin-bottom:8px;" id="err-msg">Artifact not found.</p>
+  <a href="database.html" id="err-back-link" style="color:#7a1f1f; font-size:13px;">← Back to database</a>
+</div>
+
+<div class="exp-overlay" id="exp-overlay">
+  <div class="exp-container">
+    <div class="exp-header">
+      <h2 id="exp-title">Ca trù — Khám phá tương tác</h2>
+      <button class="exp-close" id="exp-close" aria-label="Close">✕</button>
+    </div>
+    <div class="exp-image-wrap" id="exp-image-wrap">
+      <img id="exp-image" src="" alt="Interactive exploration" />
+      <!-- Dots injected by JS -->
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   CONFIG (mirrors VNMT.js, no Leaflet)
+═══════════════════════════════════════ */
+const ERA_CONFIG = {
+  prehistoric:   { color:'#c9943a', vi:'Tiền sử · Đông Sơn', en:'Prehistoric · Đông Sơn' },
+  century_1_10:  { color:'#c47c5a', vi:'Thế kỷ I–X',         en:'1st–10th Century' },
+  century_10_20: { color:'#4caf84', vi:'Thế kỷ X–XIX',        en:'10th–19th Century' },
+  modern_1945:   { color:'#5a8a9f', vi:'1900–Nay',            en:'1900–Present' },
+};
+    const TYPE_CONFIG = {
+      instrumental: { vi:'Âm nhạc & Nhạc cụ',      en:'Instrumental Music' },
+      singings:     { vi:'Hát & Dân ca',           en:'Singing & Folk Songs' },
+      belief:       { vi:'Tín ngưỡng & Lễ nghi',    en:'Belief & Ritual' },
+      festival:     { vi:'Lễ hội dân gian',        en:'Folk Festival' },
+      craft:        { vi:'Nghề thủ công truyền thống', en:'Traditional Craft' },
+    };
+const ERA_OVERRIDES = { 82:'century_10_20',87:'century_10_20',88:'century_10_20',91:'century_10_20' };
+
+function getEra(t) {
+  if (ERA_OVERRIDES[t.id]) return ERA_OVERRIDES[t.id];
+  const y = String(t.year||'');
+  if (['Đông Sơn','Phùng Nguyên','Đồng Nai','Tiền sử'].some(k=>y.includes(k))) return 'prehistoric';
+  if (['Óc Eo','Chăm Pa'].some(k=>y.includes(k))) return 'century_1_10';
+  if (/20th|19\d{2}|1945|1946/.test(y)) return 'modern_1945';
+  const yr = parseInt((y.match(/\d{3,4}/)||[])[0]);
+  if (!isNaN(yr)) { if (yr>=1900) return 'modern_1945'; if (yr<939) return 'century_1_10'; }
+  return 'century_10_20';
+}
+
+function toRoman(n) {
+  const v=[1000,900,500,400,100,90,50,40,10,9,5,4,1];
+  const r=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+  let s='',x=n; for(let i=0;i<v.length;i++) while(x>=v[i]){s+=r[i];x-=v[i];} return s;
+}
+function getCentury(t) {
+  const y=String(t.year||'');
+  if(['Tiền sử','Phùng Nguyên'].some(k=>y.includes(k))) return -30;
+  if(y.includes('Đồng Nai')) return -5; if(y.includes('Đông Sơn')) return -3;
+  if(y.includes('Óc Eo')) return 5; if(y.includes('Chăm Pa')) return 8;
+  if(/20th|1900–Present|1900–Nay/.test(y)) return 20;
+  const yr=parseInt((y.match(/\d{4}/)||y.match(/\d{3}/)||[])[0]);
+  if(!isNaN(yr)){if(yr<0) return Math.floor(yr/100);if(yr===0) return 1;return Math.ceil(yr/100);}
+  const d={'Lý':11,'Trần':13,'Lê sơ':15,'Mạc':16,'Lê Trung Hưng':17,'Tây Sơn':18,'Nguyễn':19,'Đinh':10,'Tiền Lê':10};
+  for(const [k,v] of Object.entries(d)) if(y.includes(k)) return v;
+  return null;
+}
+function formatCentury(c) {
+  if(c===null||c===undefined) return '—';
+  if(c<0) {
+    const bce = lang === 'vi' ? 'TCN' : 'BCE';
+    const pfx = lang === 'vi' ? 'Thế kỷ' : 'c.';
+    return `${pfx} ${toRoman(Math.abs(c))} ${bce}`;
+  }
+  const pfx = lang === 'vi' ? 'Thế kỷ' : 'c.';
+  return `${pfx} ${toRoman(c)}`;
+}
+
+/* ═══════════════════════════════════════
+   LANGUAGE
+═══════════════════════════════════════ */
+let lang = localStorage.getItem('vnmt_lang') || 'vi';
+
+const STRINGS = {
+  vi: {
+    navHome:'Trang chủ', navMap:'Bản đồ', navDb:'Kho lưu trữ',
+    breadHome:'Trang chủ', breadDb:'Bảo Vật Quốc Gia',
+    lblVisit:'Tham quan Bảo vật', lblVisitSub:'Khám phá địa điểm lưu giữ bảo vật này.',
+    lblMapLink:'BẢN ĐỒ', lblOpenMaps:'Mở Google Maps',
+    btnViewMap:'XEM TRÊN BẢN ĐỒ TƯƠNG TÁC',
+    lblCoords:'Tọa độ', lblEra:'Thời kỳ', lblType:'Loại hình',
+    lblCentury:'Thế kỷ', lblYear:'Niên đại',
+    errMsg:'Không tìm thấy hiện vật. Vui lòng quay lại kho lưu trữ.',
+    btnBackDb:'← Quay lại kho lưu trữ',
+    quoteEmpty:'[ Chưa có mô tả chi tiết. Thêm trường quote vào data.js để hiển thị ở đây. ]',
+    expTitle:'Ca trù — Khám phá tương tác',
+    expBtn:'Trải nghiệm 3D',
+  },
+  en: {
+    navHome:'Home', navMap:'Map', navDb:'Database',
+    breadHome:'Home', breadDb:'National Treasures',
+    lblVisit:'Visit This Treasure', lblVisitSub:'Explore the location where this national treasure is held.',
+    lblMapLink:'MAP', lblOpenMaps:'Open in Google Maps',
+    btnViewMap:'VIEW ON INTERACTIVE MAP',
+    lblCoords:'Coordinates', lblEra:'Era', lblType:'Category',
+    lblCentury:'Century', lblYear:'Period',
+    errMsg:'Artifact not found. Please return to the database.',
+    btnBackDb:'← Back to database',
+    quoteEmpty:'[ No detailed quote yet. Add a quote field to data.js to display it here. ]',
+    expTitle:'Ca trù — Interactive Discovery',
+    expBtn:'3D Experience',
+  },
+};
+const S = k => STRINGS[lang][k];
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  const set = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
+  set('nav-home', S('navHome')); set('nav-map', S('navMap')); set('nav-db', S('navDb'));
+  set('lbl-visit', S('lblVisit')); set('lbl-visit-sub', S('lblVisitSub'));
+  set('lbl-map-link', S('lblMapLink')); set('lbl-open-maps', S('lblOpenMaps'));
+  set('lbl-coords', S('lblCoords')); set('lbl-era', S('lblEra'));
+  set('lbl-type', S('lblType')); set('lbl-century', S('lblCentury'));
+  set('lbl-year', S('lblYear'));
+  const bvm = document.getElementById('btn-view-map');
+  if (bvm) bvm.textContent = S('btnViewMap');
+  const errBack = document.getElementById('err-back-link');
+  if (errBack) errBack.textContent = S('btnBackDb');
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  const expTitle = document.getElementById('exp-title');
+  if (expTitle) expTitle.textContent = S('expTitle');
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    lang = btn.dataset.lang;
+    localStorage.setItem('vnmt_lang', lang);
+    applyLang();
+    renderArtifact();
+  });
+});
+
+/* ═══════════════════════════════════════
+   INTERACTIVE IMAGE OVERLAY
+═══════════════════════════════════════ */
+const CA_TRU_DOTS = [
+  {
+    pctX: 50, pctY: 32,
+    vi: { title: 'Đào nương', desc: 'Ca sĩ chính (đào nương) với phong cách nhả chữ rung luyến tinh tế, là linh hồn của nghệ thuật Ca trù.' },
+    en: { title: 'Female Vocalist', desc: 'The lead singer (đào nương) delivers refined ornamentation and is the soul of Ca trù chamber music.' }
+  },
+  {
+    pctX: 78, pctY: 27,
+    vi: { title: 'Kép đàn', desc: 'Người chơi đàn đáy – nhạc cụ dây dài 3 dây, âm vang trầm bổng, tạo nên giai điệu nền cho ca nương.' },
+    en: { title: 'Lute Player', desc: 'The male musician plays the đàn đáy – a 3-string long-necked lute providing the melodic accompaniment.' }
+  },
+  {
+    pctX: 22, pctY: 27,
+    vi: { title: 'Quan viên', desc: 'Người đánh trống chầu (phách), giữ nhịp và chấm điểm cho phần trình diễn của đào nương.' },
+    en: { title: 'Percussionist', desc: 'The quan viên plays the praise drum (trống chầu), keeping rhythm and scoring the singer\'s performance.' }
+  },
+  {
+    pctX: 30, pctY: 82,
+    vi: { title: 'Trống chầu', desc: 'Nhạc cụ gõ được quan viên sử dụng để đệm nhịp, tạo điểm nhấn và biểu lộ cảm xúc.' },
+    en: { title: 'Praise Drum', desc: 'A percussion instrument used by the quan viên to accentuate rhythm and express emotional nuances.' }
+  },
+  {
+    pctX: 72, pctY: 78, 
+    vi: { title: 'Đàn đáy', desc: 'Nhạc cụ dây truyền thống với cần đàn dài và thùng đàn hình thang, giữ vai trò chủ đạo trong nghệ thuật Ca trù, dùng để đệm hát và tạo giai điệu.' },
+    en: { title: 'Đáy Lute', desc: 'A traditional Vietnamese long-necked lute with a trapezoidal body, serving as the principal melodic accompaniment in Ca trù performances.' }
+  },
+  {
+    pctX: 50, pctY: 20,
+    vi: { title: 'Không gian diễn xướng', desc: 'Ca trù được trình diễn trong không gian phòng nhỏ ấm cúng, thường tại đình làng hoặc tư gia.' },
+    en: { title: 'Performance Space', desc: 'Ca trù is performed in an intimate chamber setting, typically at communal houses or private homes.' }
+  },
+  {
+    pctX: 50, pctY: 82,
+    vi: { title: 'Phong cách truyền thống', desc: 'Ca trù kết hợp giữa thi ca hát nói và nhạc cụ truyền thống Việt Nam, thể hiện văn hóa bác học.' },
+    en: { title: 'Traditional Style', desc: 'Ca trù combines sung poetry (hát nói) with traditional instruments, embodying Vietnam\'s scholarly culture.' }
+  },
+  {
+    pctX: 5, pctY: 64,
+    vi: { title: 'Di sản UNESCO', desc: 'Ca trù được UNESCO ghi danh vào Danh sách di sản cần bảo vệ khẩn cấp năm 2009.' },
+    en: { title: 'UNESCO Heritage', desc: 'Ca trù was inscribed on UNESCO\'s Urgent Safeguarding List in 2009.' }
+  },
+  {
+    pctX: 70, pctY: 52,
+    vi: { title: 'Họa tiết trang phục', desc: 'Trang phục của đào nương và kép đàn mang họa tiết phong phú, thể hiện tính thẩm mỹ tinh tế.' },
+    en: { title: 'Costume Patterns', desc: 'The costumes of performers feature rich ornamentation, reflecting refined aesthetic sensibilities.' }
+  }
+];
+
+(function() {
+  const overlay  = document.getElementById('exp-overlay');
+  const closeBtn = document.getElementById('exp-close');
+  const img      = document.getElementById('exp-image');
+  const wrap     = document.getElementById('exp-image-wrap');
+
+  /* ── OPEN ── */
+  function openExpOverlay(dots) {
+    /* Set the image */
+    img.src = 'images.jpg';
+
+    /* Clear any existing dots/tags */
+    wrap.querySelectorAll('.exp-dot').forEach(el => el.remove());
+    wrap.querySelectorAll('.exp-tag').forEach(el => el.remove());
+
+    /* Create dots */
+    if (dots && dots.length) {
+      dots.forEach((d, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'exp-dot';
+        dot.dataset.idx = idx;
+        dot.style.left = d.pctX + '%';
+        dot.style.top  = d.pctY + '%';
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleTag(idx, dot, dots);
+        });
+        wrap.appendChild(dot);
+      });
+    }
+
+    overlay.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+
+  /* ── TOGGLE TAG ── */
+  let activeTag = null;
+  let currentAudio = null;
+
+  function stopCurrentAudio() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+    }
+  }
+
+  function playDanDayAudio() {
+    stopCurrentAudio();
+    const audio = new Audio('audio/danday.mp3');
+    audio.currentTime = 5;
+    audio.play().catch(e => console.warn('Audio play failed:', e));
+    /* Stop after 7 seconds (from 5s to 12s) */
+    setTimeout(() => {
+      if (currentAudio === audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        currentAudio = null;
+      }
+    }, 7000);
+    currentAudio = audio;
+  }
+
+  function toggleTag(idx, dotEl, dots) {
+    /* Remove existing tag if same dot clicked */
+    if (activeTag && activeTag.dataset.idx === String(idx)) {
+      activeTag.remove();
+      activeTag = null;
+      dotEl.classList.remove('active');
+      stopCurrentAudio();
+      return;
+    }
+
+    /* Remove previous tag */
+    if (activeTag) {
+      activeTag.remove();
+      document.querySelectorAll('.exp-dot.active').forEach(d => d.classList.remove('active'));
+    }
+    stopCurrentAudio();
+
+    const d = dots[idx];
+    const info = lang === 'vi' ? d.vi : d.en;
+
+    const tag = document.createElement('div');
+    tag.className = 'exp-tag';
+    tag.dataset.idx = idx;
+
+    /* Determine position: show above if dot is in bottom half, below if in top half */
+    if (d.pctY > 50) {
+      tag.classList.add('pos-bottom');
+      tag.style.left   = Math.max(5, Math.min(75, d.pctX - 10)) + '%';
+      tag.style.bottom = (100 - d.pctY + 3) + '%';
+    } else {
+      tag.classList.add('pos-top');
+      tag.style.left   = Math.max(5, Math.min(75, d.pctX - 10)) + '%';
+      tag.style.top    = (d.pctY + 3) + '%';
+    }
+
+    tag.innerHTML = `
+      <button class="exp-tag-close" data-idx="${idx}">✕</button>
+      <h4>${info.title}</h4>
+      <p>${info.desc}</p>
+    `;
+
+    /* Close button inside tag */
+    tag.querySelector('.exp-tag-close').addEventListener('click', (e) => {
+      e.stopPropagation();
+      tag.remove();
+      activeTag = null;
+      dotEl.classList.remove('active');
+    });
+
+    wrap.appendChild(tag);
+    activeTag = tag;
+    dotEl.classList.add('active');
+
+    /* Play audio for Đàn đáy dot (index 4) */
+    if (idx === 4) {
+      playDanDayAudio();
+    }
+  }
+
+  /* ── CLOSE ── */
+  function closeExpOverlay() {
+    overlay.classList.remove('visible');
+    document.body.style.overflow = '';
+    if (activeTag) {
+      activeTag.remove();
+      activeTag = null;
+    }
+    document.querySelectorAll('.exp-dot.active').forEach(d => d.classList.remove('active'));
+  }
+
+  closeBtn.addEventListener('click', closeExpOverlay);
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay || e.target === wrap) {
+      closeExpOverlay();
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('visible')) {
+      closeExpOverlay();
+    }
+  });
+
+  /* ── EXPOSE globally ── */
+  window.openExpOverlay = openExpOverlay;
+  window.closeExpOverlay = closeExpOverlay;
+})();
+
+/* ═══════════════════════════════════════
+   SLIDER FILES — actual filenames per artifact
+═══════════════════════════════════════ */
+const SLIDER_FILES = {
+  1: ['mua-nha-nhac-cungdinh-e1453101073276.jpg','múa-triều-nguyễn.jpg','nha-nhac-cung-dinh-co-tu-the-ky-13.jpg','nha-nhac-kiet-tac-phi-vat-the-cua-viet-nam.jpg','nha-nhac-thuong-bieu-dien-trong-cac-ngay-le-quan-trong_1.jpg'],
+  2: ['401-gia_lai-kyoflash@gmail_le_hoi_cong_chieng.jpg','521-kon_tum-phuocsonkt@gmailcom-le_hoi_mung_lua_moi.jpg','bsvh10.jpg','cong-chieng-tay-nguyen-1.jpg','images.jpg'],
+  3: ['16.jpg','1808.dancaquanho.jpg','2210.quan_ho_bac_ninh.jpg','images (1).jpg','images (2).jpg'],
+  4: ['images (3).jpg','images (4).jpg','images (5).jpg','images (6).jpg','images (7).jpg'],
+  5: ['images (8).jpg','images (9).jpg','images (10).jpg','images (11).jpg','images (12).jpg'],
+  6: ['images (13).jpg','images (14).jpg','images (15).jpg','images (16).jpg','images (17).jpg'],
+  7: ['images (18).jpg','images (19).jpg','images (20).jpg','images (21).jpg','images (22).jpg'],
+  8: ['images (23).jpg','images (24).jpg','images (25).jpg','images (26).jpg','images (27).jpg'],
+  9: ['images (27).jpg','images (28).jpg','images (29).jpg','images (30).jpg','images (31).jpg'],
+  10: ['images (32).jpg','images (33).jpg','images (34).jpg','images (35).jpg','images (36).jpg'],
+  11: ['images (37).jpg','images (38).jpg','images (39).jpg','images (40).jpg','images (41).jpg'],
+  12: ['images (42).jpg','images (43).jpg','images (44).jpg','images (45).jpg','images (46).jpg'],
+  13: ['images (47).jpg','images (48).jpg','images (49).jpg','images (50).jpg','images (51).jpg'],
+  14: ['images (52).jpg','images (53).jpg','images (54).jpg','images (55).jpg','images (56).jpg'],
+  15: ['images (57).jpg','images (58).jpg','images (59).jpg','images (60).jpg','proxy-image.png'],
+  16: ['images (61).jpg','images (62).jpg','images (63).jpg','images (64).jpg','images (65).jpg'],
+};
+
+/* ═══════════════════════════════════════
+   RENDER
+═══════════════════════════════════════ */
+function renderArtifact() {
+  const id = parseInt(new URLSearchParams(window.location.search).get('id'));
+  const t  = TREASURES.find(x => x.id === id);
+  const contentSection = document.getElementById('content-section');
+  const errorState = document.getElementById('error-state');
+
+  if (!t) {
+    if (contentSection) contentSection.style.display = 'none';
+    if (errorState) {
+      errorState.style.display = 'block';
+      document.getElementById('err-msg').textContent = S('errMsg');
+    }
+    return;
+  }
+
+  if (errorState) errorState.style.display = 'none';
+  if (contentSection) contentSection.style.display = 'grid';
+
+  const era    = getEra(t);
+  const eraC   = ERA_CONFIG[era]?.color || '#8a7c5e';
+  const eraLbl = ERA_CONFIG[era]?.[lang] || '';
+  const typeLbl= TYPE_CONFIG[t.type]?.[lang] || t.type || '';
+  const cent   = getCentury(t);
+  const nameMain = lang === 'vi' ? t.name    : t.english;
+  const nameSub  = lang === 'vi' ? t.english : t.name;
+  const desc     = lang === 'vi' ? (t.desc_vi || t.desc) : t.desc;
+  const imgSrc   = `images/artifacts/${t.id}.jpg`;
+
+  /* ── page title ── */
+  document.title = `${nameMain} — VietHeritage Map`;
+
+  /* ── HERO ── */
+  const isCatru = t.id === 4; /* Ca trù has interactive image */
+  document.getElementById('hero-section').innerHTML = `
+    <div class="hero">
+      <div class="hero-left">
+        <div class="breadcrumb">
+          <a href="index.html">${S('breadHome')}</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="database.html">${S('breadDb')}</a>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">${nameMain.length>28 ? nameMain.slice(0,28)+'…' : nameMain}</span>
+        </div>
+        <h1 class="hero-title">${nameMain}</h1>
+        <span class="hero-subtitle">${nameSub}</span>
+        <div class="hero-badges">
+          <span class="hero-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18M9 21V9"/>
+            </svg>
+            ${eraLbl}
+          </span>
+          <span class="hero-badge" style="background:${eraC}33;border-color:${eraC}55;color:${eraC}">
+            ${typeLbl}
+          </span>
+        </div>
+        <div class="hero-location">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          ${t.location}
+        </div>
+
+        ${isCatru ? `
+        <button class="btn-3d-exp" id="btn-exp">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>${S('expBtn')}</span>
+        </button>` : ''}
+
+        ${!isCatru && t.script ? `
+        <button class="btn-script" id="btn-script">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>${lang === 'vi' ? 'Trải nghiệm không gian 3D' : '3D experience'}</span>
+        </button>` : ''}
+        ${t.model3d ? `
+        <button class="btn-3d" id="btn-3d">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+          <span id="btn-3d-text">${lang === 'vi' ? 'Xem mô hình 3D' : 'View 3D Model'}</span>
+        </button>` : ''}
+      </div>
+      <div class="hero-img-wrap">
+        <img src="${imgSrc}" alt="${nameMain}"
+             onerror="this.onerror=null; this.style.display='none'; var ph=document.getElementById('img-ph-${t.id}'); if(ph) ph.style.display='flex';" />
+        <div class="hero-img-placeholder" id="img-ph-${t.id}" style="display:none">
+          <svg width="48" height="48" viewBox="0 0 22 22" fill="currentColor">
+            <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/>
+          </svg>
+          <span>images/artifacts/${t.id}.jpg</span>
+        </div>
+      </div>
+    </div>`;
+
+  /* ── WIRE 3D MODEL VIEWER ── */
+  const modelSection = document.getElementById('model-section');
+  const modelIframe  = document.getElementById('model-iframe');
+  const modelAttr    = document.getElementById('model-attribution');
+  const closeBtn     = document.getElementById('model-close-btn');
+  const closeLbl     = document.getElementById('lbl-close-3d');
+
+  /* hide viewer whenever a new artifact is rendered (guard against null) */
+  if (modelSection) modelSection.classList.remove('visible');
+  if (modelIframe) modelIframe.src = 'about:blank';
+
+  if (t.model3d && modelSection) {
+    /* attribution line */
+    modelAttr.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" style="flex-shrink:0">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      </svg>
+      <span>
+        <a href="https://sketchfab.com/3d-models/${t.model3d.split('/models/')[1]?.split('/embed')[0]}?utm_medium=embed"
+           target="_blank" rel="nofollow">${t.model3d_title || nameMain}</a>
+        ${lang === 'vi' ? 'bởi' : 'by'}
+        <a href="${t.model3d_author_url || 'https://sketchfab.com'}?utm_medium=embed"
+           target="_blank" rel="nofollow">${t.model3d_author || 'Sketchfab'}</a>
+        ${lang === 'vi' ? 'trên' : 'on'}
+        <a href="https://sketchfab.com?utm_medium=embed" target="_blank" rel="nofollow">Sketchfab</a>
+      </span>`;
+
+    /* toggle button */
+    const btn3d = document.getElementById('btn-3d');
+    const btn3dText = document.getElementById('btn-3d-text');
+    if (btn3d) {
+      btn3d.addEventListener('click', () => {
+        const isOpen = modelSection.classList.contains('visible');
+        if (!isOpen) {
+          modelSection.classList.add('visible');
+          /* lazy-load: only set src on first open */
+          if (modelIframe.src === 'about:blank' || !modelIframe.src.includes('sketchfab')) {
+            modelIframe.src = t.model3d;
+          }
+          btn3d.classList.add('open');
+          btn3dText.textContent = lang === 'vi' ? 'Đóng mô hình 3D' : 'Close 3D Model';
+          /* smooth scroll to viewer */
+          setTimeout(() => modelSection.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
+        } else {
+          modelSection.classList.remove('visible');
+          btn3d.classList.remove('open');
+          btn3dText.textContent = lang === 'vi' ? 'Xem mô hình 3D' : 'View 3D Model';
+        }
+      });
+    }
+
+    /* close bar button inside the viewer */
+    if (closeBtn) {
+      closeLbl.textContent = lang === 'vi' ? 'Đóng mô hình' : 'Close model';
+      closeBtn.onclick = () => {
+        modelSection.classList.remove('visible');
+        const b = document.getElementById('btn-3d');
+        const bt = document.getElementById('btn-3d-text');
+        if (b)  b.classList.remove('open');
+        if (bt) bt.textContent = lang === 'vi' ? 'Xem mô hình 3D' : 'View 3D Model';
+      };
+    }
+  } else {
+    if (modelAttr) modelAttr.innerHTML = '';
+    if (closeBtn) closeBtn.onclick = null;
+  }
+
+  /* ── WIRE INTERACTIVE IMAGE BUTTON ── */
+  const btnExp = document.getElementById('btn-exp');
+  if (btnExp && isCatru) {
+    btnExp.addEventListener('click', () => {
+      if (typeof window.openExpOverlay === 'function') {
+        window.openExpOverlay(CA_TRU_DOTS);
+      }
+    });
+  }
+
+  /* ── WIRE SCRIPT BUTTON ── */
+  const btnScript = document.getElementById('btn-script');
+  if (btnScript && t.script) {
+    btnScript.addEventListener('click', () => {
+      if (typeof window.openScriptModal === 'function') {
+        window.openScriptModal(t);
+      }
+    });
+  }
+
+  /* ── CONTENT ── */
+  document.getElementById('desc-title').textContent = nameMain;
+
+  /* quote — use t.quote if present, else show placeholder */
+  const quoteEl = document.getElementById('desc-quote');
+  if (t.quote) {
+    quoteEl.textContent = `"${t.quote}"`;
+    quoteEl.classList.remove('empty');
+  } else {
+    quoteEl.textContent = S('quoteEmpty');
+    quoteEl.classList.add('empty');
+  }
+
+  /* description body */
+  document.getElementById('desc-body').innerHTML =
+    `<p>${desc || ''}</p>`;
+
+  /* info grid */
+  document.getElementById('info-era').innerHTML =
+    `<span class="era-dot" style="background:${eraC}"></span>${eraLbl}`;
+  document.getElementById('info-type').textContent = typeLbl;
+  document.getElementById('info-century').textContent = formatCentury(cent);
+  document.getElementById('info-year').textContent = t.year || '—';
+
+  /* sidebar — derive location display */
+  const locParts = String(t.location || '').split(',');
+  const locName  = locParts[0].trim();
+  const locCity  = locParts.length > 1 ? locParts.slice(1).join(',').trim() : '';
+
+  document.getElementById('loc-name').textContent    = locName;
+  document.getElementById('loc-type-badge').textContent = lang === 'vi' ? 'Địa điểm' : 'Venue';
+  document.getElementById('loc-city').textContent    = locCity || t.location;
+  document.getElementById('loc-address').textContent = t.location;
+
+const mapsUrl = `https://www.google.com/maps?q=${t.lat},${t.lng}`;
+  document.getElementById('link-maps').href = mapsUrl;
+  document.getElementById('btn-view-map').href = `VNMT.html`;
+
+  document.getElementById('coord-lat').textContent = t.lat?.toFixed(5) ?? '—';
+  document.getElementById('coord-lng').textContent = t.lng?.toFixed(5) ?? '—';
+
+  // Build audio section for singing types
+  renderAudioSection(t);
+
+  // Slider for all artifacts
+  if (t.id) {
+    const sliderContainer = document.getElementById('slider-container');
+    const files = SLIDER_FILES && SLIDER_FILES[t.id];
+    if (sliderContainer && files && files.length) {
+      let slidesHTML = '';
+      files.forEach(function(fname, i) {
+        slidesHTML +=
+          '<div class="slider-slide">' +
+          '<img src="slider/' + t.id + '/' + fname + '" alt="Slider slide ' + (i + 1) + '" onerror="this.parentNode.style.display=\'none\'">' +
+          '</div>';
+      });
+      sliderContainer.querySelector('#slider-slides').innerHTML = slidesHTML;
+      sliderContainer.style.display = 'block';
+      initSlider(t.id);
+    }
+  }
+
+  document.getElementById('content-section').style.display = 'grid';
+}
+
+/* ═══════════════════════════════════════
+   AUDIO SECTION RENDERING
+═══════════════════════════════════════ */
+function renderAudioSection(t) {
+  const container = document.getElementById('audio-section-container');
+  const isSingingType = t.type === 'singings';
+  const hasAudioPreview = t.audio_preview;
+
+  if (!isSingingType || !hasAudioPreview) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const audioPrefix = window.location.pathname.includes('/legacy/') ? '/legacy/' : '';
+  const previewSrc = hasAudioPreview ? audioPrefix + t.audio_preview : '';
+  const nameLabel = lang === 'vi' ? t.name : t.english;
+
+  const audioSamplesSection = hasAudioPreview ? `
+    <div class="modal-audio-section">
+      <h4>${lang === 'vi' ? 'Mẫu âm thanh' : 'Audio Sample'}</h4>
+      <div class="audio-sample-item">
+        <span class="audio-sample-label">${lang === 'vi' ? 'Nghe tham khảo' : 'Reference'}:</span>
+        <audio controls src="${previewSrc}" class="modal-audio-player"></audio>
+        <p class="modal-audio-caption">${nameLabel}</p>
+      </div>
+    </div>
+  ` : '';
+
+  const audioAnalysisSection = `
+    <div class="modal-audio-analysis" id="modal-audio-analysis-${t.id}" hidden>
+      <div class="modal-audio-analysis-header">
+        <h4>${lang === 'vi' ? 'Kết quả phân tích' : 'Analysis Results'}</h4>
+        <button class="modal-audio-close" onclick="hideAudioAnalysis(${t.id})">✕</button>
+      </div>
+      <div class="audio-analysis-content" id="audio-analysis-content-${t.id}">
+        <div class="audio-analysis-loading" id="audio-analysis-loading-${t.id}" hidden>
+          <div class="spinner"></div>
+          <span>${lang === 'vi' ? 'Đang phân tích...' : 'Analyzing...'}</span>
+        </div>
+        <div class="audio-analysis-results" id="audio-analysis-results-${t.id}" hidden>
+          <div class="vocal-score-display">
+            <div class="vocal-score-value" id="analysis-score-${t.id}">—</div>
+            <div class="vocal-score-label">${lang === 'vi' ? 'Độ tương đồng phong cách' : 'Style Similarity'}</div>
+            <div class="vocal-score-feedback" id="analysis-feedback-${t.id}"></div>
+          </div>
+        </div>
+        <div class="audio-analysis-error" id="audio-analysis-error-${t.id}" hidden>
+          <p id="audio-analysis-error-msg-${t.id}"></p>
+          <button class="retry-btn" onclick="analyzeUserRecording(${t.id})">${lang === 'vi' ? 'Thử lại' : 'Retry'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const audioSectionHTML = `
+    ${audioSamplesSection}
+    <div class="modal-practice-section">
+      <h4>${lang === 'vi' ? 'Thử hát & Phân tích' : 'Try Singing & Analyze'}</h4>
+      <p class="modal-practice-hint">${lang === 'vi' ? 'Ghi âm giọng hát của bạn để AI phân tích độ tương đồng với phong cách truyền thống' : 'Record your singing for AI analysis of traditional style similarity'}</p>
+      <div class="recorder-controls">
+        <button class="record-btn" id="record-btn-${t.id}" onclick="toggleRecording(${t.id})">
+          <svg class="record-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="8"></circle>
+          </svg>
+          <svg class="stop-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" hidden>
+            <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+          </svg>
+          <span class="record-text">${lang === 'vi' ? 'Bắt đầu ghi âm' : 'Start Recording'}</span>
+        </button>
+        <button class="playback-btn" id="playback-btn-${t.id}" onclick="playbackRecording(${t.id})" hidden>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>${lang === 'vi' ? 'Nghe lại' : 'Playback'}</span>
+        </button>
+        <button class="analyze-btn" id="analyze-btn-${t.id}" onclick="analyzeUserRecording(${t.id})" hidden>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+          <span>${lang === 'vi' ? 'Phân tích' : 'Analyze'}</span>
+        </button>
+        <button class="clear-btn" id="clear-btn-${t.id}" onclick="clearRecording(${t.id})" hidden>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <span>${lang === 'vi' ? 'Xóa' : 'Clear'}</span>
+        </button>
+      </div>
+      <div class="recording-visualizer" id="recording-visualizer-${t.id}" hidden>
+        <canvas id="waveform-canvas-${t.id}" width="400" height="80"></canvas>
+      </div>
+      <div class="recording-timer" id="recording-timer-${t.id}" hidden>00:00</div>
+    </div>
+    ${audioAnalysisSection}
+  `;
+
+  container.innerHTML = audioSectionHTML;
+}
+
+/* ═══════════════════════════════════════
+   AUDIO RECORDING & ANALYSIS
+═══════════════════════════════════════ */
+
+// Audio recording state per artifact
+const recordingState = {};
+const mediaRecorders = {};
+const recordedChunks = {};
+const recordingTimers = {};
+
+/* ═══════════════════════════════════════
+   AUDIO CONTEXT INITIALIZATION
+═══════════════════════════════════════ */
+async function initAudioContext(id) {
+  if (!recordingState[id]) {
+    recordingState[id] = {
+      isRecording: false,
+      audioBlob: null,
+      audioContext: null,
+      analyser: null,
+      stream: null,
+      animationFrame: null
+    };
+  }
+  const state = recordingState[id];
+  if (!state.audioContext) {
+    state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return state;
+}
+
+/* ═══════════════════════════════════════
+   RECORDING TOGGLE
+═══════════════════════════════════════ */
+async function toggleRecording(id) {
+  const state = await initAudioContext(id);
+  const recordBtn = document.getElementById(`record-btn-${id}`);
+  const playbackBtn = document.getElementById(`playback-btn-${id}`);
+  const analyzeBtn = document.getElementById(`analyze-btn-${id}`);
+  const clearBtn = document.getElementById(`clear-btn-${id}`);
+  const visualizer = document.getElementById(`recording-visualizer-${id}`);
+  const timer = document.getElementById(`recording-timer-${id}`);
+
+  if (state.isRecording) {
+    stopRecording(id);
+    recordBtn.classList.remove('recording');
+    recordBtn.querySelector('.record-icon').hidden = false;
+    recordBtn.querySelector('.stop-icon').hidden = true;
+    recordBtn.querySelector('.record-text').textContent = lang === 'vi' ? 'Bắt đầu ghi âm' : 'Start Recording';
+    playbackBtn.hidden = false;
+    analyzeBtn.hidden = false;
+    clearBtn.hidden = false;
+    visualizer.hidden = true;
+    timer.hidden = true;
+    if (recordingTimers[id]) {
+      clearInterval(recordingTimers[id]);
+      recordingTimers[id] = null;
+    }
+  } else {
+    try {
+      state.stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: { 
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          sampleRate: 22050
+        } 
+      });
+      const mediaRecorder = new MediaRecorder(state.stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      });
+      mediaRecorders[id] = mediaRecorder;
+      recordedChunks[id] = [];
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunks[id].push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        state.audioBlob = new Blob(recordedChunks[id], { type: 'audio/webm' });
+        state.stream.getTracks().forEach(track => track.stop());
+        if (state.audioBlob) state.audioUrl = URL.createObjectURL(state.audioBlob);
+      };
+      mediaRecorder.start(100);
+      state.isRecording = true;
+      recordBtn.classList.add('recording');
+      recordBtn.querySelector('.record-icon').hidden = true;
+      recordBtn.querySelector('.stop-icon').hidden = false;
+      recordBtn.querySelector('.record-text').textContent = lang === 'vi' ? 'Dừng ghi âm' : 'Stop Recording';
+      playbackBtn.hidden = true;
+      analyzeBtn.hidden = true;
+      clearBtn.hidden = true;
+      visualizer.hidden = false;
+      timer.hidden = false;
+      setupVisualizer(id);
+      let seconds = 0;
+      recordingTimers[id] = setInterval(() => {
+        seconds++;
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        timer.textContent = `${mins}:${secs}`;
+        if (seconds >= 30) stopAndResetRecording(id);
+      }, 1000);
+    } catch (err) {
+      console.error('Recording failed:', err);
+      alert(lang === 'vi' ? 'Không thể truy cập micro. Vui lòng cho phép quyền truy cập.' : 'Cannot access microphone. Please allow permission.');
+    }
+  }
+}
+
+function stopRecording(id) {
+  if (mediaRecorders[id] && mediaRecorders[id].state !== 'inactive') {
+    mediaRecorders[id].stop();
+  }
+  if (recordingState[id]) {
+    recordingState[id].isRecording = false;
+  }
+}
+
+function stopAndResetRecording(id) {
+  const state = recordingState[id];
+  const recordBtn = document.getElementById(`record-btn-${id}`);
+  const playbackBtn = document.getElementById(`playback-btn-${id}`);
+  const analyzeBtn = document.getElementById(`analyze-btn-${id}`);
+  const clearBtn = document.getElementById(`clear-btn-${id}`);
+  const visualizer = document.getElementById(`recording-visualizer-${id}`);
+  const timer = document.getElementById(`recording-timer-${id}`);
+  if (mediaRecorders[id] && mediaRecorders[id].state !== 'inactive') mediaRecorders[id].stop();
+  if (state) {
+    state.isRecording = false;
+    if (state.stream) {
+      state.stream.getTracks().forEach(track => { try { track.stop(); } catch(e) {} });
+      state.stream = null;
+    }
+    if (state.animationFrame) { cancelAnimationFrame(state.animationFrame); state.animationFrame = null; }
+  }
+  if (recordingTimers[id]) { clearInterval(recordingTimers[id]); recordingTimers[id] = null; }
+  if (recordBtn) {
+    recordBtn.classList.remove('recording');
+    recordBtn.querySelector('.record-icon').hidden = false;
+    recordBtn.querySelector('.stop-icon').hidden = true;
+    recordBtn.querySelector('.record-text').textContent = lang === 'vi' ? 'Bắt đầu ghi âm' : 'Start Recording';
+  }
+  if (playbackBtn) playbackBtn.hidden = false;
+  if (analyzeBtn) analyzeBtn.hidden = false;
+  if (clearBtn) clearBtn.hidden = false;
+  if (visualizer) visualizer.hidden = true;
+  if (timer) timer.hidden = true;
+}
+
+function setupVisualizer(id) {
+  const state = recordingState[id];
+  const canvas = document.getElementById(`waveform-canvas-${id}`);
+  if (!canvas || !state.stream) return;
+  const ctx = canvas.getContext('2d');
+  const analyser = state.audioContext.createAnalyser();
+  analyser.fftSize = 256;
+  const source = state.audioContext.createMediaStreamSource(state.stream);
+  source.connect(analyser);
+  state.analyser = analyser;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+  const draw = () => {
+    if (!state.isRecording) return;
+    state.animationFrame = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArray);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const barWidth = (canvas.width / bufferLength) * 2.5;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+      const hue = 45 + (dataArray[i] / 255) * 30;
+      ctx.fillStyle = `hsl(${hue}, 80%, 50%)`;
+      ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+      x += barWidth + 1;
+    }
+  };
+  draw();
+}
+
+function playbackRecording(id) {
+  const state = recordingState[id];
+  if (state.audioUrl) {
+    const audio = new Audio(state.audioUrl);
+    audio.play();
+  }
+}
+
+function clearRecording(id) {
+  const state = recordingState[id];
+  const recordBtn = document.getElementById(`record-btn-${id}`);
+  const playbackBtn = document.getElementById(`playback-btn-${id}`);
+  const analyzeBtn = document.getElementById(`analyze-btn-${id}`);
+  const clearBtn = document.getElementById(`clear-btn-${id}`);
+  const visualizer = document.getElementById(`recording-visualizer-${id}`);
+  const timer = document.getElementById(`recording-timer-${id}`);
+  if (state.audioUrl) { URL.revokeObjectURL(state.audioUrl); state.audioUrl = null; }
+  state.audioBlob = null;
+  recordBtn.classList.remove('recording');
+  recordBtn.querySelector('.record-icon').hidden = false;
+  recordBtn.querySelector('.stop-icon').hidden = true;
+  recordBtn.querySelector('.record-text').textContent = lang === 'vi' ? 'Bắt đầu ghi âm' : 'Start Recording';
+  playbackBtn.hidden = true;
+  analyzeBtn.hidden = true;
+  clearBtn.hidden = true;
+  visualizer.hidden = true;
+  timer.hidden = true;
+  timer.textContent = '00:00';
+  const canvas = document.getElementById(`waveform-canvas-${id}`);
+  if (canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+}
+
+async function convertWebMToWav(webmBlob) {
+  const arrayBuffer = await webmBlob.arrayBuffer();
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  let audioBuffer;
+  try {
+    audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+  } catch (decodeErr) {
+    await audioContext.close();
+    throw new Error(lang === 'vi' ? 'Không thể giải mã âm thanh. Vui lòng dùng trình duyệt khác.' : 'Cannot decode audio. Please try a different browser.');
+  }
+  const numChannels = audioBuffer.numberOfChannels;
+  const sampleRate = audioBuffer.sampleRate;
+  const length = audioBuffer.length;
+  const bytesPerSample = 2;
+  const blockAlign = numChannels * bytesPerSample;
+  const byteRate = sampleRate * blockAlign;
+  const dataSize = length * blockAlign;
+  const headerSize = 44;
+  const totalSize = headerSize + dataSize;
+  const wavBuffer = new ArrayBuffer(totalSize);
+  const view = new DataView(wavBuffer);
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, totalSize - 8, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, byteRate, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, 16, true);
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataSize, true);
+  let offset = headerSize;
+  for (let i = 0; i < length; i++) {
+    for (let ch = 0; ch < numChannels; ch++) {
+      const sample = Math.max(-1, Math.min(1, audioBuffer.getChannelData(ch)[i]));
+      view.setInt16(offset, sample * 0x7FFF, true);
+      offset += 2;
+    }
+  }
+  await audioContext.close();
+  return new Blob([wavBuffer], { type: 'audio/wav' });
+}
+
+function writeString(view, offset, string) {
+  for (let i = 0; i < string.length; i++) { view.setUint8(offset + i, string.charCodeAt(i)); }
+}
+
+async function analyzeUserRecording(id) {
+  const state = recordingState[id];
+  if (!state.audioBlob) {
+    alert(lang === 'vi' ? 'Chưa có file ghi âm' : 'No recording available');
+    return;
+  }
+
+  const analyzeBtn = document.getElementById(`analyze-btn-${id}`);
+  const loading = document.getElementById(`audio-analysis-loading-${id}`);
+  const results = document.getElementById(`audio-analysis-results-${id}`);
+  const error = document.getElementById(`audio-analysis-error-${id}`);
+  const scoreEl = document.getElementById(`analysis-score-${id}`);
+  const feedbackEl = document.getElementById(`analysis-feedback-${id}`);
+  const analysisSection = document.getElementById(`modal-audio-analysis-${id}`);
+
+  // Show analysis section
+  analysisSection.hidden = false;
+  loading.hidden = false;
+  results.hidden = true;
+  error.hidden = true;
+  analyzeBtn.disabled = true;
+
+  try {
+    // Convert WebM to WAV for backend compatibility
+    const wavBlob = await convertWebMToWav(state.audioBlob);
+
+    const formData = new FormData();
+    formData.append('file', wavBlob, `recording_${id}.wav`);
+    formData.append('reference_id', id);
+
+    const response = await fetch('/api/v1/audio/analyze', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    const score = data.score || 0;
+    const feedback = data.feedback || '';
+
+    // Set score display with color coding
+    scoreEl.textContent = score.toFixed(1);
+    scoreEl.className = 'vocal-score-value';
+    if (score >= 80) {
+      scoreEl.classList.add('score-excellent');
+    } else if (score >= 65) {
+      scoreEl.classList.add('score-good');
+    } else if (score >= 50) {
+      scoreEl.classList.add('score-fair');
+    } else {
+      scoreEl.classList.add('score-poor');
+    }
+    feedbackEl.textContent = feedback;
+
+    loading.hidden = true;
+    results.hidden = false;
+
+  } catch (err) {
+    console.error('Analysis failed:', err);
+    loading.hidden = true;
+    error.hidden = false;
+    const errMsg = err instanceof Error ? err.message : String(err);
+    document.getElementById(`audio-analysis-error-msg-${id}`).textContent =
+      lang === 'vi' ? `Phân tích thất bại: ${errMsg}` : `Analysis failed: ${errMsg}`;
+  } finally {
+    analyzeBtn.disabled = false;
+  }
+}
+
+window.toggleRecording = toggleRecording;
+window.playbackRecording = playbackRecording;
+window.clearRecording = clearRecording;
+window.analyzeUserRecording = analyzeUserRecording;
+
+function hideAudioAnalysis(id) {
+  const analysisSection = document.getElementById(`modal-audio-analysis-${id}`);
+  if (analysisSection) analysisSection.hidden = true;
+}
+window.hideAudioAnalysis = hideAudioAnalysis;
+
+/* ═══════════════════════════════════════
+   SLIDER FUNCTIONALITY
+═══════════════════════════════════════ */
+function initSlider(artifactId) {
+  const sliderContainer = document.getElementById('slider-slides');
+  if (!sliderContainer) return;
+
+  const slides = sliderContainer.querySelectorAll('.slider-slide');
+  if (slides.length === 0) return;
+
+  let currentIndex = 0;
+
+  function showSlide(index) {
+    // Ensure index is within bounds
+    if (index >= slides.length) index = 0;
+    if (index < 0) index = slides.length - 1;
+    const offset = -index * 100; // each slide is 100% width
+    sliderContainer.style.transform = `translateX(${offset}%)`;
+    currentIndex = index;
+  }
+
+  function nextSlide() {
+    showSlide(currentIndex + 1);
+  }
+
+  // Start auto-advance every 2 seconds
+  let intervalId = setInterval(nextSlide, 2000);
+
+  // Optional: pause on hover? Not required by the task, but we can add for better UX.
+  // However, the task only says to auto-advance every 2 seconds to the right.
+  // We'll leave it as is.
+}
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+  applyLang();
+  renderArtifact();
+</script>
+
+<!-- ── SCRIPT (INSCRIPTION) MODAL ── -->
+<div class="script-overlay" id="script-overlay" aria-hidden="true">
+  <div class="script-modal">
+
+    <!-- header -->
+    <div class="script-modal-header">
+      <div>
+        <div class="script-modal-eyebrow" id="sm-eyebrow">Văn bản khắc đá</div>
+        <h2 class="script-modal-title" id="sm-title"></h2>
+      </div>
+      <button class="script-modal-close" id="script-modal-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- tabs -->
+    <div class="script-tabs">
+      <button class="script-tab active" data-tab="han"    id="tab-han">Chữ Hán</button>
+      <button class="script-tab"        data-tab="hanvan" id="tab-hanvan">Hán văn</button>
+      <button class="script-tab"        data-tab="viet"   id="tab-viet">Tiếng Việt</button>
+    </div>
+
+    <!-- scrollable content -->
+    <div class="script-body" id="script-body"></div>
+
+    <!-- floating annotation popover (positioned by JS) -->
+    <div class="anno-popover" id="anno-popover" style="display:none"></div>
+
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   SCRIPT / INSCRIPTION MODAL
+═══════════════════════════════════════ */
+(function() {
+  const overlay   = document.getElementById('script-overlay');
+  const closeBtn  = document.getElementById('script-modal-close');
+  const smTitle   = document.getElementById('sm-title');
+  const smEyebrow = document.getElementById('sm-eyebrow');
+  const body      = document.getElementById('script-body');
+  const popover   = document.getElementById('anno-popover');
+
+  let currentArtifact = null;
+  let currentTab      = 'han';
+  let editMode        = false;
+
+  /* ── OPEN / CLOSE ── */
+  function openScriptModal(t) {
+    currentArtifact = t;
+    currentTab      = 'han';
+    editMode        = false;
+    smTitle.textContent   = (typeof lang !== 'undefined' && lang === 'vi') ? t.name : t.english;
+    smEyebrow.textContent = (typeof lang !== 'undefined' && lang === 'vi')
+      ? 'Văn bản khắc đá' : 'Stone Inscription';
+    overlay.classList.add('visible');
+    overlay.setAttribute('aria-hidden', 'false');
+    setActiveTab('han');
+    renderTabContent('han');
+  }
+
+  function closeScriptModal() {
+    overlay.classList.remove('visible');
+    overlay.setAttribute('aria-hidden', 'true');
+    hidePopover();
+    editMode = false;
+  }
+
+  closeBtn.addEventListener('click', closeScriptModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeScriptModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScriptModal(); });
+
+  /* ── TABS ── */
+  function setActiveTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.script-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+  }
+
+  document.querySelectorAll('.script-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      editMode = false;
+      hidePopover();
+      setActiveTab(btn.dataset.tab);
+      renderTabContent(btn.dataset.tab);
+    });
+  });
+
+  /* ── ANNOTATION PARSER ── */
+  /* Format: {word or phrase|annotation text}  */
+  /* Footnotes: [n] anywhere in text           */
+  function parseAnnotations(rawText) {
+    const footnotes = [];
+
+    /* collect footnote definitions  [n]: text */
+    let text = rawText.replace(/^\[(\d+)\]:\s*(.+)$/gm, (_, n, def) => {
+      footnotes[parseInt(n)] = def.trim();
+      return '';
+    }).trim();
+
+    /* render {word|note} spans */
+    text = text.replace(/\{([^|{}]+)\|([^{}]+)\}/g, (_, word, note) => {
+      const safe = note.replace(/"/g, '"');
+      return `<span class="annotated" data-note="${safe}">${word}</span>`;
+    });
+
+    /* render [n] footnote references */
+    text = text.replace(/\[(\d+)\]/g, (_, n) =>
+      `<sup class="footnote-ref" data-fn="${n}" style="color:var(--red);cursor:pointer;font-size:0.7em">[${n}]</sup>`
+    );
+
+    /* preserve line breaks */
+    text = text.replace(/\n/g, '<br>');
+
+    return { html: text, footnotes };
+  }
+
+  /* ── RENDER TAB CONTENT ── */
+  function renderTabContent(tab) {
+    hidePopover();
+    if (!currentArtifact) return;
+    const t = currentArtifact;
+    const s = t.script || {};
+    const isVI = typeof lang !== 'undefined' && lang === 'vi';
+
+    /* load any user-saved override from localStorage */
+    const storedViet = localStorage.getItem(`script_viet_${t.id}`);
+    const storedHan  = localStorage.getItem(`script_han_${t.id}`);
+    const storedHanvan = localStorage.getItem(`script_hanvan_${t.id}`);
+
+    if (tab === 'han') {
+      const content = storedHan || s.han || '';
+      if (!content.trim()) {
+        body.innerHTML = emptyNote(
+          isVI ? 'Chưa có nội dung Chữ Hán' : 'No Chinese script added yet',
+          isVI ? 'Thêm trường <code>script.han</code> vào data.js hoặc nhấn nút chỉnh sửa trong tab Tiếng Việt.'
+               : 'Add a <code>script.han</code> field in data.js.'
+        );
+      } else {
+        body.innerHTML = `
+          <div class="han-text-hint">
+            ${isVI ? '📜 Nguyên văn chữ Hán. Đọc từ phải sang trái, từ trên xuống dưới theo chiều dọc truyền thống.'
+                   : '📜 Original Chinese characters. Traditionally read right-to-left, top-to-bottom.'}
+          </div>
+          <div class="han-text">${escapeHTML(content)}</div>`;
+      }
+    }
+
+    else if (tab === 'hanvan') {
+      const content = storedHanvan || s.hanvan || '';
+      if (!content.trim()) {
+        body.innerHTML = emptyNote(
+          isVI ? 'Chưa có nội dung Hán văn' : 'No Sino-Vietnamese reading yet',
+          isVI ? 'Thêm trường <code>script.hanvan</code> vào data.js.'
+               : 'Add a <code>script.hanvan</code> field in data.js.'
+        );
+      } else {
+        body.innerHTML = `
+          <div class="han-text-hint">
+            ${isVI ? '📖 Âm đọc Hán-Việt của văn bản gốc.'
+                   : '📖 Sino-Vietnamese reading of the original text.'}
+          </div>
+          <div class="hanvan-text">${escapeHTML(content)}</div>`;
+      }
+    }
+
+    else if (tab === 'viet') {
+      const rawContent = storedViet || s.viet || '';
+      renderVietTab(rawContent, isVI);
+    }
+
+    /* re-attach annotation listeners after innerHTML set */
+    attachAnnotationListeners();
+  }
+
+  /* ── VIETNAMESE TAB ── */
+  function renderVietTab(rawContent, isVI) {
+    const { html, footnotes } = parseAnnotations(rawContent);
+
+    /* footnote HTML */
+    let fnHTML = '';
+    const fnEntries = footnotes.filter(Boolean);
+    if (fnEntries.length > 0) {
+      fnHTML = `<div class="footnotes-section">
+        <div class="footnotes-title">${isVI ? 'Chú thích' : 'Notes'}</div>
+        ${footnotes.map((def, i) => def ? `
+          <div class="footnote-item">
+            <span class="footnote-num">[${i}]</span>
+            <span>${escapeHTML(def)}</span>
+          </div>` : '').join('')}
+      </div>`;
+    }
+
+    const syntaxNote = isVI
+      ? `Dùng <code>{từ|chú thích}</code> để chú giải, <code>[n]</code> cho chú thích cuối.`
+      : `Use <code>{word|note}</code> for inline glosses, <code>[n]</code> for footnotes.`;
+
+    body.innerHTML = `
+      <div class="viet-toolbar">
+        <div class="viet-toolbar-note">${syntaxNote}</div>
+        <button class="btn-edit-script" id="btn-edit-viet">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          ${isVI ? 'Chỉnh sửa văn bản' : 'Edit text'}
+        </button>
+      </div>
+      ${rawContent.trim()
+        ? `<div class="viet-text" id="viet-render">${html}</div>${fnHTML}`
+        : emptyNote(
+            isVI ? 'Chưa có bản dịch tiếng Việt' : 'No Vietnamese translation yet',
+            isVI ? 'Nhấn "Chỉnh sửa văn bản" để thêm nội dung với chú thích.'
+                 : 'Click "Edit text" to add content with annotations.'
+          )
+      }`;
+
+    /* edit button handler */
+    document.getElementById('btn-edit-viet')?.addEventListener('click', () => {
+      editMode = true;
+      const currentRaw = localStorage.getItem(`script_viet_${currentArtifact.id}`)
+                         || (currentArtifact.script?.viet || '');
+      body.innerHTML = `
+        <div class="viet-toolbar">
+          <div class="viet-toolbar-note">
+            ${isVI
+              ? `Dùng <code>{từ|chú thích}</code> để tạo chú giải. Dòng <code>[n]: nội dung</code> để định nghĩa chú thích cuối.`
+              : `Use <code>{word|note}</code> for glosses. Define footnotes with <code>[n]: text</code> on its own line.`}
+          </div>
+        </div>
+        <textarea class="script-editor" id="viet-editor" spellcheck="false">${escapeHTML(currentRaw)}</textarea>
+        <div class="editor-actions">
+          <button class="btn-cancel-edit" id="btn-cancel-viet">
+            ${isVI ? 'Hủy' : 'Cancel'}
+          </button>
+          <button class="btn-save-script" id="btn-save-viet">
+            ${isVI ? '💾 Lưu' : '💾 Save'}
+          </button>
+        </div>`;
+
+      document.getElementById('btn-save-viet').addEventListener('click', () => {
+        const newText = document.getElementById('viet-editor').value;
+        localStorage.setItem(`script_viet_${currentArtifact.id}`, newText);
+        editMode = false;
+        setActiveTab('viet');
+        renderTabContent('viet');
+      });
+      document.getElementById('btn-cancel-viet').addEventListener('click', () => {
+        editMode = false;
+        renderTabContent('viet');
+      });
+    });
+  }
+
+  /* ── ANNOTATION POPOVER ── */
+  function attachAnnotationListeners() {
+    document.querySelectorAll('.annotated').forEach(span => {
+      span.addEventListener('click', e => {
+        e.stopPropagation();
+        document.querySelectorAll('.annotated').forEach(s => s.classList.remove('active'));
+        span.classList.add('active');
+        showPopover(span, span.dataset.note);
+      });
+    });
+    document.querySelectorAll('.footnote-ref').forEach(ref => {
+      ref.addEventListener('click', e => {
+        e.stopPropagation();
+        showPopover(ref, `[${ref.dataset.fn}] ` +
+          (currentArtifact?.script?.viet?.match(
+            new RegExp(`\\[${ref.dataset.fn}\\]:\\s*(.+)`)
+          )?.[1] || '—'));
+      });
+    });
+    body.addEventListener('click', () => {
+      hidePopover();
+      document.querySelectorAll('.annotated').forEach(s => s.classList.remove('active'));
+    });
+  }
+
+  function showPopover(target, text) {
+    popover.textContent = text;
+    popover.style.display = 'block';
+    /* position relative to script-modal */
+    const modal  = document.querySelector('.script-modal');
+    const mRect  = modal.getBoundingClientRect();
+    const tRect  = target.getBoundingClientRect();
+    let top  = tRect.bottom - mRect.top + modal.scrollTop + 8;
+    let left = tRect.left   - mRect.left + 12;
+    /* keep within modal */
+    const maxLeft = modal.offsetWidth - 340;
+    if (left > maxLeft) left = maxLeft;
+    if (left < 8) left = 8;
+    popover.style.top  = `${top}px`;
+    popover.style.left = `${left}px`;
+  }
+
+  function hidePopover() { popover.style.display = 'none'; }
+
+  /* ── HELPERS ── */
+  function escapeHTML(str) {
+    return (str || '').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>').replace(/"/g,'"');
+  }
+
+  function emptyNote(title, sub) {
+    return `<div class="empty-script-note"><strong>${title}</strong>${sub}</div>`;
+  }
+
+  /* ── EXPOSE openScriptModal globally so renderArtifact can call it ── */
+  window.openScriptModal = openScriptModal;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Giới thiệu — VietHeritage Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page-bg:  #f7f3ec;
+      --card-bg:  #fdfaf5;
+      --border:   #d9cfc0;
+      --text:     #2a1f0f;
+      --muted:    #7a6a52;
+      --heading:  #1a1008;
+      --red:      #7a1f1f;
+      --red-bright: #c42b2b;
+      --gold:     #8a6a20;
+      --gold-light: #c9a84c;
+      --nav-bg:   #0a0900;
+      --nav-gold: #c9a84c;
+      --nav-muted:#8a7c5e;
+      --nav-text: #e8dfc8;
+      --nav-brd:  rgba(201,168,76,0.14);
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+    }
+    html.lang-vi { --font-body: 'Merriweather', serif; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--page-bg);color:var(--text);font-family:var(--font-body);min-height:100vh;}
+
+    /* ── NAV ── */
+    nav{position:sticky;top:0;z-index:200;height:62px;display:flex;align-items:center;
+        justify-content:space-between;padding:0 48px;
+        background:var(--nav-bg);border-bottom:1px solid var(--nav-brd);}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;
+              color:var(--nav-text);font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+              flex:0 0 auto;}
+    .nav-logo svg{color:var(--nav-gold);}
+    .nav-links{display:flex;gap:32px;list-style:none;flex:1;justify-content:center;}
+    .nav-links a{text-decoration:none;font-size:11px;font-weight:500;letter-spacing:0.18em;
+                 text-transform:uppercase;color:var(--nav-muted);transition:color .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--nav-gold);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .lang-toggle{display:flex;gap:3px;background:rgba(255,255,255,0.04);
+                 border:1px solid #2c2507;border-radius:20px;padding:3px;}
+    .lang-btn{background:transparent;border:none;color:var(--nav-muted);padding:4px 12px;
+              border-radius:16px;font-size:11px;font-weight:500;font-family:var(--font-body);
+              cursor:pointer;transition:all .2s;}
+    .lang-btn:hover{color:var(--nav-gold);}
+    .lang-btn.active{background:var(--nav-gold);color:#1a1400;}
+    .nav-map-btn{
+      display:inline-flex;align-items:center;gap:7px;
+      background:var(--red);color:var(--nav-text);text-decoration:none;
+      padding:8px 18px;border-radius:4px;
+      font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      transition:background .2s;
+    }
+    .nav-map-btn:hover{background:var(--red-bright);}
+
+    /* ── PAGE HERO ── */
+    .page-hero{
+      background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);
+      border-bottom:2px solid var(--nav-gold);
+      padding:52px 48px 48px; position:relative; overflow:hidden;
+    }
+    .page-hero::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--nav-gold) 30%,#c42b2b 50%,var(--nav-gold) 70%,transparent);
+    }
+    .page-hero-inner{max-width:900px;}
+    .page-eyebrow{font-size:9.5px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
+                  color:var(--nav-gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+    .page-eyebrow::before{content:'';width:24px;height:1px;background:var(--nav-gold);}
+    .page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);
+                  font-weight:700;color:#f5f0e6;line-height:1.1;margin-bottom:16px;}
+    .page-hero h1 em{font-style:italic;color:var(--nav-gold);}
+    .page-hero p{font-size:14.5px;color:#8a7c5e;line-height:1.75;max-width:700px;}
+
+    /* ── CONTENT ── */
+    .content{max-width:1280px;margin:0 auto;padding:52px 48px 80px;}
+
+    /* section label */
+    .sec-label{font-size:9.5px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;
+                color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+    .sec-label::before{content:'';width:22px;height:1px;background:var(--gold);}
+    .sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.5vw,2rem);
+               font-weight:700;color:var(--heading);margin-bottom:36px;line-height:1.2;}
+
+    /* gold rule */
+    .gold-rule{height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--red) 50%,var(--gold) 70%,transparent 100%);margin:48px 0;}
+
+    /* ── INTRO SECTION ── */
+    .intro-section{margin-bottom:72px;}
+    .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+    .intro-text{font-size:15px;line-height:1.85;color:var(--muted);}
+    .intro-text p{margin-bottom:20px;}
+    .intro-text strong{color:var(--text);}
+    .intro-text .highlight{color:var(--gold);font-weight:600;}
+    .intro-image{position:relative;border-radius:12px;overflow:hidden;}
+    .intro-image svg{width:100%;height:auto;display:block;}
+    .intro-image::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(180deg,transparent 60%,rgba(10,9,0,0.7));
+      pointer-events:none;
+    }
+
+    /* ── VALUES ── */
+    .values-section{margin-bottom:72px;}
+    .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+    .value-card{
+      background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
+      padding:36px 32px;text-align:center;
+      transition:transform .22s,box-shadow .22s,border-color .22s;
+    }
+    .value-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.1);border-color:var(--gold);}
+    .value-icon{width:56px;height:56px;margin:0 auto 20px;color:var(--gold);}
+    .value-title{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--heading);margin-bottom:12px;}
+    .value-desc{font-size:13.5px;color:var(--muted);line-height:1.7;}
+
+    /* ── FEATURES ── */
+    .features-section{margin-bottom:72px;}
+    .features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+    .feature-card{
+      background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
+      padding:32px;display:flex;gap:20px;align-items:flex-start;
+      transition:transform .22s,box-shadow .22s;
+    }
+    .feature-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.08);}
+    .feature-icon{width:44px;height:44px;flex-shrink:0;color:var(--gold);}
+    .feature-content{flex:1;}
+    .feature-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--heading);margin-bottom:8px;}
+    .feature-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+
+    /* ── TEAM / CREDITS ── */
+    .credits-section{margin-bottom:72px;}
+    .credits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+    .credit-card{
+      background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
+      padding:28px 24px;text-align:center;
+    }
+    .credit-avatar{width:72px;height:72px;border-radius:50%;margin:0 auto 16px;
+                   background:linear-gradient(135deg,var(--gold),var(--red));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.5rem;}
+    .credit-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--heading);margin-bottom:4px;}
+    .credit-role{font-size:12px;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;}
+    .credit-desc{font-size:12.5px;color:var(--muted);line-height:1.6;}
+
+    /* ── SOURCES ── */
+    .sources-section{margin-bottom:72px;}
+    .sources-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;}
+    .source-item{
+      background:var(--card-bg);border:1px solid var(--border);border-radius:8px;
+      padding:20px 24px;display:flex;align-items:center;gap:14px;
+      transition:border-color .2s;
+    }
+    .source-item:hover{border-color:var(--gold);}
+    .source-icon{width:36px;height:36px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;}
+    .source-info{flex:1;}
+    .source-title{font-weight:600;color:var(--text);font-size:13.5px;margin-bottom:2px;}
+    .source-desc{font-size:12px;color:var(--muted);}
+
+    /* ── FOOTER CTA ── */
+    .footer-cta{
+      background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);
+      border:1px solid var(--nav-gold);border-radius:16px;
+      padding:48px;text-align:center;position:relative;overflow:hidden;
+    }
+    .footer-cta::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 60% 80% at 50% 30%,rgba(201,168,76,0.06),transparent 70%);
+      pointer-events:none;
+    }
+    .footer-cta-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:#f5f0e6;margin-bottom:12px;position:relative;}
+    .footer-cta-title em{color:var(--nav-gold);}
+    .footer-cta-desc{font-size:14.5px;color:#8a7c5e;line-height:1.75;max-width:600px;margin:0 auto 28px;position:relative;}
+    .footer-cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:14px 28px;border-radius:4px;
+      font-size:11.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      text-decoration:none;transition:all .22s;
+    }
+    .btn-primary{background:var(--red);color:#f5f0e6;border:none;}
+    .btn-primary:hover{background:var(--red-bright);transform:translateY(-2px);box-shadow:0 8px 24px rgba(139,28,28,0.4);}
+    .btn-secondary{background:transparent;color:var(--nav-gold);border:1.5px solid rgba(201,168,76,0.5);}
+    .btn-secondary:hover{border-color:var(--nav-gold);background:rgba(201,168,76,0.07);transform:translateY(-2px);}
+
+    /* ── FOOTER ── */
+    footer{border-top:1px solid var(--border);padding:24px 48px;
+           display:flex;align-items:center;justify-content:space-between;
+           flex-wrap:wrap;gap:14px;background:var(--card-bg);font-size:10.5px;color:var(--muted);}
+    footer em{color:var(--gold);font-style:normal;}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px){
+      .intro-grid{grid-template-columns:1fr;gap:32px;}
+      .values-grid{grid-template-columns:1fr;}
+      .features-grid{grid-template-columns:1fr;}
+      .content{padding:32px 20px 60px;}
+      .page-hero{padding:32px 20px 36px;}
+      nav{padding:0 20px;}
+      .nav-links{display:none;}
+      footer{padding:20px;flex-direction:column;align-items:flex-start;}
+      .footer-cta{padding:32px 20px;}
+    }
+    @media(max-width:1100px){
+      .values-grid{grid-template-columns:repeat(2,1fr);}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="main-nav">
+  <a href="index.html" class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8" fill="currentColor"/>
+    </svg>
+    <span id="nav-logo-text">Bảo Vật Việt</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+    <li><a href="VNMT.html" id="nav-map-link">Khám phá bản đồ</a></li>
+    <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
+    <li><a href="about.html" class="active" id="nav-about">Giới thiệu</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── PAGE HERO ── -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow" id="page-eyebrow">Về dự án</div>
+    <h1><span id="page-title-main">Bảo Vật Việt</span><br><em id="page-title-sub">Kết nối quá khứ — Khơi dậy tương lai</em></h1>
+    <p id="page-desc">Một kho lưu trữ số toàn diện về 357 bảo vật quốc gia Việt Nam — nơi di sản gặp gỡ công nghệ, và nơi mỗi hiện vật đều kể một câu chuyện đáng được chia sẻ.</p>
+  </div>
+</section>
+
+<!-- ── CONTENT ── -->
+<main class="content">
+
+  <!-- INTRO SECTION -->
+  <section class="intro-section" id="intro-section">
+    <div class="intro-grid">
+      <div class="intro-text">
+        <p id="intro-p1"></p>
+        <p id="intro-p2"></p>
+        <p id="intro-m1"></p>
+        <p id="intro-m2"></p>
+        <p id="intro-m3"></p>
+      </div>
+      <div class="intro-image" id="intro-image">
+        <!-- SVG illustration will be injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-rule"></div>
+
+  <!-- VALUES SECTION -->
+  <section class="values-section" id="values-section">
+    <div class="sec-label" id="values-label">Sứ mệnh cốt lõi</div>
+    <h2 class="sec-title" id="values-title">Ba trụ cột định hướng mọi quyết định của chúng tôi</h2>
+    <div class="values-grid" id="values-grid">
+      <!-- Built by JS -->
+    </div>
+  </section>
+
+  <div class="gold-rule"></div>
+
+  <!-- FEATURES SECTION -->
+  <section class="features-section" id="features-section">
+    <div class="sec-label" id="features-label">Tính năng nổi bật</div>
+    <h2 class="sec-title" id="features-title">Những gì bạn có thể làm trên Bảo Vật Việt</h2>
+    <div class="features-grid" id="features-grid">
+      <!-- Built by JS -->
+    </div>
+  </section>
+
+  <div class="gold-rule"></div>
+
+  <!-- TEAM / CREDITS -->
+  <section class="credits-section" id="credits-section">
+    <div class="sec-label" id="credits-label">Đội ngũ & Cộng tác viên</div>
+    <h2 class="sec-title" id="credits-title">Dự án được xây dựng bởi những người yêu di sản</h2>
+    <div class="credits-grid" id="credits-grid">
+      <!-- Built by JS -->
+    </div>
+  </section>
+
+  <div class="gold-rule"></div>
+
+  <!-- DATA SOURCES -->
+  <section class="sources-section" id="sources-section">
+    <div class="sec-label" id="sources-label">Nguồn dữ liệu & Tham khảo</div>
+    <h2 class="sec-title" id="sources-title">Mọi thông tin đều có nguồn gốc minh bạch</h2>
+    <ul class="sources-list" id="sources-list">
+      <!-- Built by JS -->
+    </ul>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta" id="footer-cta">
+    <h2 class="footer-cta-title" id="cta-title"></h2>
+    <p class="footer-cta-desc" id="cta-desc"></p>
+    <div class="footer-cta-buttons">
+      <a href="database.html" class="btn btn-secondary" id="cta-db-btn">
+        <span id="cta-db-text">Xem kho lưu trữ</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span id="foot-copy">© 2026 Bảo vật Quốc gia Việt Nam</span>
+  <span id="foot-data">Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em></span>
+</footer>
+
+<!-- ── CONTENT DATA ── -->
+<script src="about.js"></script>
+
+<!-- ── RENDER LOGIC ── -->
+<script>
+/* ═══════════════════════════════════════
+   ABOUT PAGE RENDERER
+   Uses window.ABOUT_CONTENT from about.js
+═══════════════════════════════════════ */
+
+let lang = localStorage.getItem('vnmt_lang') || 'vi';
+
+function $(id) { return document.getElementById(id); }
+function setText(id, val) { const el = $(id); if (el) el.textContent = val; }
+function setHTML(id, val) { const el = $(id); if (el) el.innerHTML = val; }
+
+function getContent(key, fallback = '') {
+  const C = window.ABOUT_CONTENT;
+  if (!C) return fallback;
+  const parts = key.split('.');
+  let val = C;
+  for (const p of parts) {
+    if (val && typeof val === 'object' && p in val) {
+      val = val[p];
+    } else {
+      return fallback;
+    }
+  }
+  if (typeof val === 'object' && val !== null && lang in val) {
+    return val[lang];
+  }
+  return val;
+}
+
+// ── SVG Icons for values, features, sources ──────────────────────
+const ICONS = {
+  'archive': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5V7M21 17H5M21 12V19H5V19M10 7V17M14 7V17M18 7V17"/></svg>`,
+  'map-pin': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  'sparkles': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+  'heart-handshake': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5"/><line x1="12" y1="22" x2="12" y2="16"/><path d="M8 14h8"/><path d="M8 18h8"/></svg>`,
+  'shield-check': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>`,
+  'globe': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  'map': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`,
+  'music': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+  'box': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+  'bot': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>`,
+  'layers': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+  'download': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+  'government': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  'unesco': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  'university': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+  'user': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  'map': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>`
+};
+
+// ── Intro illustration SVG (decorative) ──────────────────────────
+const INTRO_ILLUSTRATION = `<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1c1400"/>
+      <stop offset="100%" stop-color="#0a0900"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c9a84c"/>
+      <stop offset="50%" stop-color="#e8c96a"/>
+      <stop offset="100%" stop-color="#c9a84c"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#skyGrad)"/>
+  <!-- Museum building silhouette -->
+  <path d="M80,320 L80,180 Q100,150 150,150 L450,150 Q500,150 520,180 L520,320 Z" fill="#1a1408" opacity="0.9"/>
+  <path d="M150,150 L150,120 Q180,90 250,90 L350,90 Q380,90 410,120 L410,150" fill="#1a1408" opacity="0.9"/>
+  <!-- Dome -->
+  <ellipse cx="300" cy="120" rx="80" ry="25" fill="#1a1408" opacity="0.9"/>
+  <!-- Gold accent line (bridge metaphor) -->
+  <path d="M100,280 Q300,200 500,280" stroke="url(#goldGrad)" stroke-width="2" fill="none" opacity="0.6"/>
+  <!-- Particles -->
+  <circle cx="180" cy="250" r="2" fill="#c9a84c" opacity="0.7"/>
+  <circle cx="420" cy="240" r="1.5" fill="#e8c96a" opacity="0.8"/>
+  <circle cx="280" cy="200" r="1" fill="#c9a84c" opacity="0.6"/>
+  <circle cx="380" cy="220" r="1.5" fill="#e8c96a" opacity="0.7"/>
+  <circle cx="220" cy="270" r="1" fill="#c9a84c" opacity="0.5"/>
+  <!-- Arrow pointing up from map to building -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#c9a84c"/>
+    </marker>
+  </defs>
+  <path d="M300,300 L300,200" stroke="#c9a84c" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+</svg>`;
+
+// ── Render Functions ─────────────────────────────────────────────
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.documentElement.classList.toggle('lang-vi', lang === 'vi');
+
+  // Page meta
+  const meta = window.ABOUT_CONTENT?.meta;
+  if (meta) {
+    document.title = meta.title[lang];
+    setText('page-eyebrow', meta.pageEyebrow[lang]);
+    setText('page-title-main', meta.pageTitleMain[lang]);
+    setText('page-title-sub', meta.pageTitleSub[lang]);
+    setText('page-desc', meta.pageDesc[lang]);
+  }
+
+  // Nav
+  const nav = window.ABOUT_CONTENT?.nav;
+  if (nav) {
+    setText('nav-home', nav[lang].home);
+    setText('nav-map-link', nav[lang].map);
+    setText('nav-db-link', nav[lang].db);
+    setText('nav-civs-link', nav[lang].civs);
+    setText('nav-about', nav[lang].about);
+    setText('nav-map-btn-text', nav[lang].mapBtn);
+    setText('nav-logo-text', lang === 'vi' ? 'VietHeritage Map' : 'VietHeritage Map');
+  }
+
+  // Intro
+  const intro = window.ABOUT_CONTENT?.intro;
+  if (intro) {
+    setHTML('intro-p1', intro.heading[lang]);
+    setHTML('intro-p2', intro.paragraph[lang]);
+    const missions = intro.missions;
+    if (missions && missions.length >= 3) {
+      setHTML('intro-m1', `<strong class="highlight">${missions[0].title[lang]}</strong> — ${missions[0].desc[lang]}`);
+      setHTML('intro-m2', `<strong class="highlight">${missions[1].title[lang]}</strong> — ${missions[1].desc[lang]}`);
+      setHTML('intro-m3', `<strong class="highlight">${missions[2].title[lang]}</strong> — ${missions[2].desc[lang]}`);
+    }
+  }
+
+  // Intro illustration
+  setHTML('intro-image', INTRO_ILLUSTRATION);
+
+  // Values
+  const vals = window.ABOUT_CONTENT?.values;
+  if (vals) {
+    setText('values-label', getContent('values.label', vals[0]?.title?.[lang] || ''));
+    setText('values-title', getContent('values.title', ''));
+    renderValues(vals);
+  }
+
+  // Features
+  const feats = window.ABOUT_CONTENT?.features;
+  if (feats) {
+    setText('features-label', getContent('features.label', ''));
+    setText('features-title', getContent('features.title', ''));
+    renderFeatures(feats);
+  }
+
+  // Team
+  const team = window.ABOUT_CONTENT?.team;
+  if (team) {
+    setText('credits-label', getContent('credits.label', ''));
+    setText('credits-title', getContent('credits.title', ''));
+    renderTeam(team);
+  }
+
+  // Sources
+  const sources = window.ABOUT_CONTENT?.sources;
+  if (sources) {
+    setText('sources-label', getContent('sources.label', ''));
+    setText('sources-title', getContent('sources.title', ''));
+    renderSources(sources);
+  }
+
+  // Footer CTA
+  const cta = window.ABOUT_CONTENT?.footerCta;
+  if (cta) {
+    setHTML('cta-title', cta.title[lang]);
+    setHTML('cta-desc', cta.desc[lang]);
+    setText('cta-map-text', cta.buttons.map[lang]);
+    setText('cta-db-text', cta.buttons.database[lang]);
+  }
+
+  // Footer
+  setText('foot-copy', lang === 'vi' ? '© 2026 Bảo vật Quốc gia Việt Nam' : '© 2026 Vietnam National Treasures');
+  setHTML('foot-data', lang === 'vi'
+    ? 'Dữ liệu: <em>Thủ tướng Chính phủ</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em>'
+    : 'Data: <em>Prime Minister of Vietnam</em> · Map: <em>CartoDB / OpenStreetMap</em>');
+
+  // Lang buttons
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === lang)
+  );
+}
+
+function renderValues(vals) {
+  const grid = $('values-grid');
+  if (!grid) return;
+  grid.innerHTML = vals.map(v => `
+    <article class="value-card">
+      <div class="value-icon">${ICONS[v.icon] || ''}</div>
+      <h3 class="value-title">${v.title[lang]}</h3>
+      <p class="value-desc">${v.desc[lang]}</p>
+    </article>
+  `).join('');
+}
+
+function renderFeatures(feats) {
+  const grid = $('features-grid');
+  if (!grid) return;
+  grid.innerHTML = feats.map(f => `
+    <article class="feature-card">
+      <div class="feature-icon">${ICONS[f.icon] || ''}</div>
+      <div class="feature-content">
+        <h3 class="feature-title">${f.title[lang]}</h3>
+        <p class="feature-desc">${f.desc[lang]}</p>
+      </div>
+    </article>
+  `).join('');
+}
+
+function renderTeam(team) {
+  const grid = $('credits-grid');
+  if (!grid) return;
+  grid.innerHTML = team.map(t => `
+    <article class="credit-card">
+      <div class="credit-avatar">${t.initials}</div>
+      <h3 class="credit-name">${t.name[lang]}</h3>
+      <p class="credit-role">${t.role[lang]}</p>
+      <p class="credit-desc">${t.desc[lang]}</p>
+    </article>
+  `).join('');
+}
+
+function renderSources(sources) {
+  const list = $('sources-list');
+  if (!list) return;
+  list.innerHTML = sources.map(s => `
+    <li class="source-item">
+      <div class="source-icon">${ICONS[s.icon] || ''}</div>
+      <div class="source-info">
+        <div class="source-title">${s.title[lang]}</div>
+        <div class="source-desc">${s.desc[lang]}</div>
+      </div>
+    </li>
+  `).join('');
+}
+
+// ── Language Toggle ──────────────────────────────────────────────
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    lang = btn.dataset.lang;
+    localStorage.setItem('vnmt_lang', lang);
+    applyLang();
+  });
+});
+
+// ── Nav Scroll Effect ────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  if (nav) {
+    nav.style.background = window.scrollY > 50 ? 'rgba(10,9,0,0.97)' : 'rgba(10,9,0,0.82)';
+  }
+}, { passive: true });
+
+// ── Init ─────────────────────────────────────────────────────────
+applyLang();
+</script>
+</body>
+</html>

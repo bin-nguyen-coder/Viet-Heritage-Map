@@ -1,0 +1,1425 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "An Giang",
+        "name_en": "An Giang",
+        "code": "89",
+        "population": 1908200,
+        "ethnic": {
+          "Kinh": 85.2,
+          "Khmer": 7.8,
+          "Cham": 4.1,
+          "Hoa": 1.2,
+          "Others": 1.7
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.9, 10.2], [105.3, 10.2], [105.3, 10.8], [105.0, 10.8], [104.9, 10.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bà Rịa - Vũng Tàu",
+        "name_en": "Ba Ria - Vung Tau",
+        "code": "77",
+        "population": 1173000,
+        "ethnic": {
+          "Kinh": 88.5,
+          "Hoa": 4.2,
+          "Kho mu": 2.1,
+          "Others": 5.2
+        },
+        "region": "Southeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.0, 10.2], [107.6, 10.2], [107.6, 10.8], [107.0, 10.8], [107.0, 10.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bắc Giang",
+        "name_en": "Bac Giang",
+        "code": "24",
+        "population": 1804000,
+        "ethnic": {
+          "Kinh": 88.1,
+          "Nung": 4.3,
+          "Tay": 3.2,
+          "San Diu": 2.1,
+          "Others": 2.3
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.0, 21.0], [106.7, 21.0], [106.7, 21.6], [106.0, 21.6], [106.0, 21.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bắc Kạn",
+        "name_en": "Bac Kan",
+        "code": "06",
+        "population": 313900,
+        "ethnic": {
+          "Tay": 42.5,
+          "Nung": 12.8,
+          "Kinh": 10.5,
+          "Dao": 9.2,
+          "Hmong": 8.7,
+          "Others": 16.3
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.6, 22.0], [106.1, 22.0], [106.1, 22.6], [105.6, 22.6], [105.6, 22.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bạc Liêu",
+        "name_en": "Bac Lieu",
+        "code": "95",
+        "population": 905500,
+        "ethnic": {
+          "Kinh": 72.1,
+          "Khmer": 18.5,
+          "Hoa": 7.2,
+          "Others": 2.2
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.5, 9.0], [106.0, 9.0], [106.0, 9.6], [105.5, 9.6], [105.5, 9.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bắc Ninh",
+        "name_en": "Bac Ninh",
+        "code": "27",
+        "population": 1372600,
+        "ethnic": {
+          "Kinh": 97.8,
+          "Others": 2.2
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.9, 21.0], [106.2, 21.0], [106.2, 21.3], [105.9, 21.3], [105.9, 21.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bến Tre",
+        "name_en": "Ben Tre",
+        "code": "83",
+        "population": 1288900,
+        "ethnic": {
+          "Kinh": 95.5,
+          "Khmer": 2.1,
+          "Hoa": 1.2,
+          "Others": 1.2
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.2, 9.8], [106.7, 9.8], [106.7, 10.4], [106.2, 10.4], [106.2, 9.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bình Định",
+        "name_en": "Binh Dinh",
+        "code": "52",
+        "population": 1548900,
+        "ethnic": {
+          "Kinh": 93.2,
+          "Ba Na": 2.1,
+          "Hre": 1.8,
+          "Cham": 1.2,
+          "Others": 1.7
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.5, 13.5], [109.3, 13.5], [109.3, 14.5], [108.5, 14.5], [108.5, 13.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bình Dương",
+        "name_en": "Binh Duong",
+        "code": "74",
+        "population": 2426000,
+        "ethnic": {
+          "Kinh": 88.4,
+          "Hoa": 5.2,
+          "Khmer": 2.1,
+          "Others": 4.3
+        },
+        "region": "Southeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.5, 10.8], [107.0, 10.8], [107.0, 11.4], [106.5, 11.4], [106.5, 10.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bình Phước",
+        "name_en": "Binh Phuoc",
+        "code": "70",
+        "population": 994800,
+        "ethnic": {
+          "Kinh": 63.2,
+          "Stieng": 12.5,
+          "Khmer": 8.4,
+          "Mnong": 5.2,
+          "Tay": 3.1,
+          "Nung": 2.8,
+          "Others": 4.8
+        },
+        "region": "Southeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.5, 11.4], [107.3, 11.4], [107.3, 12.2], [106.5, 12.2], [106.5, 11.4]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Bình Thuận",
+        "name_en": "Binh Thuan",
+        "code": "60",
+        "population": 1235900,
+        "ethnic": {
+          "Kinh": 85.2,
+          "Cham": 6.8,
+          "Raglai": 4.2,
+          "Hoa": 1.5,
+          "Others": 2.3
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.8, 10.5], [108.7, 10.5], [108.7, 11.5], [107.8, 11.5], [107.8, 10.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Cà Mau",
+        "name_en": "Ca Mau",
+        "code": "96",
+        "population": 1194400,
+        "ethnic": {
+          "Kinh": 88.2,
+          "Khmer": 8.5,
+          "Hoa": 2.1,
+          "Others": 1.2
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.8, 8.5], [105.5, 8.5], [105.5, 9.3], [104.8, 9.3], [104.8, 8.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Cần Thơ",
+        "name_en": "Can Tho",
+        "code": "92",
+        "population": 1235100,
+        "ethnic": {
+          "Kinh": 89.2,
+          "Khmer": 7.1,
+          "Hoa": 2.4,
+          "Others": 1.3
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.3, 9.8], [105.7, 9.8], [105.7, 10.3], [105.3, 10.3], [105.3, 9.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Cao Bằng",
+        "name_en": "Cao Bang",
+        "code": "04",
+        "population": 530300,
+        "ethnic": {
+          "Tay": 41.5,
+          "Nung": 31.2,
+          "Hmong": 10.5,
+          "Dao": 8.2,
+          "Kinh": 5.8,
+          "Others": 2.8
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 22.5], [106.8, 22.5], [106.8, 23.3], [105.8, 23.3], [105.8, 22.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Đà Nẵng",
+        "name_en": "Da Nang",
+        "code": "48",
+        "population": 1134300,
+        "ethnic": {
+          "Kinh": 97.5,
+          "Others": 2.5
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.0, 15.8], [108.4, 15.8], [108.4, 16.2], [108.0, 16.2], [108.0, 15.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Đắk Lắk",
+        "name_en": "Dak Lak",
+        "code": "66",
+        "population": 1869300,
+        "ethnic": {
+          "Kinh": 65.2,
+          "Ede": 15.8,
+          "Mnong": 5.2,
+          "Jarai": 4.1,
+          "Tay": 2.8,
+          "Nung": 2.1,
+          "Others": 4.8
+        },
+        "region": "Central Highlands"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.5, 12.2], [108.5, 12.2], [108.5, 13.2], [107.5, 13.2], [107.5, 12.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Đắk Nông",
+        "name_en": "Dak Nong",
+        "code": "67",
+        "population": 626800,
+        "ethnic": {
+          "Kinh": 58.2,
+          "Mnong": 18.5,
+          "Ede": 8.2,
+          "Tay": 4.1,
+          "Nung": 3.2,
+          "Others": 7.8
+        },
+        "region": "Central Highlands"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.3, 11.5], [108.0, 11.5], [108.0, 12.3], [107.3, 12.3], [107.3, 11.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Điện Biên",
+        "name_en": "Dien Bien",
+        "code": "11",
+        "population": 601200,
+        "ethnic": {
+          "Thai": 38.5,
+          "Hmong": 28.2,
+          "Kinh": 15.2,
+          "Khmu": 7.5,
+          "Others": 10.6
+        },
+        "region": "Northwest"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [102.5, 21.0], [103.5, 21.0], [103.5, 22.2], [102.5, 22.2], [102.5, 21.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Đồng Nai",
+        "name_en": "Dong Nai",
+        "code": "75",
+        "population": 3098900,
+        "ethnic": {
+          "Kinh": 88.5,
+          "Hoa": 4.2,
+          "Cham": 2.1,
+          "Tay": 1.5,
+          "Nung": 1.2,
+          "Others": 2.5
+        },
+        "region": "Southeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.8, 10.8], [107.5, 10.8], [107.5, 11.6], [106.8, 11.6], [106.8, 10.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Đồng Tháp",
+        "name_en": "Dong Thap",
+        "code": "87",
+        "population": 1599500,
+        "ethnic": {
+          "Kinh": 88.2,
+          "Khmer": 7.5,
+          "Hoa": 2.8,
+          "Cham": 0.8,
+          "Others": 0.7
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.0, 10.2], [105.7, 10.2], [105.7, 11.0], [105.0, 11.0], [105.0, 10.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Gia Lai",
+        "name_en": "Gia Lai",
+        "code": "64",
+        "population": 1513800,
+        "ethnic": {
+          "Kinh": 54.2,
+          "Jarai": 22.5,
+          "Bahnar": 12.8,
+          "Tay": 3.2,
+          "Nung": 2.1,
+          "Others": 5.2
+        },
+        "region": "Central Highlands"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.5, 13.2], [108.5, 13.2], [108.5, 14.5], [107.5, 14.5], [107.5, 13.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hà Giang",
+        "name_en": "Ha Giang",
+        "code": "02",
+        "population": 854600,
+        "ethnic": {
+          "Hmong": 32.5,
+          "Tay": 25.2,
+          "Nung": 12.8,
+          "Dao": 9.5,
+          "Kinh": 8.5,
+          "Others": 11.5
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.8, 22.5], [105.8, 22.5], [105.8, 23.5], [104.8, 23.5], [104.8, 22.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hà Nam",
+        "name_en": "Ha Nam",
+        "code": "35",
+        "population": 852800,
+        "ethnic": {
+          "Kinh": 98.5,
+          "Others": 1.5
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.7, 20.3], [106.2, 20.3], [106.2, 20.8], [105.7, 20.8], [105.7, 20.3]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hà Nội",
+        "name_en": "Hanoi",
+        "code": "01",
+        "population": 8435000,
+        "ethnic": {
+          "Kinh": 98.2,
+          "Tay": 0.6,
+          "Muong": 0.5,
+          "Others": 0.7
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.5, 20.8], [106.1, 20.8], [106.1, 21.3], [105.5, 21.3], [105.5, 20.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hà Tĩnh",
+        "name_en": "Ha Tinh",
+        "code": "42",
+        "population": 1288100,
+        "ethnic": {
+          "Kinh": 99.1,
+          "Others": 0.9
+        },
+        "region": "North Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.3, 18.0], [106.0, 18.0], [106.0, 18.8], [105.3, 18.8], [105.3, 18.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hải Dương",
+        "name_en": "Hai Duong",
+        "code": "30",
+        "population": 1892300,
+        "ethnic": {
+          "Kinh": 98.8,
+          "Others": 1.2
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.0, 20.7], [106.6, 20.7], [106.6, 21.2], [106.0, 21.2], [106.0, 20.7]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hải Phòng",
+        "name_en": "Hai Phong",
+        "code": "31",
+        "population": 2028500,
+        "ethnic": {
+          "Kinh": 97.5,
+          "Hoa": 1.2,
+          "Others": 1.3
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.5, 20.5], [107.0, 20.5], [107.0, 21.0], [106.5, 21.0], [106.5, 20.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hậu Giang",
+        "name_en": "Hau Giang",
+        "code": "93",
+        "population": 756300,
+        "ethnic": {
+          "Kinh": 85.2,
+          "Khmer": 10.5,
+          "Hoa": 2.8,
+          "Others": 1.5
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.5, 9.5], [106.0, 9.5], [106.0, 10.0], [105.5, 10.0], [105.5, 9.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hòa Bình",
+        "name_en": "Hoa Binh",
+        "code": "17",
+        "population": 855800,
+        "ethnic": {
+          "Muong": 63.2,
+          "Kinh": 22.5,
+          "Thai": 8.2,
+          "Tay": 2.1,
+          "Others": 4.0
+        },
+        "region": "Northwest"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.0, 20.3], [105.7, 20.3], [105.7, 21.0], [105.0, 21.0], [105.0, 20.3]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Hưng Yên",
+        "name_en": "Hung Yen",
+        "code": "33",
+        "population": 1252700,
+        "ethnic": {
+          "Kinh": 99.2,
+          "Others": 0.8
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 20.5], [106.3, 20.5], [106.3, 20.9], [105.8, 20.9], [105.8, 20.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Khánh Hòa",
+        "name_en": "Khanh Hoa",
+        "code": "56",
+        "population": 1231400,
+        "ethnic": {
+          "Kinh": 89.2,
+          "Cham": 4.5,
+          "Raglai": 2.8,
+          "Hoa": 1.2,
+          "Others": 2.3
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.8, 11.8], [109.5, 11.8], [109.5, 12.8], [108.8, 12.8], [108.8, 11.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Kiên Giang",
+        "name_en": "Kien Giang",
+        "code": "94",
+        "population": 1687700,
+        "ethnic": {
+          "Kinh": 78.5,
+          "Khmer": 12.8,
+          "Hoa": 5.2,
+          "Cham": 1.5,
+          "Others": 2.0
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.0, 9.0], [105.3, 9.0], [105.3, 10.5], [104.0, 10.5], [104.0, 9.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Kon Tum",
+        "name_en": "Kon Tum",
+        "code": "62",
+        "population": 540500,
+        "ethnic": {
+          "Kinh": 48.2,
+          "Bahnar": 22.5,
+          "Jarai": 12.8,
+          "Sedang": 8.2,
+          "Tay": 2.1,
+          "Others": 6.2
+        },
+        "region": "Central Highlands"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.5, 14.0], [108.3, 14.0], [108.3, 15.0], [107.5, 15.0], [107.5, 14.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Lai Châu",
+        "name_en": "Lai Chau",
+        "code": "12",
+        "population": 460200,
+        "ethnic": {
+          "Thai": 32.5,
+          "Hmong": 25.2,
+          "Kinh": 12.5,
+          "Khmu": 8.5,
+          "Others": 21.3
+        },
+        "region": "Northwest"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [102.8, 22.0], [103.5, 22.0], [103.5, 22.8], [102.8, 22.8], [102.8, 22.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Lâm Đồng",
+        "name_en": "Lam Dong",
+        "code": "68",
+        "population": 1296000,
+        "ethnic": {
+          "Kinh": 75.2,
+          "Kho": 8.5,
+          "Churu": 4.2,
+          "Tay": 3.2,
+          "Nung": 2.1,
+          "Others": 6.8
+        },
+        "region": "Central Highlands"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.8, 11.2], [108.7, 11.2], [108.7, 12.3], [107.8, 12.3], [107.8, 11.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Lạng Sơn",
+        "name_en": "Lang Son",
+        "code": "20",
+        "population": 781600,
+        "ethnic": {
+          "Kinh": 58.2,
+          "Nung": 22.5,
+          "Tay": 12.8,
+          "Dao": 3.2,
+          "Others": 3.3
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.5, 21.5], [107.2, 21.5], [107.2, 22.3], [106.5, 22.3], [106.5, 21.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Lào Cai",
+        "name_en": "Lao Cai",
+        "code": "10",
+        "population": 733900,
+        "ethnic": {
+          "Hmong": 25.5,
+          "Kinh": 22.8,
+          "Tay": 15.2,
+          "Dao": 12.5,
+          "Thai": 8.2,
+          "Giay": 4.5,
+          "Others": 11.3
+        },
+        "region": "Northwest"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [103.5, 22.2], [104.3, 22.2], [104.3, 23.0], [103.5, 23.0], [103.5, 22.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Long An",
+        "name_en": "Long An",
+        "code": "80",
+        "population": 1688600,
+        "ethnic": {
+          "Kinh": 89.5,
+          "Khmer": 6.2,
+          "Hoa": 2.8,
+          "Cham": 0.5,
+          "Others": 1.0
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 10.3], [106.5, 10.3], [106.5, 11.2], [105.8, 11.2], [105.8, 10.3]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Nam Định",
+        "name_en": "Nam Dinh",
+        "code": "36",
+        "population": 1780400,
+        "ethnic": {
+          "Kinh": 99.3,
+          "Others": 0.7
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 20.0], [106.4, 20.0], [106.4, 20.5], [105.8, 20.5], [105.8, 20.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Nghệ An",
+        "name_en": "Nghe An",
+        "code": "40",
+        "population": 3327700,
+        "ethnic": {
+          "Kinh": 87.5,
+          "Thai": 5.2,
+          "Hmong": 3.2,
+          "Kho mu": 2.1,
+          "Others": 2.0
+        },
+        "region": "North Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.0, 18.8], [105.3, 18.8], [105.3, 19.8], [104.0, 19.8], [104.0, 18.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Ninh Bình",
+        "name_en": "Ninh Binh",
+        "code": "37",
+        "population": 982500,
+        "ethnic": {
+          "Kinh": 97.8,
+          "Others": 2.2
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.5, 20.0], [106.0, 20.0], [106.0, 20.5], [105.5, 20.5], [105.5, 20.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Ninh Thuận",
+        "name_en": "Ninh Thuan",
+        "code": "58",
+        "population": 590400,
+        "ethnic": {
+          "Kinh": 72.5,
+          "Cham": 18.2,
+          "Raglai": 5.8,
+          "Others": 3.5
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.8, 11.0], [109.3, 11.0], [109.3, 11.8], [108.8, 11.8], [108.8, 11.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Phú Thọ",
+        "name_en": "Phu Tho",
+        "code": "25",
+        "population": 1463700,
+        "ethnic": {
+          "Kinh": 85.2,
+          "Muong": 6.2,
+          "Tay": 3.5,
+          "Dao": 2.1,
+          "Others": 3.0
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.0, 21.0], [105.7, 21.0], [105.7, 21.6], [105.0, 21.6], [105.0, 21.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Phú Yên",
+        "name_en": "Phu Yen",
+        "code": "54",
+        "population": 872600,
+        "ethnic": {
+          "Kinh": 90.2,
+          "Cham": 4.2,
+          "Ede": 2.1,
+          "Ba Na": 1.5,
+          "Others": 2.0
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.8, 12.5], [109.5, 12.5], [109.5, 13.5], [108.8, 13.5], [108.8, 12.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Quảng Bình",
+        "name_en": "Quang Binh",
+        "code": "44",
+        "population": 895400,
+        "ethnic": {
+          "Kinh": 94.2,
+          "Bru-Van Kieu": 3.2,
+          "Chut": 1.2,
+          "Others": 1.4
+        },
+        "region": "North Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.0, 17.0], [106.8, 17.0], [106.8, 18.0], [106.0, 18.0], [106.0, 17.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Quảng Nam",
+        "name_en": "Quang Nam",
+        "code": "49",
+        "population": 1497100,
+        "ethnic": {
+          "Kinh": 92.5,
+          "Co Tu": 2.8,
+          "Ca Dong": 1.5,
+          "Others": 3.2
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.5, 15.0], [108.5, 15.0], [108.5, 16.0], [107.5, 16.0], [107.5, 15.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Quảng Ngãi",
+        "name_en": "Quang Ngai",
+        "code": "51",
+        "population": 1231700,
+        "ethnic": {
+          "Kinh": 94.2,
+          "Hre": 2.8,
+          "Co": 1.2,
+          "Others": 1.8
+        },
+        "region": "South Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.5, 14.5], [109.3, 14.5], [109.3, 15.5], [108.5, 15.5], [108.5, 14.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Quảng Ninh",
+        "name_en": "Quang Ninh",
+        "code": "22",
+        "population": 1320300,
+        "ethnic": {
+          "Kinh": 85.2,
+          "Tay": 5.2,
+          "Dao": 3.5,
+          "San Diu": 2.1,
+          "Hoa": 1.8,
+          "Others": 2.2
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.5, 20.8], [107.5, 20.8], [107.5, 21.5], [106.5, 21.5], [106.5, 20.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Quảng Trị",
+        "name_en": "Quang Tri",
+        "code": "45",
+        "population": 632400,
+        "ethnic": {
+          "Kinh": 88.5,
+          "Bru-Van Kieu": 8.2,
+          "Ta Oi": 2.1,
+          "Others": 1.2
+        },
+        "region": "North Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.0, 16.5], [107.5, 16.5], [107.5, 17.2], [107.0, 17.2], [107.0, 16.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Sóc Trăng",
+        "name_en": "Soc Trang",
+        "code": "95",
+        "population": 1288700,
+        "ethnic": {
+          "Kinh": 68.2,
+          "Khmer": 25.5,
+          "Hoa": 4.8,
+          "Others": 1.5
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 9.0], [106.5, 9.0], [106.5, 9.8], [105.8, 9.8], [105.8, 9.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Sơn La",
+        "name_en": "Son La",
+        "code": "14",
+        "population": 1249300,
+        "ethnic": {
+          "Thai": 55.2,
+          "Hmong": 18.5,
+          "Kinh": 12.8,
+          "Muong": 5.2,
+          "Others": 8.3
+        },
+        "region": "Northwest"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [103.5, 20.8], [104.5, 20.8], [104.5, 21.8], [103.5, 21.8], [103.5, 20.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Tây Ninh",
+        "name_en": "Tay Ninh",
+        "code": "72",
+        "population": 1169100,
+        "ethnic": {
+          "Kinh": 86.2,
+          "Khmer": 6.5,
+          "Hoa": 4.2,
+          "Cham": 1.2,
+          "Others": 1.9
+        },
+        "region": "Southeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 11.0], [106.5, 11.0], [106.5, 11.7], [105.8, 11.7], [105.8, 11.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Thái Bình",
+        "name_en": "Thai Binh",
+        "code": "34",
+        "population": 1859700,
+        "ethnic": {
+          "Kinh": 99.5,
+          "Others": 0.5
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.1, 20.3], [106.6, 20.3], [106.6, 20.8], [106.1, 20.8], [106.1, 20.3]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Thái Nguyên",
+        "name_en": "Thai Nguyen",
+        "code": "19",
+        "population": 1303100,
+        "ethnic": {
+          "Kinh": 72.5,
+          "Tay": 12.8,
+          "Nung": 8.5,
+          "San Diu": 3.2,
+          "Dao": 1.5,
+          "Others": 1.5
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.5, 21.3], [106.0, 21.3], [106.0, 22.0], [105.5, 22.0], [105.5, 21.3]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Thanh Hóa",
+        "name_en": "Thanh Hoa",
+        "code": "38",
+        "population": 3640100,
+        "ethnic": {
+          "Kinh": 82.5,
+          "Thai": 7.5,
+          "Muong": 5.2,
+          "Hmong": 2.1,
+          "Others": 2.7
+        },
+        "region": "North Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.8, 19.0], [106.0, 19.0], [106.0, 20.5], [104.8, 20.5], [104.8, 19.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Thừa Thiên Huế",
+        "name_en": "Thua Thien Hue",
+        "code": "46",
+        "population": 1128600,
+        "ethnic": {
+          "Kinh": 94.5,
+          "Ta Oi": 2.1,
+          "Bru-Van Kieu": 1.5,
+          "Others": 1.9
+        },
+        "region": "North Central Coast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.0, 16.0], [107.8, 16.0], [107.8, 16.8], [107.0, 16.8], [107.0, 16.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Tiền Giang",
+        "name_en": "Tien Giang",
+        "code": "82",
+        "population": 1764000,
+        "ethnic": {
+          "Kinh": 94.2,
+          "Hoa": 3.2,
+          "Khmer": 1.5,
+          "Others": 1.1
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 10.0], [106.5, 10.0], [106.5, 10.8], [105.8, 10.8], [105.8, 10.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Thành phố Hồ Chí Minh",
+        "name_en": "Ho Chi Minh City",
+        "code": "79",
+        "population": 8993100,
+        "ethnic": {
+          "Kinh": 89.5,
+          "Hoa": 5.2,
+          "Khmer": 2.1,
+          "Cham": 1.2,
+          "Others": 2.0
+        },
+        "region": "Southeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.4, 10.5], [107.0, 10.5], [107.0, 11.2], [106.4, 11.2], [106.4, 10.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Trà Vinh",
+        "name_en": "Tra Vinh",
+        "code": "84",
+        "population": 1009100,
+        "ethnic": {
+          "Kinh": 68.5,
+          "Khmer": 28.5,
+          "Hoa": 2.1,
+          "Others": 0.9
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [106.0, 9.5], [106.5, 9.5], [106.5, 10.0], [106.0, 10.0], [106.0, 9.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Tuyên Quang",
+        "name_en": "Tuyen Quang",
+        "code": "08",
+        "population": 785000,
+        "ethnic": {
+          "Tay": 25.5,
+          "Kinh": 22.8,
+          "Dao": 18.2,
+          "Nung": 12.5,
+          "San Diu": 5.2,
+          "Hmong": 4.8,
+          "Others": 11.0
+        },
+        "region": "Northeast"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.8, 21.8], [105.5, 21.8], [105.5, 22.6], [104.8, 22.6], [104.8, 21.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Vĩnh Long",
+        "name_en": "Vinh Long",
+        "code": "86",
+        "population": 1023400,
+        "ethnic": {
+          "Kinh": 95.2,
+          "Khmer": 2.1,
+          "Hoa": 1.5,
+          "Others": 1.2
+        },
+        "region": "Mekong Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.8, 9.8], [106.3, 9.8], [106.3, 10.3], [105.8, 10.3], [105.8, 9.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Vĩnh Phúc",
+        "name_en": "Vinh Phuc",
+        "code": "26",
+        "population": 1151100,
+        "ethnic": {
+          "Kinh": 95.2,
+          "Tay": 2.1,
+          "San Diu": 1.2,
+          "Others": 1.5
+        },
+        "region": "Red River Delta"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [105.3, 21.2], [105.8, 21.2], [105.8, 21.6], [105.3, 21.6], [105.3, 21.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name_vi": "Yên Bái",
+        "name_en": "Yen Bai",
+        "code": "15",
+        "population": 821000,
+        "ethnic": {
+          "Kinh": 55.2,
+          "Thai": 18.5,
+          "Hmong": 12.5,
+          "Dao": 8.2,
+          "Tay": 3.5,
+          "Others": 2.1
+        },
+        "region": "Northwest"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [104.3, 21.5], [105.0, 21.5], [105.0, 22.3], [104.3, 22.3], [104.3, 21.5]
+        ]]
+      }
+    }
+  ]
+}

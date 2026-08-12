@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&family=Noto+Serif+Vietnamese:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    /* Heritage Palette */
+    --heritage-gold: #C8A951;
+    --heritage-gold-light: #E8D4A3;
+    --heritage-gold-dark: #A68B3E;
+    --heritage-ochre: #D4A843;
+    --lacquer-red: #C41E3A;
+    --lacquer-red-dark: #9B172E;
+    --indigo-dye: #1B2A4A;
+    --indigo-light: #2D4A6B;
+    --bamboo-green: #4A7C2B;
+    --bamboo-green-light: #6BA53D;
+    --rice-paper: #F5F0E1;
+    --rice-paper-dark: #E8E0CC;
+    --bronze: #CD7F32;
+    --bronze-light: #D4A574;
+
+    /* Semantic */
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #7A7A7A;
+    --text-inverse: #FDFBF7;
+    --bg-primary: #FDFBF7;
+    --bg-secondary: #F5F0E1;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #FEFDF8;
+    --border-light: #E8E0CC;
+    --border-medium: #D4C8A8;
+    --border-focus: var(--heritage-gold);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(27, 42, 74, 0.05);
+    --shadow-md: 0 4px 12px rgba(27, 42, 74, 0.08);
+    --shadow-lg: 0 8px 24px rgba(27, 42, 74, 0.12);
+    --shadow-gold: 0 4px 20px rgba(200, 169, 81, 0.3);
+
+    /* Typography */
+    --font-heading: 'Noto Serif Vietnamese', 'Noto Serif', Georgia, serif;
+    --font-body: 'Be Vietnam Pro', 'Inter', -apple-system, sans-serif;
+    --font-accent: 'Dancing Script', cursive;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Fluid Type Scale */
+    --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);
+    --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
+    --text-base: clamp(0.9375rem, 0.875rem + 0.3125vw, 1rem);
+    --text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+    --text-xl: clamp(1.375rem, 1.25rem + 0.625vw, 1.5rem);
+    --text-2xl: clamp(1.75rem, 1.5rem + 1.25vw, 2.25rem);
+    --text-3xl: clamp(2.25rem, 2rem + 1.25vw, 3rem);
+    --text-4xl: clamp(3rem, 2.5rem + 2.5vw, 4.5rem);
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--indigo-dye);
+  }
+
+  h1 { font-size: var(--text-4xl); }
+  h2 { font-size: var(--text-3xl); }
+  h3 { font-size: var(--text-2xl); }
+  h4 { font-size: var(--text-xl); }
+  h5 { font-size: var(--text-lg); }
+  h6 { font-size: var(--text-base); }
+
+  a {
+    color: var(--heritage-gold-dark);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: var(--heritage-gold);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--heritage-gold-light);
+    color: var(--indigo-dye);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-heritage-gold text-indigo-dye hover:bg-heritage-gold-light focus-visible:ring-heritage-gold shadow-md hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply btn bg-rice-paper text-indigo-dye border border-border-medium hover:bg-rice-paper-dark focus-visible:ring-heritage-gold;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-heritage-gold-dark hover:bg-heritage-gold-light/20 focus-visible:ring-heritage-gold;
+  }
+
+  .btn-danger {
+    @apply btn bg-lacquer-red text-white hover:bg-lacquer-red-dark focus-visible:ring-lacquer-red;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-border-light shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  .card-hover {
+    @apply card hover:shadow-lg hover:border-heritage-gold/30 transform hover:-translate-y-1 transition-all duration-200;
+  }
+
+  .input {
+    @apply w-full px-4 py-2.5 rounded-lg border border-border-medium bg-white text-text-primary placeholder:text-muted focus:border-heritage-gold focus:ring-2 focus:ring-heritage-gold/20 focus:outline-none transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-text-secondary mb-1.5;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-gold {
+    @apply badge bg-heritage-gold/10 text-heritage-gold-dark border border-heritage-gold/20;
+  }
+
+  .badge-indigo {
+    @apply badge bg-indigo-light/10 text-indigo-dye border border-indigo-light/20;
+  }
+
+  .badge-green {
+    @apply badge bg-bamboo-green-light/10 text-bamboo-green border border-bamboo-green-light/20;
+  }
+
+  .waveform-bar {
+    @apply bg-heritage-gold rounded-sm transition-all duration-100 ease-out;
+  }
+
+  .map-popup {
+    @apply p-2 min-w-[200px];
+  }
+
+  .map-popup-title {
+    @apply font-heading font-semibold text-indigo-dye mb-1;
+  }
+
+  .map-popup-desc {
+    @apply text-sm text-text-secondary mb-2;
+  }
+
+  .map-popup-btn {
+    @apply btn-primary text-sm w-full;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-waveform {
+    animation: waveform 1s ease-in-out infinite;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+
+  .gradient-gold {
+    @apply bg-gradient-to-r from-heritage-gold via-heritage-gold-light to-heritage-gold;
+  }
+
+  .gradient-indigo {
+    @apply bg-gradient-to-r from-indigo-dye via-indigo-light to-indigo-dye;
+  }
+}
+
+/* Leaflet custom styles */
+.leaflet-container {
+  font-family: var(--font-body);
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-xl shadow-lg border border-border-light;
+}
+
+.leaflet-popup-tip {
+  @apply border-border-light;
+}
+
+.leaflet-control-zoom {
+  @apply border-border-medium;
+}
+
+.leaflet-control-zoom a {
+  @apply bg-white text-indigo-dye hover:bg-rice-paper-dark border border-border-medium;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-rice-paper;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-heritage-gold/50 rounded-full hover:bg-heritage-gold;
+}
+
+::-webkit-scrollbar-corner {
+  @apply bg-rice-paper;
+}

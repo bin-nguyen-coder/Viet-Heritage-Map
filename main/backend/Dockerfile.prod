@@ -1,0 +1,64 @@
+# Production Dockerfile - Cloud-only (no Ollama)
+# Uses OpenRouter for LLM inference
+
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# Copy dependency files
+COPY pyproject.toml uv.lock* ./
+
+# Install dependencies (no dev dependencies)
+RUN uv sync --frozen --no-dev
+
+# Production runtime
+FROM python:3.11-slim AS runtime
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash appuser
+
+# Copy Python dependencies from builder
+COPY --from=builder /app/.venv /app/.venv
+
+# Copy backend application code (entire backend directory)
+COPY --chown=appuser:appuser app /app/app
+COPY --chown=appuser:appuser models /app/models
+COPY --chown=appuser:appuser .env* /app/
+
+# Copy Project frontend to /app/Project (matches main.py's STATIC_DIR path)
+COPY --chown=appuser:appuser ../Project /app/Project
+
+# Switch to non-root user
+USER appuser
+
+# Set PATH
+ENV PATH="/app/.venv/bin:${PATH}"
+
+# Environment variables
+ENV IS_PRODUCTION=true
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the application
+CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560">
+  <rect width="800" height="560" rx="28" fill="#17130a"/>
+  <rect x="34" y="34" width="732" height="492" rx="24" fill="#241d11" stroke="#8a7c5e" stroke-width="4"/>
+  <rect x="92" y="118" width="616" height="320" rx="20" fill="#2d2414" stroke="#c9a84c" stroke-width="3"/>
+  <circle cx="276" cy="278" r="92" fill="#4e3c20" stroke="#d8b75b" stroke-width="6"/>
+  <path d="M196 278c16-54 54-88 104-88 54 0 92 36 104 88" fill="none" stroke="#efcf7d" stroke-width="8" stroke-linecap="round"/>
+  <rect x="220" y="168" width="240" height="34" rx="17" fill="#8a7c5e"/>
+  <rect x="176" y="382" width="328" height="22" rx="11" fill="#624d2d"/>
+  <text x="400" y="482" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="34" fill="#f2d99a">Artifact Image Placeholder</text>
+</svg>

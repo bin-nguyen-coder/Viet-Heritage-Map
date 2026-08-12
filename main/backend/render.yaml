@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: vietheritage-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.prod
+    dockerContext: .
+    plan: free
+    region: singapore
+    envVars:
+      - key: IS_PRODUCTION
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vietheritage-db
+          property: connectionString
+      - key: OPENROUTER_API_KEY
+        value: "your_openrouter_api_key_here"
+      - key: OPENROUTER_MODEL
+        value: "meta-llama/llama-3.2-3b-instruct:free"
+      - key: OPENROUTER_EMBED_MODEL
+        value: "nomic/nomic-embed-text-v1:0"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_TRACES_SAMPLE_RATE
+        value: "0.1"
+      - key: LOG_LEVEL
+        value: "INFO"
+    healthCheckPath: /health
+    autoDeploy: true
+
+databases:
+  - name: vietheritage-db
+    plan: free
+    region: singapore

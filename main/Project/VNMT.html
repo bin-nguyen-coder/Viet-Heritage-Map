@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Di sản Phi vật thể — Vietnam's Intangible Cultural Heritage</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Leaflet MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="VNMT.css" />
+</head>
+
+<body>
+
+<header>
+  <!-- Language toggle + navigation links — top-right corner -->
+  <div class="lang-toggle" id="lang-toggle">
+    <a href="index.html" class="lang-home-link" id="lang-home-link">← Home</a>
+    <a href="database.html" class="lang-home-link" id="lang-db-link">Database</a>
+    <a href="about.html" class="lang-home-link" id="lang-about-link">About</a>
+    <button class="lang-btn" data-lang="vi">VI</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+  <div class="header-inner">
+    <div>
+      <div class="header-eyebrow" id="header-eyebrow">Di Sản Phi Vật Thể Được UNESCO Công Nhận</div>
+      <h1><span id="title-line1">Vietnam's</span> <em id="title-em">National</em><br><span id="title-line2">Treasures</span></h1>
+    </div>
+    <div class="header-stats">
+      <div class="stat"><span class="stat-n" id="stat-shown">—</span><span class="stat-l" id="stat-shown-label">Shown</span></div>
+      <div class="stat"><span class="stat-n" id="stat-total">—</span><span class="stat-l" id="stat-total-label">Total</span></div>
+      <div class="stat"><span class="stat-n" id="stat-locs">—</span><span class="stat-l" id="stat-locs-label">Locations</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" type="text" placeholder="Search by name or location…" autocomplete="off">
+    </div>
+
+    <!-- Filter pills — populated dynamically by renderFilterBar() -->
+    <div class="filter-bar" id="filter-bar"></div>
+    <div class="result-count" id="result-count"></div>
+    <div class="artifact-list" id="artifact-list"></div>
+  </aside>
+
+  <div class="map-panel">
+    <div id="map"></div>
+
+    <div class="map-info" id="map-info"></div>
+
+    <button class="map-reset" id="map-reset">⟳ Reset view</button>
+
+    <!-- Legend + View toggle — stacked at bottom-left of map -->
+    <div class="map-bottom-left">
+      <div class="view-toggle">
+        <span class="view-toggle-label" id="view-toggle-label">View by</span>
+        <button class="view-btn active" data-view="status">Status</button>
+        <button class="view-btn" data-view="genre">Genre</button>
+      </div>
+      <div class="map-legend" id="map-legend"></div>
+    </div>
+
+    <div class="tile-switcher">
+      <div class="tile-switcher-label" id="tile-switcher-label">Map Style</div>
+      <button class="tile-option active" data-tile="positron"><span class="tile-dot"></span> Positron</button>
+      <button class="tile-option" data-tile="osm"><span class="tile-dot"></span> <span id="tile-osm-label">Street Map</span></button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span id="footer-copyright">© 2026 Di sản văn hóa phi vật thể Việt Nam</span>
+  <span id="footer-credit">Map: <em>CartoDB / OpenStreetMap</em> · Province borders: <em>vn_geo.json</em></span>
+</footer>
+
+<!-- Province pie-chart modal -->
+<div class="province-modal" id="province-modal">
+  <button class="province-modal-close" id="province-modal-close" aria-label="Close">✕</button>
+  <div id="province-modal-content"></div>
+</div>
+
+<!-- Artifact detail modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<!-- App logic & data -->
+<script src="VNMT.js"></script>
+
+</body>
+</html>

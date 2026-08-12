@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Di Sản UNESCO Việt Nam — Vietnam UNESCO Intangible Heritage</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── TOKENS (mirrors VNMT.css) ── */
+    :root {
+      --bg: #0a0900;
+      --surface: #110f04;
+      --card: #181500;
+      --border: #2c2507;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --red: #1c1c1c;
+      --red-bright: #c42b2b;
+      --text: #e8dfc8;
+      --muted: #8a7c5e;
+      --white: #f5f0e6;
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+    }
+
+    html.lang-vi {
+      --font-body: 'Merriweather', serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(10, 9, 0, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.14);
+      transition: background .3s;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--white);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-logo svg {
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
+
+    .nav-links a.active {
+      color: var(--gold);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lang-toggle {
+      display: flex;
+      gap: 3px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .lang-btn:hover {
+      color: var(--gold-light);
+    }
+
+    .lang-btn.active {
+      background: var(--gold);
+      color: #1a1400;
+    }
+
+    .nav-map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--red);
+      color: var(--white);
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: background .2s;
+    }
+
+    .nav-map-btn:hover {
+      background: var(--red-bright);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* subtle ambient glow */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 55% 80% at 72% 50%, rgba(201, 168, 76, 0.045) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 55% at 18% 55%, rgba(139, 28, 28, 0.055) 0%, transparent 60%);
+    }
+
+    .hero-drum {
+      position: absolute;
+      right: -6%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(640px, 82vh);
+      height: min(640px, 82vh);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 80px clamp(24px, 5vw, 80px) 40px clamp(24px, 8vw, 120px);
+      max-width: 640px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 22px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      width: 26px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .eyebrow-diamond {
+      width: 5px;
+      height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    h1.hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 6.2vw, 6.2rem);
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -0.025em;
+      color: var(--white);
+      margin-bottom: 22px;
+      white-space: nowrap;
+    }
+
+    h1.hero-headline em {
+      font-style: italic;
+      color: var(--gold-light);
+      display: block;
+    }
+
+    .hero-tagline {
+      font-size: clamp(0.93rem, 1.35vw, 1.07rem);
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.78;
+      max-width: 430px;
+      margin-bottom: 42px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cta-map {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--red);
+      color: var(--white);
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: all .22s;
+    }
+
+    .cta-map:hover {
+      background: var(--red-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(139, 28, 28, 0.35);
+    }
+
+    .cta-explore {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: transparent;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1.5px solid rgba(201, 168, 76, 0.4);
+      padding: 15px 30px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: all .22s;
+    }
+
+    .cta-explore:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.07);
+      transform: translateY(-2px);
+    }
+
+    /* ── GOLD RULE ── */
+    .gold-rule {
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--red-bright) 50%, var(--gold) 70%, transparent 100%);
+    }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-item {
+      padding: 38px 28px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.1rem, 3.3vw, 3.3rem);
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .stat-desc {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── ERA SECTION ── */
+    .eras-section {
+      padding: clamp(56px, 7vw, 100px) clamp(24px, 6vw, 96px);
+    }
+
+    .section-header {
+      margin-bottom: 52px;
+    }
+
+    .section-eyebrow {
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-eyebrow::before {
+      content: '';
+      width: 26px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 3.2vw, 2.7rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    .era-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .era-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 34px 30px;
+      text-decoration: none;
+      color: var(--text);
+      display: block;
+      position: relative;
+      overflow: hidden;
+      border-left: 4px solid var(--era-color);
+      transition: transform .22s, box-shadow .22s;
+    }
+
+    .era-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 90% 120% at 0% 50%, var(--era-color), transparent 65%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .era-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 44px rgba(0, 0, 0, 0.38);
+    }
+
+    .era-card:hover::after {
+      opacity: 0.05;
+    }
+
+    .era-eyebrow {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--era-color);
+      margin-bottom: 8px;
+    }
+
+    .era-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--white);
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .era-period {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      letter-spacing: 0.05em;
+    }
+
+    .era-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.72;
+      margin-bottom: 26px;
+    }
+
+    .era-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .era-examples {
+      font-size: 10.5px;
+      color: var(--muted);
+      font-style: italic;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .era-cta {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--era-color);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: gap .2s;
+    }
+
+    .era-card:hover .era-cta {
+      gap: 9px;
+    }
+
+    /* ── DISTRIBUTED HEADER ROW ── */
+    .civs-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
+    .civs-all-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1.5px solid rgba(201, 168, 76, 0.4);
+      padding: 10px 22px;
+      border-radius: 4px;
+      white-space: nowrap;
+      transition: all .22s;
+      flex-shrink: 0;
+    }
+
+    .civs-all-btn:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.07);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      background: var(--surface);
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+
+    footer em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px) {
+      .era-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width:768px) {
+      nav {
+        padding: 0 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero-content {
+        padding: 80px 20px 40px;
+        max-width: 100%;
+      }
+
+      .hero-drum {
+        opacity: 0.08;
+        right: -20%;
+      }
+
+      h1.hero-headline {
+        white-space: normal;
+        font-size: clamp(2.4rem, 10vw, 3.8rem);
+      }
+
+      .stats-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-item:nth-child(2) {
+        border-right: none;
+      }
+
+      .eras-section {
+        padding: 48px 20px;
+      }
+
+      footer {
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* ── DRUM ANIMATION ── */
+    @keyframes drum-spin-fwd {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes drum-spin-rev {
+      to {
+        transform: rotate(-360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion:no-preference) {
+      .drum-ring-birds {
+        animation: drum-spin-fwd 240s linear infinite;
+        transform-origin: 0 0;
+      }
+
+      .drum-ring-deer {
+        animation: drum-spin-rev 340s linear infinite;
+        transform-origin: 0 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ── -->
+  <nav id="main-nav">
+    <a href="index.html" class="nav-logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <!-- stylised Đông Sơn star / drum-sun symbol -->
+        <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8" fill="currentColor" />
+      </svg>
+      <span id="nav-logo-text">VietHeritage Map</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="active" id="nav-home">Trang chủ</a></li>
+      <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
+      <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn" data-lang="vi">VI</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <a href="VNMT.html" class="nav-map-btn">
+        <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <!-- Đông Sơn drum tympanum — generated by buildDrum() -->
+    <svg class="hero-drum" id="hero-drum" viewBox="-215 -215 430 430" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-diamond"></span>
+        <span id="hero-eyebrow">16 Di Sản được UNESCO công nhận</span>
+      </div>
+
+      <h1 class="hero-headline">
+        <span id="hero-h1a">Sống động</span>
+        <em id="hero-h1b">vượt thời gian</em>
+      </h1>
+
+      <p class="hero-tagline" id="hero-tagline">
+        Từ Nhã nhạc cung đình Huế đến không gian văn hóa Cồng Chiêng Tây Nguyên —
+        hành trình 16 di sản văn hóa phi vật thể UNESCO qua 14 lần công nhận.
+      </p>
+
+      <div class="hero-cta-row">
+        <a href="VNMT.html" class="cta-map">
+          <span>⊞</span>&nbsp;<span id="cta-map-text"></span>
+        </a>
+        <a href="#eras" class="cta-explore">
+          <span id="cta-explore-text">Khám phá</span><span>↓</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-rule"></div>
+
+  <!-- ── STATS ── -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <span class="stat-number">16</span>
+      <span class="stat-desc" id="stat-a">Di Sản</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">27</span>
+      <span class="stat-desc" id="stat-b">Tỉnh Thành</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">5</span>
+      <span class="stat-desc" id="stat-c">Thể Loại</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">14</span>
+      <span class="stat-desc" id="stat-d">Lần Công Nhận</span>
+    </div>
+  </div>
+
+  <!-- ── ERA CARDS ── -->
+  <section class="eras-section" id="eras">
+    <div class="section-header">
+      <div class="civs-header">
+        <div>
+          <div class="section-eyebrow" id="sec-eyebrow">Tìm hiểu theo thể loại</div>
+          <h2 class="section-title" id="sec-title">Các thể loại di sản</h2>
+        </div>
+        <a href="database.html" class="civs-all-btn" id="sec-explore-all">Xem tất cả →</a>
+      </div>
+    </div>
+
+    <div class="era-grid">
+
+      <!-- Âm nhạc · Nhạc cụ -->
+      <a class="era-card" href="VNMT.html?genre=instrumental" style="--era-color:#4caf84">
+        <div class="era-eyebrow" id="e1-eyebrow">Thể loại 1</div>
+        <div class="era-title" id="e1-title">Âm nhạc · Nhạc cụ</div>
+        <div class="era-period" id="e1-period">2003 — 2005</div>
+        <div class="era-desc" id="e1-desc">Nhã nhạc cung đình Huế và Không gian văn hóa Cồng Chiêng Tây Nguyên — những
+          di sản âm nhạc truyền thống tinh tế, gắn liền với nghi lễ triều đình và đời sống tâm linh dân tộc Tây Nguyên.
+        </div>
+        <div class="era-footer">
+          <span class="era-examples" id="e1-ex">Nhã nhạc Huế, Cồng Chiêng Tây Nguyên</span>
+          <span class="era-cta" id="e1-cta">Khám phá <span>→</span></span>
+        </div>
+      </a>
+
+      <!-- Hát · Dân ca -->
+      <a class="era-card" href="VNMT.html?genre=singings" style="--era-color:#c9943a">
+        <div class="era-eyebrow" id="e2-eyebrow">Thể loại 2</div>
+        <div class="era-title" id="e2-title">Hát · Dân ca</div>
+        <div class="era-period" id="e2-period">2009 — 2019</div>
+        <div class="era-desc" id="e2-desc">Quan họ, Ca trù, Đờn ca tài tử, Ví Giặm, Bài Chòi, Hát Xoan và Thực hành Then
+          — thể loại dân ca đối đáp và hát nghi lễ phong phú nhất, trải dài từ Bắc chí Nam.</div>
+        <div class="era-footer">
+          <span class="era-examples" id="e2-ex">Quan họ, Ca trù, Đờn ca tài tử, Hát Xoan, Then</span>
+          <span class="era-cta" id="e2-cta">Khám phá <span>→</span></span>
+        </div>
+      </a>
+
+      <!-- Tín ngưỡng · Lễ nghi -->
+      <a class="era-card" href="VNMT.html?genre=belief" style="--era-color:#9b6fbf">
+        <div class="era-eyebrow" id="e3-eyebrow">Thể loại 3</div>
+        <div class="era-title" id="e3-title">Tín ngưỡng · Lễ nghi</div>
+        <div class="era-period" id="e3-period">2012 — 2024</div>
+        <div class="era-desc" id="e3-desc">Tín ngưỡng thờ cúng Hùng Vương, thờ Mẫu tam tòa và Lễ hội Vía Bà Chúa Xứ —
+          những tục thờ tổ tiên và nữ thần bảo hộ sâu sắc trong tâm thức người Việt.</div>
+        <div class="era-footer">
+          <span class="era-examples" id="e3-ex">Thờ Hùng Vương, Thờ Mẫu, Vía Bà Chúa Xứ</span>
+          <span class="era-cta" id="e3-cta">Khám phá <span>→</span></span>
+        </div>
+      </a>
+
+      <!-- Lễ hội dân gian -->
+      <a class="era-card" href="VNMT.html?genre=festival" style="--era-color:#c45c4a">
+        <div class="era-eyebrow" id="e4-eyebrow">Thể loại 4</div>
+        <div class="era-title" id="e4-title">Lễ hội dân gian</div>
+        <div class="era-period" id="e4-period">2010 — 2021</div>
+        <div class="era-desc" id="e4-desc">Hội Gióng, Nghi lễ kéo co và Nghệ thuật Xòe Thái — những lễ hội dân gian
+          tưởng nhớ anh hùng dân tộc và cầu mong mùa màng tươi tốt, thể hiện tinh thần cộng đồng.</div>
+        <div class="era-footer">
+          <span class="era-examples" id="e4-ex">Hội Gióng, Kéo co, Xòe Thái</span>
+          <span class="era-cta" id="e4-cta">Khám phá <span>→</span></span>
+        </div>
+      </a>
+
+      <!-- Nghề thủ công truyền thống -->
+      <a class="era-card" href="VNMT.html?genre=craft" style="--era-color:#d4875e">
+        <div class="era-eyebrow" id="e5-eyebrow">Thể loại 5</div>
+        <div class="era-title" id="e5-title">Nghề thủ công</div>
+        <div class="era-period" id="e5-period">2022</div>
+        <div class="era-desc" id="e5-desc">Nghệ thuật làm gốm của người Chăm — kỹ thuật làm gốm thủ công độc đáo không
+          dùng bàn xoay, được truyền qua nhiều thế hệ ở Ninh Thuận và Bình Thuận.</div>
+        <div class="era-footer">
+          <span class="era-examples" id="e5-ex">Gốm Chăm</span>
+          <span class="era-cta" id="e5-cta">Khám phá <span>→</span></span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="about">
+    <span id="foot-copy">© 2026 Di sản văn hóa phi vật thể Việt Nam</span>
+    <span id="foot-data">Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em></span>
+  </footer>
+
+  <script>
+    /* ═══════════════════════════════════════
+       I18N — shares localStorage key with VNMT.js
+    ═══════════════════════════════════════ */
+    const UI = {
+      vi: {
+        navHome: 'Trang chủ', navMap: 'Khám phá bản đồ', navAbout: 'Giới thiệu', navMapBtn: 'Mở bản đồ',
+        navDb: 'Kho lưu trữ',
+        eyebrow: '16 Di Sản UNESCO Được Công Nhận',
+        h1a: 'Sống động', h1b: 'vượt thời gian',
+        tagline: 'Từ Nhã nhạc cung đình Huế đến không gian văn hóa Cồng Chiêng Tây Nguyên — hành trình 16 di sản văn hóa phi vật thể UNESCO qua 14 lần công nhận.',
+        ctaExplore: 'Khám phá',
+        ctaMap: 'Bản đồ tương tác',
+        statA: 'Di Sản', statB: 'Tỉnh Thành', statC: 'Thể Loại', statD: 'Lần Công Nhận',
+        secEyebrow: 'Tìm hiểu theo thể loại', secTitle: 'Các thể loại di sản', secExploreAll: 'Xem tất cả →',
+        e1Ey: 'Thể loại 1', e1Ti: 'Âm nhạc · Nhạc cụ',
+        e1De: 'Nhã nhạc cung đình Huế và Không gian văn hóa Cồng Chiêng Tây Nguyên — những di sản âm nhạc truyền thống tinh tế, gắn liền với nghi lễ triều đình và đời sống tâm linh dân tộc Tây Nguyên.',
+        e1Ex: 'Nhã nhạc Huế, Cồng Chiêng Tây Nguyên', e1Ct: 'Khám phá →',
+        e2Ey: 'Thể loại 2', e2Ti: 'Hát · Dân ca',
+        e2De: 'Quan họ, Ca trù, Đờn ca tài tử, Ví Giặm, Bài Chòi, Hát Xoan và Thực hành Then — thể loại dân ca đối đáp và hát nghi lễ phong phú nhất, trải dài từ Bắc chí Nam.',
+        e2Ex: 'Quan họ, Ca trù, Đờn ca tài tử, Hát Xoan, Then', e2Ct: 'Khám phá →',
+        e3Ey: 'Thể loại 3', e3Ti: 'Tín ngưỡng · Lễ nghi',
+        e3De: 'Tín ngưỡng thờ cúng Hùng Vương, thờ Mẫu tam tòa và Lễ hội Vía Bà Chúa Xứ — những tục thờ tổ tiên và nữ thần bảo hộ sâu sắc trong tâm thức người Việt.',
+        e3Ex: 'Thờ Hùng Vương, Thờ Mẫu, Vía Bà Chúa Xứ', e3Ct: 'Khám phá →',
+        e4Ey: 'Thể loại 4', e4Ti: 'Lễ hội dân gian',
+        e4De: 'Hội Gióng, Nghi lễ kéo co và Nghệ thuật Xòe Thái — những lễ hội dân gian tưởng nhớ anh hùng dân tộc và cầu mong mùa màng tươi tốt, thể hiện tinh thần cộng đồng.',
+        e4Ex: 'Hội Gióng, Kéo co, Xòe Thái', e4Ct: 'Khám phá →',
+        e5Ey: 'Thể loại 5', e5Ti: 'Nghề thủ công',
+        e5De: 'Nghệ thuật làm gốm của người Chăm — kỹ thuật làm gốm thủ công độc đáo không dùng bàn xoay, được truyền qua nhiều thế hệ ở Ninh Thuận và Bình Thuận.',
+        e5Ex: 'Gốm Chăm', e5Ct: 'Khám phá →',
+        footCopy: '© 2026 Di sản văn hóa phi vật thể Việt Nam',
+        footData: 'Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em>',
+      },
+      en: {
+        navHome: 'Home', navMap: 'Explore the Map', navAbout: 'About', navMapBtn: 'Open Map',
+        navDb: 'Database',
+        eyebrow: '16 UNESCO Recognized Heritage',
+        h1a: 'Eternally', h1b: 'Vivid',
+        tagline: "From the royal court music of Huế to the gong culture of the Central Highlands — a journey through 16 UNESCO intangible cultural heritage entries across 14 recognition years.",
+        ctaExplore: 'Explore',
+        ctaMap: 'Interactive Map',
+        statA: 'Heritage', statB: 'Provinces', statC: 'Genres', statD: 'Recognition Years',
+        secEyebrow: 'Explore by genre', secTitle: 'Heritage Genres', secExploreAll: 'View all →',
+        e1Ey: 'Genre 1', e1Ti: 'Instrumental Music', e1Pe: '2003 — 2005',
+        e1De: 'Huế Royal Court Music and the Gong Culture of the Central Highlands — refined musical traditions tied to court ceremonies and the spiritual life of Central Highlands ethnic groups.',
+        e1Ex: 'Nhã nhạc Huế, Central Highlands Gongs', e1Ct: 'Explore →',
+        e2Ey: 'Genre 2', e2Ti: 'Singing · Folk Songs', e2Pe: '2009 — 2019',
+        e2De: 'Quan họ, Ca trù, Đờn ca tài tử, Ví & Giặm, Bài Chòi, Xoan singing and Then practice — the richest collection of antiphonal folk singing and ritual vocal arts spanning North to South.',
+        e2Ex: 'Quan họ, Ca trù, Đờn ca tài tử, Xoan, Then', e2Ct: 'Explore →',
+        e3Ey: 'Genre 3', e3Ti: 'Belief & Ritual', e3Pe: '2012 — 2024',
+        e3De: 'Worship of the Hùng Kings, the Mother Goddesses of Three Realms and the Festival of Bà Chúa Xứ — profound ancestor veneration and goddess worship deeply rooted in Vietnamese spirituality.',
+        e3Ex: 'Hùng Kings worship, Mother Goddesses, Bà Chúa Xứ', e3Ct: 'Explore →',
+        e4Ey: 'Genre 4', e4Ti: 'Folk Festival', e4Pe: '2010 — 2021',
+        e4De: 'The Gióng Festival, Tugging Rituals and Games, and the Xòe Dance of the Thái people — folk festivals commemorating national heroes and praying for bountiful harvests, expressing community spirit.',
+        e4Ex: 'Gióng Festival, Tugging Rituals, Xòe Thái', e4Ct: 'Explore →',
+        e5Ey: 'Genre 5', e5Ti: 'Traditional Craft', e5Pe: '2022',
+        e5De: 'Cham pottery making — a unique handcraft technique without a potter\'s wheel, passed down through generations in Ninh Thuận and Bình Thuận provinces.',
+        e5Ex: 'Cham Pottery', e5Ct: 'Explore →',
+        footCopy: '© 2026 Vietnam Intangible Cultural Heritage',
+        footData: 'Data: <em>UNESCO</em> · Map: <em>CartoDB / OpenStreetMap</em>',
+      }
+    };
+
+    let lang = localStorage.getItem('vnmt_lang') || 'vi';
+
+    function setEl(id, val, html = false) {
+      const e = document.getElementById(id);
+      if (!e) return;
+      if (html) e.innerHTML = val; else e.textContent = val;
+    }
+
+    function applyLang() {
+      const s = UI[lang];
+      document.documentElement.lang = lang;
+      document.documentElement.classList.toggle('lang-vi', lang === 'vi');
+      setEl('nav-home', s.navHome);
+      setEl('nav-map-link', s.navMap);
+      setEl('nav-db-link', s.navDb);
+      setEl('nav-civs-link', s.navCivs);
+      setEl('nav-about', s.navAbout);
+      setEl('nav-map-btn-text', s.navMapBtn);
+      setEl('hero-eyebrow', s.eyebrow);
+      setEl('hero-h1a', s.h1a);
+      setEl('hero-h1b', s.h1b);
+      setEl('hero-tagline', s.tagline);
+      setEl('cta-map-text', s.ctaMap);
+      setEl('cta-explore-text', s.ctaExplore);
+      setEl('stat-a', s.statA);
+      setEl('stat-b', s.statB);
+      setEl('stat-c', s.statC);
+      setEl('stat-d', s.statD);
+      setEl('sec-eyebrow', s.secEyebrow);
+      setEl('sec-title', s.secTitle);
+      setEl('sec-explore-all', s.secExploreAll);
+      [1, 2, 3, 4, 5].forEach(n => {
+        setEl(`e${n}-eyebrow`, s[`e${n}Ey`]);
+        setEl(`e${n}-title`, s[`e${n}Ti`]);
+        setEl(`e${n}-period`, s[`e${n}Pe`]);
+        setEl(`e${n}-desc`, s[`e${n}De`]);
+        setEl(`e${n}-ex`, s[`e${n}Ex`]);
+        setEl(`e${n}-cta`, s[`e${n}Ct`]);
+      });
+      setEl('foot-copy', s.footCopy);
+      setEl('foot-data', s.footData, true);
+      document.querySelectorAll('.lang-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.lang === lang)
+      );
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        lang = btn.dataset.lang;
+        localStorage.setItem('vnmt_lang', lang);
+        applyLang();
+      });
+    });
+
+    /* ═══════════════════════════════════════
+       NAV SCROLL EFFECT
+    ═══════════════════════════════════════ */
+    window.addEventListener('scroll', () => {
+      document.getElementById('main-nav').style.background =
+        window.scrollY > 50 ? 'rgba(10,9,0,0.97)' : 'rgba(10,9,0,0.82)';
+    }, { passive: true });
+
+    /* ═══════════════════════════════════════
+       ĐÔNG SƠN DRUM TYMPANUM SVG BUILDER
+       Authentic concentric-ring design:
+       central sun-star → bird ring → zigzag →
+       deer ring → outer tick borders
+    ═══════════════════════════════════════ */
+    function buildDrum() {
+      const svg = document.getElementById('hero-drum');
+      if (!svg) return;
+      const ns = 'http://www.w3.org/2000/svg';
+      const gold = '#c9a84c';
+
+      const el = (tag, attrs = {}) => {
+        const e = document.createElementNS(ns, tag);
+        Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+        return e;
+      };
+      const circle = (r, sw = '0.7') =>
+        base.appendChild(el('circle', { cx: 0, cy: 0, r, 'stroke-width': sw }));
+      const ticks = (n, r1, r2, sw = '0.75') => {
+        for (let i = 0; i < n; i++) {
+          const a = i * 2 * Math.PI / n;
+          base.appendChild(el('line', {
+            x1: (r1 * Math.cos(a)).toFixed(2), y1: (r1 * Math.sin(a)).toFixed(2),
+            x2: (r2 * Math.cos(a)).toFixed(2), y2: (r2 * Math.sin(a)).toFixed(2),
+            'stroke-width': sw
+          }));
+        }
+      };
+      const dots = (n, r, dr = 1.8) => {
+        for (let i = 0; i < n; i++) {
+          const a = i * 2 * Math.PI / n;
+          base.appendChild(el('circle', {
+            cx: (r * Math.cos(a)).toFixed(2), cy: (r * Math.sin(a)).toFixed(2),
+            r: dr, fill: gold, stroke: 'none'
+          }));
+        }
+      };
+
+      /* radial glow */
+      const defs = el('defs');
+      const rg = el('radialGradient', { id: 'dglow', cx: '50%', cy: '50%', r: '50%' });
+      const s1 = el('stop', { offset: '0%', 'stop-color': gold, 'stop-opacity': '0.1' });
+      const s2 = el('stop', { offset: '100%', 'stop-color': gold, 'stop-opacity': '0' });
+      rg.appendChild(s1); rg.appendChild(s2); defs.appendChild(rg);
+      svg.appendChild(defs);
+
+      const base = el('g', { stroke: gold, fill: 'none', opacity: '0.28' });
+      svg.appendChild(base);
+      base.appendChild(el('circle', { cx: 0, cy: 0, r: 210, fill: 'url(#dglow)', stroke: 'none' }));
+
+      /* ── center: small filled circle ── */
+      base.appendChild(el('circle', { cx: 0, cy: 0, r: 7, fill: gold, opacity: '1', stroke: 'none' }));
+
+      /* ── 12-pointed sun-star ── */
+      const pts = [];
+      for (let i = 0; i < 24; i++) {
+        const a = i * Math.PI / 12 - Math.PI / 2;
+        const r = i % 2 === 0 ? 42 : 19;
+        pts.push(`${(r * Math.cos(a)).toFixed(2)},${(r * Math.sin(a)).toFixed(2)}`);
+      }
+      base.appendChild(el('polygon', { points: pts.join(' '), fill: gold, opacity: '0.65', stroke: 'none' }));
+
+      /* ── ring 1: double border r=50,55 ── */
+      circle(50); circle(55);
+
+      /* ── ring 2: 18 radial spokes r=58→70 ── */
+      ticks(18, 58, 70);
+      circle(73);
+
+      /* ── ring 3: BIRDS — 12 diamonds flying (slow forward rotation) ── */
+      const birds = el('g', { opacity: '0.32', class: 'drum-ring-birds' });
+      for (let i = 0; i < 12; i++) {
+        const a = i * 2 * Math.PI / 12 - Math.PI / 2;
+        const bx = (92 * Math.cos(a)).toFixed(2);
+        const by = (92 * Math.sin(a)).toFixed(2);
+        const deg = (i * 30) + 90;
+        const g = el('g', { transform: `translate(${bx},${by}) rotate(${deg})` });
+        /* simplified flying bird: elongated diamond body */
+        g.appendChild(el('path', {
+          d: 'M0,-8 L4,-2 L9,0 L4,2 L0,8 L-4,2 L-9,0 L-4,-2 Z',
+          fill: gold, stroke: 'none'
+        }));
+        birds.appendChild(g);
+      }
+      base.appendChild(birds);
+
+      /* ── ring 4: double border r=105,109 ── */
+      circle(105); circle(109);
+
+      /* ── ring 5: zigzag chevron band r=113→127 ── */
+      const zig = [];
+      for (let i = 0; i <= 28; i++) {
+        const a = i * 2 * Math.PI / 28 - Math.PI / 2;
+        const r = i % 2 === 0 ? 113 : 127;
+        zig.push(`${(r * Math.cos(a)).toFixed(2)},${(r * Math.sin(a)).toFixed(2)}`);
+      }
+      base.appendChild(el('polyline', { points: zig.join(' '), 'stroke-width': '0.9' }));
+      circle(130);
+
+      /* ── ring 6: dot band ── */
+      dots(24, 136);
+      circle(142);
+
+      /* ── ring 7: DEER — 8 shapes (slow reverse rotation) ── */
+      const deer = el('g', { opacity: '0.24', class: 'drum-ring-deer' });
+      for (let i = 0; i < 8; i++) {
+        const a = i * 2 * Math.PI / 8 - Math.PI / 2;
+        const dx = (156 * Math.cos(a)).toFixed(2);
+        const dy = (156 * Math.sin(a)).toFixed(2);
+        const deg = i * 45 + 90;
+        const g = el('g', { transform: `translate(${dx},${dy}) rotate(${deg})` });
+        g.appendChild(el('path', {
+          d: 'M0,-9 L3,-4 L9,0 L6,5 L0,9 L-6,5 L-9,0 L-3,-4 Z',
+          fill: gold, stroke: 'none'
+        }));
+        deer.appendChild(g);
+      }
+      base.appendChild(deer);
+
+      /* ── outer borders ── */
+      circle(168); circle(172); circle(178);
+      ticks(24, 181, 193, '0.8');
+      circle(197, '1.4');
+      circle(205, '0.5');
+    }
+
+    /* ═══════════════════════════════════════
+       INIT
+    ═══════════════════════════════════════ */
+    applyLang();
+    buildDrum();
+  </script>
+  <!-- ═══════════════════════════════════════
+     MUSEUM AI CHAT WIDGET — MCQ + Grounded Chat
+═══════════════════════════ -->
+
+  <!-- Chat toggle button -->
+  <button class="chat-fab" id="chat-fab" aria-label="Open Museum AI">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+    <span class="chat-fab-label" id="chat-fab-label">AI Bảo tàng Số</span>
+  </button>
+
+  <!-- Chat panel -->
+  <div class="chat-panel" id="chat-panel" aria-hidden="true">
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="chat-avatar">
+          <svg width="16" height="16" viewBox="0 0 22 22" fill="currentColor">
+            <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8" />
+          </svg>
+        </div>
+        <div>
+          <div class="chat-title" id="chat-title">AI Bảo tàng Số</div>
+          <div class="chat-status" id="chat-status">
+            <span class="chat-status-dot" id="chat-status-dot"></span>
+            <span id="chat-status-text">Đang kết nối…</span>
+          </div>
+        </div>
+      </div>
+      <button class="chat-close" id="chat-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chat-messages"></div>
+
+    <!-- Input -->
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-input" type="text" autocomplete="off" maxlength="300" />
+      <button class="chat-send" id="chat-send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <style>
+    /* ── CHAT FAB ── */
+    .chat-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 300;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--red);
+      color: var(--white);
+      border: none;
+      border-radius: 28px;
+      padding: 13px 20px 13px 16px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(139, 28, 28, 0.45);
+      transition: all .22s;
+      white-space: nowrap;
+    }
+
+    .chat-fab:hover {
+      background: var(--red-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(139, 28, 28, 0.5);
+    }
+
+    .chat-fab.open {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      color: var(--muted);
+    }
+
+    /* ── CHAT PANEL ── */
+    .chat-panel {
+      position: fixed;
+      bottom: 90px;
+      right: 28px;
+      z-index: 299;
+      width: 380px;
+      height: 520px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+      transform: translateY(12px) scale(0.97);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .25s ease, opacity .22s ease;
+      overflow: hidden;
+    }
+
+    .chat-panel.visible {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── HEADER ── */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      flex-shrink: 0;
+    }
+
+    .chat-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(201, 168, 76, 0.12);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .chat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    .chat-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+    }
+
+    .chat-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      transition: background .4s;
+    }
+
+    .chat-status-dot.online {
+      background: #4caf84;
+      box-shadow: 0 0 6px rgba(76, 175, 132, 0.6);
+    }
+
+    .chat-status-dot.error {
+      background: var(--red-bright);
+    }
+
+    .chat-status-dot.loading {
+      background: var(--gold);
+      animation: pulse 1.2s infinite;
+    }
+
+    #chat-status-text {
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+
+    .chat-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: color .2s;
+      line-height: 1;
+    }
+
+    .chat-close:hover {
+      color: var(--gold);
+    }
+
+    /* ── MESSAGES ── */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: var(--border);
+    }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 88%;
+    }
+
+    .msg-ai {
+      align-self: flex-start;
+    }
+
+    .msg-user {
+      align-self: flex-end;
+    }
+
+    .msg-bubble {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .msg-ai .msg-bubble {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-top-left-radius: 2px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .msg-user .msg-bubble {
+      background: var(--red);
+      color: var(--white);
+      border-top-right-radius: 2px;
+    }
+
+    .msg-meta {
+      font-size: 9.5px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .msg-ai .msg-meta {
+      padding-left: 4px;
+    }
+
+    .msg-user .msg-meta {
+      text-align: right;
+      padding-right: 4px;
+    }
+
+    /* typing indicator */
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      padding: 10px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top-left-radius: 2px;
+      border-radius: 10px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .typing-dots span:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    /* ── INPUT ── */
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+      background: var(--card);
+      flex-shrink: 0;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .chat-input:focus {
+      border-color: var(--gold);
+    }
+
+    .chat-input::placeholder {
+      color: var(--muted);
+    }
+
+    .chat-send {
+      background: var(--red);
+      border: none;
+      border-radius: 6px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background .2s;
+    }
+
+    .chat-send:hover {
+      background: var(--red-bright);
+    }
+
+    .chat-send:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.4
+      }
+    }
+
+    @keyframes bounce {
+
+      0%,
+      80%,
+      100% {
+        transform: translateY(0)
+      }
+
+      40% {
+        transform: translateY(-6px)
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* ── MCQ SURVEY ── */
+    .mcq-container {
+      max-width: 88%;
+      align-self: flex-start;
+      animation: slideIn .3s ease;
+    }
+
+    .mcq-question {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .mcq-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .mcq-option {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11.5px;
+      font-family: var(--font-body);
+      padding: 7px 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .mcq-option:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.08);
+      color: var(--gold-light);
+      transform: translateY(-1px);
+    }
+
+    .mcq-option.selected {
+      background: var(--gold);
+      color: #1a1400;
+      border-color: var(--gold);
+      font-weight: 600;
+    }
+
+    .mcq-progress {
+      display: flex;
+      gap: 3px;
+      margin-top: 8px;
+    }
+
+    .mcq-progress-dot {
+      width: 18px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--border);
+      transition: background .3s;
+    }
+
+    .mcq-progress-dot.active {
+      background: var(--gold);
+    }
+
+    .mcq-progress-dot.done {
+      background: rgba(201, 168, 76, 0.5);
+    }
+
+    /* ── RECOMMENDATION CARDS ── */
+    .rec-card {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-top: 8px;
+      max-width: 88%;
+      align-self: flex-start;
+      transition: all .22s;
+      cursor: pointer;
+      border-left: 3px solid var(--gold);
+      animation: slideIn .3s ease;
+    }
+
+    .rec-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .rec-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .rec-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      color: var(--white);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .rec-card-badge {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(201, 168, 76, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      white-space: nowrap;
+    }
+
+    .rec-card-meta {
+      display: flex;
+      gap: 10px;
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .rec-card-meta span {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .rec-card-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .rec-card-cta {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gold);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .rec-card:hover .rec-card-cta {
+      gap: 7px;
+    }
+
+    .rec-header {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold-light);
+      margin: 12px 0 4px;
+      align-self: flex-start;
+      max-width: 88%;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:440px) {
+      .chat-panel {
+        width: calc(100vw - 16px);
+        right: 8px;
+        bottom: 78px;
+      }
+
+      .chat-fab {
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+  </style>
+
+  <script>
+    /* ═══════════════════════════════════════
+       CHAT WIDGET — MCQ Survey + Grounded Chat + Small Talk
+    ═══════════════════════════════════════ */
+    (function () {
+      const API = window.location.origin;;
+      const POLL = 4000;   // health-check interval ms
+
+      const fab = document.getElementById('chat-fab');
+      const panel = document.getElementById('chat-panel');
+      const input = document.getElementById('chat-input');
+      const send = document.getElementById('chat-send');
+      const msgs = document.getElementById('chat-messages');
+      const dot = document.getElementById('chat-status-dot');
+      const stText = document.getElementById('chat-status-text');
+      const title = document.getElementById('chat-title');
+      const fabLbl = document.getElementById('chat-fab-label');
+
+      let open = false;
+      let botStatus = 'loading';
+      let welcomeSent = false;
+      let mcqActive = false;
+      let mcqStep = 0;
+      let mcqAnswers = {};
+      let mcqQuestions = [];
+
+      /* ── i18n ── (piggybacks on the page's `lang` variable & `UI` object) */
+      const CW = {
+        vi: {
+          fab: 'AI Bảo tàng số', title: 'Hướng dẫn viên ảo', send: 'Gửi',
+          placeholder: 'Hỏi về di sản UNESCO…',
+          welcome: 'Xin chào! 👋 Tôi là người hướng dẫn bảo tàng. Tôi có thể gợi ý di sản phù hợp với bạn qua bài khảo sát ngắn, hoặc trả lời câu hỏi về 16 di sản UNESCO.',
+          surveyIntro: 'Hãy làm bài khảo sát ngắn — tôi sẽ gợi ý 5 di sản phù hợp nhất với bạn! 🏛️',
+          surveyDone: 'Cảm ơn bạn! Dựa trên câu trả lời, đây là 5 di sản tôi gợi ý:',
+          surveySkip: 'Bỏ qua',
+          surveyNext: 'Tiếp theo →',
+          surveyFinish: 'Xem gợi ý →',
+          surveyRestart: '🔄 Làm lại khảo sát',
+          recHeader: 'Gợi ý di sản cho bạn',
+          statusLoading: 'Đang kết nối…', statusOnline: 'Sẵn sàng', statusError: 'Ngoại tuyến',
+          errConn: 'Không thể kết nối máy chủ. Hãy đảm bảo backend đang chạy.',
+          errServer: 'Lỗi máy chủ. Vui lòng thử lại.',
+          youLabel: 'Bạn', aiLabel: 'Curator AI', nowLabel: 'vừa xong',
+        },
+        en: {
+          fab: 'AI Digital Museum', title: 'Virtual Guide', send: 'Send',
+          placeholder: 'Ask about a UNESCO heritage…',
+          welcome: "Hello! 👋 I'm your museum curator. I can recommend heritage sites via a quick survey, or answer questions about 16 UNESCO heritage entries.",
+          surveyIntro: "Take a quick survey — I'll recommend 5 heritage sites tailored for you! 🏛️",
+          surveyDone: "Thanks! Based on your answers, here are my top 5 recommendations:",
+          surveySkip: 'Skip',
+          surveyNext: 'Next →',
+          surveyFinish: 'Get recommendations →',
+          surveyRestart: '🔄 Restart survey',
+          recHeader: 'Recommended for you',
+          statusLoading: 'Connecting…', statusOnline: 'Ready', statusError: 'Offline',
+          errConn: 'Cannot reach the server. Make sure the backend is running.',
+          errServer: 'Server error. Please try again.',
+          youLabel: 'You', aiLabel: 'Curator AI', nowLabel: 'just now',
+        },
+      };
+
+      function cw() { return CW[typeof lang !== 'undefined' ? lang : 'vi']; }
+
+      function applyWidgetLang() {
+        const s = cw();
+        fabLbl.textContent = s.fab;
+        title.textContent = s.title;
+        input.placeholder = s.placeholder;
+        const statusMap = { loading: s.statusLoading, online: s.statusOnline, error: s.statusError };
+        stText.textContent = statusMap[botStatus] || s.statusLoading;
+      }
+
+      /* Re-apply when the page language toggles */
+      document.querySelectorAll('.lang-btn').forEach(b => {
+        b.addEventListener('click', applyWidgetLang);
+      });
+
+      /* ── panel open/close ── */
+      function openChat() {
+        open = true;
+        panel.classList.add('visible');
+        panel.setAttribute('aria-hidden', 'false');
+        fab.classList.add('open');
+        input.focus();
+        if (!welcomeSent && botStatus === 'online') { pushWelcome(); welcomeSent = true; }
+      }
+
+      function closeChat() {
+        open = false;
+        panel.classList.remove('visible');
+        panel.setAttribute('aria-hidden', 'true');
+        fab.classList.remove('open');
+      }
+
+      fab.addEventListener('click', () => open ? closeChat() : openChat());
+      document.getElementById('chat-close').addEventListener('click', closeChat);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) closeChat(); });
+
+      /* ── message renderer ── */
+      function pushMsg(text, role) {
+        const s = cw();
+        const wrap = document.createElement('div');
+        wrap.className = `msg msg-${role}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'msg-bubble';
+        bubble.textContent = text;
+        const meta = document.createElement('div');
+        meta.className = 'msg-meta';
+        meta.textContent = role === 'user'
+          ? `${s.youLabel} · ${s.nowLabel}`
+          : `${s.aiLabel} · ${s.nowLabel}`;
+        wrap.appendChild(bubble);
+        wrap.appendChild(meta);
+        msgs.appendChild(wrap);
+        msgs.scrollTop = msgs.scrollHeight;
+        return wrap;
+      }
+
+      function pushTyping() {
+        const div = document.createElement('div');
+        div.className = 'msg msg-ai'; div.id = 'typing-indicator';
+        div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      function removeTyping() {
+        document.getElementById('typing-indicator')?.remove();
+      }
+
+      function pushWelcome() {
+        pushMsg(cw().welcome, 'ai');
+        /* Auto-start MCQ survey after welcome */
+        setTimeout(() => startMCQ(), 800);
+      }
+
+      /* ── MCQ SURVEY ── */
+      async function startMCQ() {
+        if (mcqActive) return;
+        mcqActive = true;
+        mcqStep = 0;
+        mcqAnswers = {};
+
+        const s = cw();
+        pushMsg(s.surveyIntro, 'ai');
+
+        /* Fetch questions from backend */
+        try {
+          const currentLang = typeof lang !== 'undefined' ? lang : 'vi';
+          const res = await fetch(`${API}/api/v1/recommend/questions?lang=${currentLang}`, {
+            signal: AbortSignal.timeout(5000),
+          });
+          mcqQuestions = (await res.json()).questions || [];
+        } catch {
+          /* Fallback: use hardcoded questions */
+          const fl = typeof lang !== 'undefined' ? lang : 'vi';
+          mcqQuestions = fl === 'vi' ? [
+            {
+              id: 'genre', question: 'Bạn hứng thú với loại hình di sản nào?', options: [
+                { value: 'instrumental', label: 'Âm nhạc · Nhạc cụ' },
+                { value: 'singings', label: 'Hát · Dân ca' },
+                { value: 'belief', label: 'Tín ngưỡng · Lễ nghi' },
+                { value: 'festival', label: 'Lễ hội dân gian' },
+                { value: 'craft', label: 'Nghề thủ công' },
+              ]
+            },
+            {
+              id: 'region', question: 'Bạn muốn khám phá vùng nào?', options: [
+                { value: 'north', label: 'Miền Bắc' },
+                { value: 'central', label: 'Miền Trung' },
+                { value: 'south', label: 'Miền Nam' },
+                { value: 'highlands', label: 'Tây Nguyên' },
+              ]
+            },
+            {
+              id: 'status', question: 'Bạn quan tâm đến loại di sản nào?', options: [
+                { value: 'inscribed', label: 'Danh sách đại diện UNESCO' },
+                { value: 'urgent', label: 'Cần bảo vệ khẩn cấp' },
+                { value: 'national', label: 'Di sản quốc gia' },
+              ]
+            },
+            {
+              id: 'era', question: 'Thời kỳ công nhận nào bạn thích?', options: [
+                { value: 'early', label: 'Trước 2010' },
+                { value: 'mid', label: '2010 — 2019' },
+                { value: 'recent', label: '2020 trở đi' },
+              ]
+            },
+          ] : [
+            {
+              id: 'genre', question: 'What type of heritage interests you?', options: [
+                { value: 'instrumental', label: 'Instrumental Music' },
+                { value: 'singings', label: 'Singing · Folk Songs' },
+                { value: 'belief', label: 'Belief & Ritual' },
+                { value: 'festival', label: 'Folk Festival' },
+                { value: 'craft', label: 'Traditional Craft' },
+              ]
+            },
+            {
+              id: 'region', question: 'Which region do you want to explore?', options: [
+                { value: 'north', label: 'North' },
+                { value: 'central', label: 'Central' },
+                { value: 'south', label: 'South' },
+                { value: 'highlands', label: 'Highlands' },
+              ]
+            },
+            {
+              id: 'status', question: 'Which heritage status interests you?', options: [
+                { value: 'inscribed', label: 'UNESCO Representative List' },
+                { value: 'urgent', label: 'Urgent Safeguarding' },
+                { value: 'national', label: 'National Heritage' },
+              ]
+            },
+            {
+              id: 'era', question: 'Which recognition era do you prefer?', options: [
+                { value: 'early', label: 'Before 2010' },
+                { value: 'mid', label: '2010 — 2019' },
+                { value: 'recent', label: '2020 onwards' },
+              ]
+            },
+          ];
+        }
+
+        showMCQQuestion();
+      }
+
+      function showMCQQuestion() {
+        if (mcqStep >= mcqQuestions.length) {
+          finishMCQ();
+          return;
+        }
+
+        const q = mcqQuestions[mcqStep];
+        const s = cw();
+        const currentLang = typeof lang !== 'undefined' ? lang : 'vi';
+
+        /* Remove previous MCQ container if any */
+        document.getElementById('mcq-container')?.remove();
+
+        const container = document.createElement('div');
+        container.className = 'mcq-container msg msg-ai';
+        container.id = 'mcq-container';
+
+        const questionEl = document.createElement('div');
+        questionEl.className = 'mcq-question';
+        questionEl.textContent = `${mcqStep + 1}. ${q.question}`;
+        container.appendChild(questionEl);
+
+        const optionsEl = document.createElement('div');
+        optionsEl.className = 'mcq-options';
+
+        q.options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'mcq-option';
+          btn.textContent = opt.label;
+          btn.addEventListener('click', () => selectMCQOption(q.id, opt.value, opt.label, btn));
+          optionsEl.appendChild(btn);
+        });
+
+        /* Skip button */
+        const skipBtn = document.createElement('button');
+        skipBtn.className = 'mcq-option';
+        skipBtn.style.opacity = '0.6';
+        skipBtn.style.fontSize = '10.5px';
+        skipBtn.textContent = s.surveySkip;
+        skipBtn.addEventListener('click', () => {
+          mcqStep++;
+          showMCQQuestion();
+        });
+        optionsEl.appendChild(skipBtn);
+
+        container.appendChild(optionsEl);
+
+        /* Progress dots */
+        const progressEl = document.createElement('div');
+        progressEl.className = 'mcq-progress';
+        for (let i = 0; i < mcqQuestions.length; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'mcq-progress-dot';
+          if (i < mcqStep) dot.classList.add('done');
+          else if (i === mcqStep) dot.classList.add('active');
+          progressEl.appendChild(dot);
+        }
+        container.appendChild(progressEl);
+
+        msgs.appendChild(container);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      function selectMCQOption(questionId, value, label, btnEl) {
+        /* Mark selected */
+        btnEl.parentElement.querySelectorAll('.mcq-option').forEach(b => b.classList.remove('selected'));
+        btnEl.classList.add('selected');
+
+        /* Store answer */
+        mcqAnswers[questionId] = value;
+
+        /* Show user's choice as a message */
+        pushMsg(label, 'user');
+
+        /* Advance after short delay */
+        setTimeout(() => {
+          mcqStep++;
+          showMCQQuestion();
+        }, 400);
+      }
+
+      async function finishMCQ() {
+        mcqActive = false;
+        document.getElementById('mcq-container')?.remove();
+
+        const s = cw();
+        const currentLang = typeof lang !== 'undefined' ? lang : 'vi';
+
+        pushMsg(s.surveyDone, 'ai');
+        pushTyping();
+
+        try {
+          const res = await fetch(`${API}/api/v1/recommend`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...mcqAnswers,
+              lang: currentLang,
+            }),
+            signal: AbortSignal.timeout(10000),
+          });
+          const data = await res.json();
+          removeTyping();
+          renderRecommendations(data.recommendations || []);
+        } catch {
+          removeTyping();
+          pushMsg(cw().errConn, 'ai');
+        }
+      }
+
+      function renderRecommendations(recs) {
+        if (!recs || recs.length === 0) {
+          pushMsg(cw().errServer, 'ai');
+          return;
+        }
+
+        const s = cw();
+        const currentLang = typeof lang !== 'undefined' ? lang : 'vi';
+
+        /* Header */
+        const header = document.createElement('div');
+        header.className = 'rec-header';
+        header.textContent = `✨ ${s.recHeader} (${recs.length})`;
+        msgs.appendChild(header);
+
+        /* Cards */
+        recs.forEach((rec, idx) => {
+          const card = document.createElement('a');
+          card.className = 'rec-card';
+          card.href = rec.link || `VNMT.html?id=${rec.id}`;
+          card.style.animationDelay = `${idx * 0.1}s`;
+
+          const cardHeader = document.createElement('div');
+          cardHeader.className = 'rec-card-header';
+
+          const name = document.createElement('div');
+          name.className = 'rec-card-name';
+          name.textContent = rec.name;
+          cardHeader.appendChild(name);
+
+          const badge = document.createElement('span');
+          badge.className = 'rec-card-badge';
+          badge.textContent = rec.badge || 'UNESCO';
+          cardHeader.appendChild(badge);
+
+          card.appendChild(cardHeader);
+
+          const meta = document.createElement('div');
+          meta.className = 'rec-card-meta';
+          meta.innerHTML = `<span>📍 ${rec.location || ''}</span><span>📅 ${rec.year || ''}</span>`;
+          card.appendChild(meta);
+
+          const desc = document.createElement('div');
+          desc.className = 'rec-card-desc';
+          desc.textContent = rec.desc || '';
+          card.appendChild(desc);
+
+          const cta = document.createElement('div');
+          cta.className = 'rec-card-cta';
+          cta.textContent = currentLang === 'vi' ? 'Khám phá →' : 'Explore →';
+          card.appendChild(cta);
+
+          msgs.appendChild(card);
+        });
+
+        /* Restart button */
+        const restartBtn = document.createElement('button');
+        restartBtn.className = 'mcq-option';
+        restartBtn.style.marginTop = '8px';
+        restartBtn.style.alignSelf = 'flex-start';
+        restartBtn.textContent = cw().surveyRestart;
+        restartBtn.addEventListener('click', () => {
+          startMCQ();
+        });
+        const restartWrap = document.createElement('div');
+        restartWrap.style.maxWidth = '88%';
+        restartWrap.style.alignSelf = 'flex-start';
+        restartWrap.appendChild(restartBtn);
+        msgs.appendChild(restartWrap);
+
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      /* ── health poller ── */
+      function checkHealth() {
+        fetch(`${API}/health`, { signal: AbortSignal.timeout(3000) })
+          .then(r => r.json())
+          .then(data => {
+            const s = cw();
+            /* Backend returns "healthy" — treat as online */
+            if (data.status === 'online' || data.status === 'healthy') {
+              botStatus = 'online';
+              dot.className = 'chat-status-dot online';
+              stText.textContent = s.statusOnline;
+              send.disabled = false;
+              if (open && !welcomeSent) { pushWelcome(); welcomeSent = true; }
+            } else if (data.status === 'initializing') {
+              botStatus = 'loading';
+              dot.className = 'chat-status-dot loading';
+              stText.textContent = s.statusLoading;
+              send.disabled = true;
+            } else {
+              botStatus = 'error';
+              dot.className = 'chat-status-dot error';
+              stText.textContent = s.statusError;
+              send.disabled = true;
+            }
+          })
+          .catch(() => {
+            botStatus = 'error';
+            dot.className = 'chat-status-dot error';
+            stText.textContent = cw().statusError;
+            send.disabled = true;
+          });
+      }
+
+      checkHealth();
+      setInterval(checkHealth, POLL);
+
+      /* ── send message ── */
+      async function sendMessage() {
+        const text = input.value.trim();
+        if (!text || botStatus !== 'online') return;
+
+        /* If MCQ is active, ignore text input (user should click options) */
+        if (mcqActive) return;
+
+        input.value = '';
+        send.disabled = true;
+        pushMsg(text, 'user');
+        pushTyping();
+
+        try {
+          const res = await fetch(`${API}/api/v1/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text, lang: typeof lang !== 'undefined' ? lang : 'vi' }),
+            signal: AbortSignal.timeout(30000),
+          });
+          const data = await res.json();
+          removeTyping();
+          pushMsg(data.response || cw().errServer, 'ai');
+
+          /* If small talk steers to survey, auto-start MCQ */
+          if (data.steer_to_survey && !mcqActive) {
+            setTimeout(() => startMCQ(), 1000);
+          }
+        } catch {
+          removeTyping();
+          pushMsg(cw().errConn, 'ai');
+        } finally {
+          send.disabled = (botStatus !== 'online');
+          input.focus();
+        }
+      }
+
+      send.addEventListener('click', sendMessage);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+      /* ── init ── */
+      applyWidgetLang();
+      send.disabled = true;
+    })();
+  </script>
+</body>
+
+</html>

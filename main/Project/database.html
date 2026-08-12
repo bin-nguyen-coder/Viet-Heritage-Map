@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kho lưu trữ Bảo vật — Vietnam Treasures Database</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page-bg:    #f7f3ec;
+      --card-bg:    #fdfaf5;
+      --border:     #d9cfc0;
+      --text:       #2a1f0f;
+      --muted:      #7a6a52;
+      --heading:    #1a1008;
+      --red:        #7a1f1f;
+      --red-soft:   rgba(122,31,31,0.08);
+      --gold:       #8a6a20;
+      --gold-light: #b8922c;
+      --nav-bg:     #0a0900;
+      --nav-border: rgba(201,168,76,0.14);
+      --nav-gold:   #c9a84c;
+      --nav-text:   #e8dfc8;
+      --nav-muted:  #8a7c5e;
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+    }
+
+    html.lang-vi { --font-body: 'Merriweather', serif; }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--page-bg); color:var(--text);
+      font-family:var(--font-body); min-height:100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position:sticky; top:0; z-index:200;
+      height:62px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 48px;
+      background:var(--nav-bg); backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--nav-border);
+    }
+    .nav-logo {
+      display:flex; align-items:center; gap:10px; text-decoration:none;
+      color:var(--nav-text); font-family:'Playfair Display',serif;
+      font-size:1.05rem; font-weight:700;
+    }
+    .nav-logo svg { color:var(--nav-gold); }
+    .nav-links {
+      display:flex; gap:32px; list-style:none;
+      position:absolute; left:50%; transform:translateX(-50%);
+    }
+    .nav-links a {
+      text-decoration:none; font-size:11px; font-weight:500;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--nav-muted); transition:color .2s;
+    }
+    .nav-links a:hover  { color:var(--nav-gold); }
+    .nav-links a.active { color:var(--nav-gold); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .lang-toggle {
+      display:flex; gap:3px;
+      background:rgba(255,255,255,0.04); border:1px solid #2c2507;
+      border-radius:20px; padding:3px;
+    }
+    .lang-btn {
+      background:transparent; border:none; color:var(--nav-muted);
+      padding:4px 12px; border-radius:16px; font-size:11px; font-weight:500;
+      font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .2s;
+    }
+    .lang-btn:hover  { color:var(--nav-gold); }
+    .lang-btn.active { background:var(--nav-gold); color:#1a1400; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background:var(--nav-bg);
+      border-bottom:2px solid var(--nav-gold);
+      padding:40px 48px 36px;
+    }
+    .page-header-eyebrow {
+      font-size:9.5px; font-weight:500; letter-spacing:0.3em; text-transform:uppercase;
+      color:var(--nav-gold); margin-bottom:10px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .page-header-eyebrow::before { content:''; width:24px; height:1px; background:var(--nav-gold); }
+    .page-header h1 {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.8rem,3vw,2.6rem); font-weight:700;
+      color:#f5f0e6; letter-spacing:-0.01em;
+    }
+    .page-header h1 em { font-style:italic; color:var(--nav-gold); }
+
+    /* ── MAIN CONTENT WRAPPER ── */
+    .content { max-width:1300px; margin:0 auto; padding:36px 48px 64px; }
+
+    /* ── SEARCH PANEL ── */
+    .search-panel {
+      background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+      padding:28px 32px; margin-bottom:28px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    }
+    .search-grid {
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px 28px;
+      align-items:end;
+    }
+    .search-field { display:flex; flex-direction:column; gap:7px; }
+    .search-label {
+      font-size:10.5px; font-weight:600; letter-spacing:0.18em;
+      text-transform:uppercase; color:var(--muted);
+    }
+    .search-input, .search-select {
+      background:#fff; border:1.5px solid var(--border); border-radius:5px;
+      padding:9px 13px; color:var(--text); font-size:13.5px;
+      font-family:var(--font-body); outline:none; transition:border-color .2s;
+      width:100%;
+    }
+    .search-input::placeholder { color:#b0a090; }
+    .search-input:focus, .search-select:focus { border-color:var(--red); }
+
+    /* Century range row */
+    .century-row { display:flex; gap:10px; align-items:center; }
+    .century-row input[type=number] {
+      background:#fff; border:1.5px solid var(--border); border-radius:5px;
+      padding:9px 11px; color:var(--text); font-size:13.5px;
+      font-family:var(--font-body); outline:none; transition:border-color .2s;
+      width:100%;
+    }
+    .century-row input[type=number]:focus { border-color:var(--red); }
+    .century-row input[type=number]::placeholder { color:#b0a090; font-size:12px; }
+    .century-sep { color:var(--muted); font-size:13px; white-space:nowrap; flex-shrink:0; }
+    .century-hint { font-size:10px; color:var(--muted); margin-top:4px; }
+
+    /* Action row */
+    .search-actions {
+      display:flex; align-items:center; gap:12px; margin-top:20px;
+      padding-top:18px; border-top:1px solid var(--border);
+    }
+    .btn-search {
+      background:var(--red); color:#fff; border:none; border-radius:5px;
+      padding:10px 26px; font-size:12px; font-weight:600; letter-spacing:0.1em;
+      text-transform:uppercase; font-family:var(--font-body);
+      cursor:pointer; transition:background .2s;
+    }
+    .btn-search:hover { background:#9b2828; }
+    .btn-reset {
+      background:transparent; color:var(--muted); border:1.5px solid var(--border);
+      border-radius:5px; padding:10px 20px; font-size:12px; font-weight:500;
+      font-family:var(--font-body); cursor:pointer; transition:all .2s;
+    }
+    .btn-reset:hover { border-color:var(--red); color:var(--red); }
+    .result-summary {
+      margin-left:auto; font-size:12.5px; color:var(--muted);
+    }
+    .result-summary strong { color:var(--text); font-weight:600; }
+
+    /* ── RESULTS TABLE ── */
+    .table-wrap {
+      background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+      overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    }
+    table { width:100%; border-collapse:collapse; }
+    thead tr {
+      background:#ede7db; border-bottom:2px solid var(--border);
+    }
+    thead th {
+      padding:13px 20px; text-align:left;
+      font-size:10px; font-weight:700; letter-spacing:0.2em;
+      text-transform:uppercase; color:var(--muted);
+    }
+    thead th.col-no  { width:56px; }
+    thead th.col-year { width:100px; }
+    thead th.col-loc { width:30%; }
+
+    tbody tr {
+      border-bottom:1px solid #e8e0d4;
+      transition:background .15s;
+    }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:hover { background:#f0ebe2; }
+
+    td { padding:16px 20px; vertical-align:top; }
+    .td-no {
+      font-size:12px; color:var(--muted); font-weight:500;
+      padding-top:19px;
+    }
+    .td-name-en {
+      font-family:'Playfair Display',serif; font-size:15px;
+      font-weight:700; color:var(--heading); margin-bottom:3px;
+    }
+    .td-name-vi {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:12.5px; color:var(--muted);
+    }
+    .td-tags { margin-top:5px; display:flex; gap:6px; flex-wrap:wrap; }
+    .td-tag {
+      display:inline-block;
+      font-size:9.5px; font-weight:600; letter-spacing:0.08em;
+      text-transform:uppercase; padding:3px 9px; border-radius:3px;
+      border:1px solid;
+    }
+    .td-loc  { font-size:13px; color:var(--muted); padding-top:19px; line-height:1.5; }
+    .td-year { font-size:13px; color:var(--muted); padding-top:19px; font-weight:500; }
+
+    /* Pagination */
+    .pagination {
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      padding:28px 0 0; flex-wrap:wrap;
+    }
+    .page-btn {
+      background:#fff; border:1.5px solid var(--border); border-radius:4px;
+      padding:7px 13px; font-size:12.5px; color:var(--muted);
+      cursor:pointer; transition:all .18s; font-family:var(--font-body);
+      min-width:36px; text-align:center;
+    }
+    .page-btn:hover    { border-color:var(--red); color:var(--red); }
+    .page-btn.active   { background:var(--red); border-color:var(--red); color:#fff; }
+    .page-btn:disabled { opacity:.35; cursor:not-allowed; }
+
+    /* Empty state */
+    .empty-state {
+      text-align:center; padding:64px 32px;
+      color:var(--muted); font-size:14px;
+    }
+    .empty-state svg { margin-bottom:16px; opacity:.3; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px) {
+      .content { padding:24px 20px 48px; }
+      .page-header { padding:28px 20px; }
+      nav { padding:0 20px; }
+      .nav-links { display:none; }
+      .search-grid { grid-template-columns:1fr; }
+      thead th.col-year, td:nth-child(3) { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor">
+      <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/>
+    </svg>
+    <span>VietHeritage Map</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"   id="nav-home">Trang chủ</a></li>
+    <li><a href="VNMT.html"    id="nav-map">Bản đồ</a></li>
+    <li><a href="database.html" class="active" id="nav-db">Kho lưu trữ</a></li>
+    <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-eyebrow" id="ph-eyebrow">Cơ sở dữ liệu</div>
+  <h1><span id="ph-h1a">Kho Lưu Trữ</span> <em id="ph-h1b">Di Sản Phi Vật Thể</em></h1>
+</div>
+
+<div class="content">
+
+  <!-- SEARCH PANEL -->
+  <div class="search-panel">
+    <div class="search-grid">
+
+      <!-- Name search -->
+      <div class="search-field">
+        <label class="search-label" id="lbl-name">Tìm theo tên</label>
+        <input class="search-input" id="q-name"
+               type="text" autocomplete="off" />
+      </div>
+
+      <!-- Location -->
+      <div class="search-field">
+        <label class="search-label" id="lbl-loc">Địa điểm</label>
+        <input class="search-input" id="q-loc" type="text" autocomplete="off" />
+      </div>
+
+      <!-- Genre -->
+      <div class="search-field">
+        <label class="search-label" id="lbl-genre">Thể loại</label>
+        <select class="search-select" id="q-genre">
+          <option value="">-- Tất cả --</option>
+          <option value="instrumental" id="opt-instr">Âm nhạc · Nhạc cụ</option>
+          <option value="singings"    id="opt-singings">Hát · Dân ca</option>
+          <option value="belief"      id="opt-belief">Tín ngưỡng · Lễ nghi</option>
+          <option value="festival"    id="opt-fest">Lễ hội dân gian</option>
+          <option value="craft"       id="opt-craft">Nghề thủ công</option>
+        </select>
+      </div>
+
+      <!-- Status -->
+      <div class="search-field">
+        <label class="search-label" id="lbl-status">Trạng thái</label>
+        <select class="search-select" id="q-status">
+          <option value="">-- Tất cả --</option>
+          <option value="inscribed" id="opt-inscribed">Danh sách đại diện</option>
+          <option value="urgent"    id="opt-urgent">Cấp thiết</option>
+          <option value="national"  id="opt-national">Quốc gia</option>
+          <option value="tentative" id="opt-tentative">Đề cử</option>
+        </select>
+      </div>
+
+      <!-- Keyword -->
+      <div class="search-field">
+        <label class="search-label" id="lbl-kw">Từ khóa</label>
+        <input class="search-input" id="q-kw" type="text" autocomplete="off" />
+      </div>
+
+    </div><!-- /search-grid -->
+
+    <div class="search-actions">
+      <button class="btn-search" id="btn-search" onclick="doSearch()">
+        <span id="lbl-btn-search">Tìm kiếm</span>
+      </button>
+      <button class="btn-reset" onclick="resetSearch()">
+        <span id="lbl-btn-reset">Đặt lại</span>
+      </button>
+      <span class="result-summary" id="result-summary"></span>
+    </div>
+  </div><!-- /search-panel -->
+
+  <!-- RESULTS TABLE -->
+  <div class="table-wrap">
+    <table id="results-table">
+      <thead>
+        <tr>
+          <th class="col-no"  id="th-no">STT</th>
+          <th                 id="th-name">Tên Bảo Vật</th>
+          <th class="col-year" id="th-year">Năm</th>
+          <th class="col-loc" id="th-loc">Địa Điểm Lưu Giữ</th>
+        </tr>
+      </thead>
+      <tbody id="results-body"></tbody>
+    </table>
+    <div class="empty-state" id="empty-state" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <p id="empty-msg">Không tìm thấy di sản phù hợp.</p>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination" id="pagination"></div>
+
+</div><!-- /content -->
+
+<script src="data.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   CONFIG & STATE
+═══════════════════════════════════════ */
+const PAGE_SIZE = 30;
+let lang        = localStorage.getItem('vnmt_lang') || 'vi';
+let filtered    = [];
+let currentPage = 1;
+
+/* ── Label readers (status / genre) — STATUS_CONFIG & GENRE_CONFIG
+   come from data.js. ── */
+function statusLabel(key, form='short') {
+  return STATUS_CONFIG[key]?.[lang]?.[form] || key || '';
+}
+function genreLabel(key, form='short') {
+  return GENRE_CONFIG[key]?.[lang]?.[form] || key || '';
+}
+
+/* ═══════════════════════════════════════
+   I18N
+═══════════════════════════════════════ */
+const DB_STRINGS = {
+  vi: {
+    navHome:'Trang chủ', navMap:'Bản đồ', navDb:'Kho lưu trữ',
+    phEyebrow:'Cơ sở dữ liệu',
+    phH1a:'Kho Lưu Trữ', phH1b:'Di Sản Phi Vật Thể',
+    lblName:'Tìm theo tên',
+    lblLoc:'Địa điểm', lblGenre:'Thể loại', lblStatus:'Trạng thái', lblKw:'Từ khóa',
+    optAll:'-- Tất cả --',
+    optInstr:'Âm nhạc · Nhạc cụ', optSingings:'Hát · Dân ca',
+    optBelief:'Tín ngưỡng · Lễ nghi', optFest:'Lễ hội dân gian',
+    optCraft:'Nghề thủ công',
+    optInscribed:'Danh sách đại diện', optUrgent:'Cấp thiết',
+    optNational:'Quốc gia', optTentative:'Đề cử',
+    btnSearch:'Tìm kiếm', btnReset:'Đặt lại',
+    resultSummary: n => `Hiển thị <strong>${n}</strong> di sản`,
+    thNo:'STT', thName:'Tên Di Sản', thYear:'Năm công nhận', thLoc:'Địa Điểm',
+    emptyMsg:'Không tìm thấy di sản phù hợp.',
+    namePlaceholder:'Nhập tên di sản…',
+    locPlaceholder:'Nhập địa điểm hoặc tỉnh…',
+    kwPlaceholder:'Nhập từ khóa…',
+  },
+  en: {
+    navHome:'Home', navMap:'Map', navDb:'Database',
+    phEyebrow:'Database',
+    phH1a:'Intangible Heritage', phH1b:'Archive',
+    lblName:'Search by name',
+    lblLoc:'Location', lblGenre:'Genre', lblStatus:'Status', lblKw:'Keyword',
+    optAll:'-- All --',
+    optInstr:'Instrumental Music', optSingings:'Singing · Folk Songs',
+    optBelief:'Belief & Ritual', optFest:'Folk Festival',
+    optCraft:'Traditional Craft',
+    optInscribed:'Representative List', optUrgent:'Urgent Safeguarding',
+    optNational:'National', optTentative:'Tentative',
+    btnSearch:'Search', btnReset:'Reset',
+    resultSummary: n => `Showing <strong>${n}</strong> heritage items`,
+    thNo:'No.', thName:'Heritage Name', thYear:'Year', thLoc:'Location',
+    emptyMsg:'No heritage items match your search.',
+    namePlaceholder:'Search by name…',
+    locPlaceholder:'Enter location or province…',
+    kwPlaceholder:'Enter keyword…',
+  },
+};
+
+function S(key) { return DB_STRINGS[lang][key]; }
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.documentElement.classList.toggle('lang-vi', lang === 'vi');
+  const s = DB_STRINGS[lang];
+  document.getElementById('nav-home').textContent  = s.navHome;
+  document.getElementById('nav-map').textContent   = s.navMap;
+  document.getElementById('nav-db').textContent    = s.navDb;
+  document.getElementById('ph-eyebrow').textContent = s.phEyebrow;
+  document.getElementById('ph-h1a').textContent    = s.phH1a;
+  document.getElementById('ph-h1b').textContent    = s.phH1b;
+  document.getElementById('lbl-name').textContent  = s.lblName;
+  document.getElementById('lbl-loc').textContent   = s.lblLoc;
+  document.getElementById('lbl-genre').textContent  = s.lblGenre;
+  document.getElementById('lbl-status').textContent = s.lblStatus;
+  document.getElementById('lbl-kw').textContent    = s.lblKw;
+  document.getElementById('lbl-btn-search').textContent = s.btnSearch;
+  document.getElementById('lbl-btn-reset').textContent  = s.btnReset;
+  document.getElementById('th-no').textContent   = s.thNo;
+  document.getElementById('th-name').textContent = s.thName;
+  document.getElementById('th-year').textContent = s.thYear;
+  document.getElementById('th-loc').textContent  = s.thLoc;
+  document.getElementById('empty-msg').textContent = s.emptyMsg;
+  document.getElementById('q-name').placeholder = s.namePlaceholder;
+  document.getElementById('q-loc').placeholder  = s.locPlaceholder;
+  document.getElementById('q-kw').placeholder   = s.kwPlaceholder;
+  /* update select options */
+  const selGenre = document.getElementById('q-genre');
+  selGenre.options[0].text = s.optAll;
+  document.getElementById('opt-instr').text    = s.optInstr;
+  document.getElementById('opt-singings').text = s.optSingings;
+  document.getElementById('opt-belief').text   = s.optBelief;
+  document.getElementById('opt-fest').text      = s.optFest;
+  document.getElementById('opt-craft').text     = s.optCraft;
+  const selStatus = document.getElementById('q-status');
+  selStatus.options[0].text = s.optAll;
+  document.getElementById('opt-inscribed').text = s.optInscribed;
+  document.getElementById('opt-urgent').text    = s.optUrgent;
+  document.getElementById('opt-national').text  = s.optNational;
+  document.getElementById('opt-tentative').text = s.optTentative;
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === lang)
+  );
+  /* re-render table in new language */
+  renderPage(currentPage);
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    lang = btn.dataset.lang;
+    localStorage.setItem('vnmt_lang', lang);
+    applyLang();
+  });
+});
+
+/* ═══════════════════════════════════════
+   SEARCH & FILTER
+═══════════════════════════════════════ */
+function doSearch() {
+  const name   = document.getElementById('q-name').value.trim().toLowerCase();
+  const loc    = document.getElementById('q-loc').value.trim().toLowerCase();
+  const kw     = document.getElementById('q-kw').value.trim().toLowerCase();
+  const genre  = document.getElementById('q-genre').value;
+  const status = document.getElementById('q-status').value;
+
+  filtered = TREASURES.filter(t => {
+    const eName = (t.english || '').toLowerCase();
+    const vName = (t.name    || '').toLowerCase();
+    const tLoc  = (t.location|| '').toLowerCase();
+    const tDesc = (t.desc    || '').toLowerCase();
+    const tDescVi = (t.desc_vi|| '').toLowerCase();
+    const tBadge = (t.badge  || '').toLowerCase();
+    const tProv  = (Array.isArray(t.provinces) ? t.provinces.join(' ') : '').toLowerCase();
+
+    if (name && !eName.includes(name) && !vName.includes(name)) return false;
+    if (loc  && !tLoc.includes(loc) && !tProv.includes(loc))         return false;
+    if (kw   && !eName.includes(kw) && !vName.includes(kw)
+             && !tDesc.includes(kw) && !tDescVi.includes(kw)
+             && !tBadge.includes(kw) && !tLoc.includes(kw)
+             && !tProv.includes(kw))                                  return false;
+    if (genre  && getGenre(t) !== genre)          return false;
+    if (status && getStatus(t) !== status)        return false;
+    return true;
+  });
+
+  currentPage = 1;
+  renderPage(1);
+}
+
+function resetSearch() {
+  ['q-name','q-loc','q-kw'].forEach(id =>
+    { document.getElementById(id).value = ''; });
+  document.getElementById('q-genre').value  = '';
+  document.getElementById('q-status').value = '';
+  filtered = [...TREASURES];
+  currentPage = 1;
+  renderPage(1);
+}
+
+/* ═══════════════════════════════════════
+   RENDER
+═══════════════════════════════════════ */
+function renderPage(page) {
+  currentPage = page;
+  const total  = filtered.length;
+  const start  = (page - 1) * PAGE_SIZE;
+  const slice  = filtered.slice(start, start + PAGE_SIZE);
+
+  /* result summary */
+  document.getElementById('result-summary').innerHTML = S('resultSummary')(total);
+
+  /* table body */
+  const tbody = document.getElementById('results-body');
+  const empty = document.getElementById('empty-state');
+
+  if (slice.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = slice.map((t, i) => {
+      const status   = getStatus(t);
+      const genre    = getGenre(t);
+      const stC      = STATUS_CONFIG[status]?.color || '#8a7c5e';
+      const gnC      = GENRE_CONFIG[genre]?.color   || '#8a7c5e';
+      const stLbl    = statusLabel(status, 'short');
+      const gnLbl    = genreLabel(genre, 'short');
+      const nameMain = lang === 'vi' ? t.name : t.english;
+      const nameSub  = lang === 'vi' ? t.english : t.name;
+      return `
+        <tr onclick="window.location='artifact.html?id=${t.id}'"
+            style="cursor:pointer"
+            title="${nameMain}">
+          <td class="td-no">${start + i + 1}</td>
+          <td>
+            <div class="td-name-en">${nameMain}</div>
+            <div class="td-name-vi">${nameSub}</div>
+            <div class="td-tags">
+              <span class="td-tag"
+                    style="color:${stC};border-color:${stC}55;background:${stC}11">
+                ${stLbl}
+              </span>
+              <span class="td-tag"
+                    style="color:${gnC};border-color:${gnC}55;background:${gnC}11">
+                ${gnLbl}
+              </span>
+            </div>
+          </td>
+          <td class="td-year">${t.year || '—'}</td>
+          <td class="td-loc">${t.location}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  /* pagination */
+  renderPagination(total, page);
+}
+
+function renderPagination(total, current) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const pg    = document.getElementById('pagination');
+  if (pages <= 1) { pg.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="renderPage(${current-1})"
+               ${current===1?'disabled':''}>‹</button>`;
+
+  for (let p = 1; p <= pages; p++) {
+    if (p === 1 || p === pages || Math.abs(p - current) <= 2) {
+      html += `<button class="page-btn ${p===current?'active':''}"
+                onclick="renderPage(${p})">${p}</button>`;
+    } else if (Math.abs(p - current) === 3) {
+      html += `<span class="page-btn" style="cursor:default;pointer-events:none">…</span>`;
+    }
+  }
+
+  html += `<button class="page-btn" onclick="renderPage(${current+1})"
+            ${current===pages?'disabled':''}>›</button>`;
+  pg.innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* Enter key in any search field triggers search */
+document.querySelectorAll('.search-input, .search-select').forEach(el => {
+  el.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+});
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+filtered = [...TREASURES];
+applyLang();
+doSearch();
+</script>
+</body>
+</html>
