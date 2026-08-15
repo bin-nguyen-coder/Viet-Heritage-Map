@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Địa điểm — VietHeritage Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --page-bg:  #f7f3ec;
+      --card-bg:  #fdfaf5;
+      --border:   #d9cfc0;
+      --text:     #2a1f0f;
+      --muted:    #7a6a52;
+      --heading:  #1a1008;
+      --red:      #7a1f1f;
+      --gold:     #8a6a20;
+      --gold-light:#b8922c;
+      --nav-bg:   #0a0900;
+      --nav-border:rgba(201,168,76,0.14);
+      --nav-gold: #c9a84c;
+      --nav-muted:#8a7c5e;
+      --nav-text: #e8dfc8;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--page-bg); color:var(--text); font-family:'Merriweather',serif; min-height:100vh; }
+
+    /* ── NAV ── */
+    nav {
+      position:sticky; top:0; z-index:200; height:62px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 48px;
+      background:var(--nav-bg); border-bottom:1px solid var(--nav-border);
+    }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--nav-text); font-size:1.05rem; font-weight:700; }
+    .nav-logo svg { color:var(--nav-gold); }
+    .nav-links { display:flex; gap:28px; list-style:none; position:absolute; left:50%; transform:translateX(-50%); }
+    .nav-links a { text-decoration:none; font-size:11px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--nav-muted); transition:color .2s; }
+    .nav-links a:hover { color:var(--nav-gold); }
+    .nav-links a.active { color:var(--nav-gold); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .lang-toggle { display:flex; gap:3px; background:rgba(255,255,255,0.04); border:1px solid #2c2507; border-radius:20px; padding:3px; }
+    .lang-btn { background:transparent; border:none; color:var(--nav-muted); padding:4px 12px; border-radius:16px; font-size:11px; font-weight:500; font-family:'Merriweather',serif; cursor:pointer; transition:all .2s; }
+    .lang-btn:hover { color:var(--nav-gold); }
+    .lang-btn.active { background:var(--nav-gold); color:#1a1400; }
+
+    /* ── HERO ── */
+    .hero { position:relative; height:340px; overflow:hidden; border-bottom:2px solid var(--nav-gold); }
+    .hero img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .hero-overlay { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:36px 48px; background:linear-gradient(transparent 30%, rgba(10,9,0,.88)); }
+    .hero-breadcrumb { font-size:11px; color:rgba(232,223,200,.7); margin-bottom:10px; }
+    .hero-breadcrumb a { color:rgba(232,223,200,.7); text-decoration:none; }
+    .hero-breadcrumb a:hover { color:var(--nav-gold); }
+    .hero-region { font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:var(--nav-gold); margin-bottom:8px; }
+    .hero h1 { font-family:'Playfair Display',serif; font-size:2.5rem; color:#fff; }
+
+    /* ── CONTENT ── */
+    .content { max-width:920px; margin:0 auto; padding:36px 24px 64px; display:grid; grid-template-columns:1fr 300px; gap:32px; align-items:start; }
+    .main-col { display:flex; flex-direction:column; gap:28px; }
+    .desc { font-size:15px; line-height:1.85; color:var(--text); }
+    .section-label { font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+    .timeline { display:flex; flex-wrap:wrap; gap:6px; }
+    .chip { font-size:11px; padding:4px 10px; border-radius:12px; border:1px solid; font-weight:500; }
+    .artifacts { display:flex; flex-direction:column; gap:14px; }
+    .era-block { display:flex; flex-direction:column; gap:6px; }
+    .era-block-head { font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; }
+    .era-count { font-size:10px; font-weight:500; opacity:.7; }
+    .artifact-row { display:flex; align-items:center; gap:10px; text-decoration:none; padding:9px 13px; border:1px solid var(--border); border-radius:8px; background:var(--card-bg); transition:border-color .15s; }
+    .artifact-row:hover { border-color:var(--gold-light); }
+    .artifact-dot { width:8px; height:8px; border-radius:50%; flex:none; }
+    .artifact-name { font-size:13px; color:var(--heading); font-weight:500; }
+    .artifact-sub { font-size:11px; color:var(--muted); margin-left:auto; text-align:right; }
+    .empty { color:var(--muted); font-size:13px; }
+
+    /* ── SIDEBAR ── */
+    .side-col { display:flex; flex-direction:column; gap:16px; position:sticky; top:78px; }
+    .side-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:18px; }
+    .side-card h3 { font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+    .info-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; }
+    .info-row:last-child { border-bottom:none; }
+    .info-row .k { color:var(--muted); }
+    .info-row .v { font-weight:500; color:var(--heading); text-align:right; }
+    .map-box { height:180px; border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 18px; border-radius:8px; font-size:13px; font-weight:500; text-decoration:none; cursor:pointer; font-family:'Merriweather',serif; border:1px solid transparent; }
+    .btn-primary { background:var(--red); color:#fff; }
+    .btn-primary:hover { background:#8b2222; }
+    .btn-ghost { background:transparent; color:var(--muted); border-color:var(--border); }
+    .btn-ghost:hover { color:var(--heading); border-color:var(--gold-light); }
+    .actions { display:flex; flex-direction:column; gap:10px; }
+
+    /* ── ERROR ── */
+    .error-state { display:none; text-align:center; padding:80px 24px; color:var(--muted); }
+    .error-state h2 { font-family:'Playfair Display',serif; color:var(--heading); margin-bottom:10px; }
+
+    /* ── FOOTER ── */
+    footer { display:flex; justify-content:space-between; align-items:center; padding:14px 48px; background:var(--nav-bg); color:#8a7c5e; font-size:11px; border-top:1px solid var(--nav-border); }
+    footer em { color:var(--nav-gold); font-style:normal; }
+
+    @media (max-width:900px) {
+      nav { padding:0 20px; }
+      .nav-links { display:none; }
+      .hero { height:240px; }
+      .hero-overlay { padding:24px 20px; }
+      .hero h1 { font-size:1.8rem; }
+      .content { grid-template-columns:1fr; padding:24px 20px 48px; }
+      .side-col { position:static; }
+      footer { flex-direction:column; gap:6px; padding:14px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor">
+      <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/>
+    </svg>
+    <span>VietHeritage Map</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+    <li><a href="VNMT.html" id="nav-map">Bản đồ</a></li>
+    <li><a href="journey.html" class="active" id="nav-journey">Hành trình Bảo vật</a></li>
+    <li><a href="database.html" id="nav-db">Kho lưu trữ</a></li>
+    <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO (filled by JS) ── -->
+<section class="hero" id="hero">
+  <img id="hero-img" src="" alt="" />
+  <div class="hero-overlay">
+    <div class="hero-breadcrumb" id="hero-breadcrumb"></div>
+    <div class="hero-region" id="hero-region"></div>
+    <h1 id="hero-title"></h1>
+  </div>
+</section>
+
+<!-- ── CONTENT (filled by JS) ── -->
+<div class="content" id="content">
+  <div class="main-col">
+    <p class="desc" id="desc"></p>
+    <div>
+      <div class="section-label" id="lbl-timeline">Dòng thời gian</div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+    <div>
+      <div class="section-label" id="lbl-artifacts">Bảo vật tại đây</div>
+      <div class="artifacts" id="artifacts"></div>
+    </div>
+  </div>
+  <div class="side-col">
+    <div class="side-card">
+      <h3 id="lbl-info">Thông tin</h3>
+      <div id="info"></div>
+    </div>
+    <div class="map-box" id="map"></div>
+    <div class="actions">
+      <a class="btn btn-primary" id="btn-maps" href="#" target="_blank" rel="noopener"></a>
+      <a class="btn btn-ghost" id="btn-back" href="journey.html"></a>
+    </div>
+  </div>
+</div>
+
+<!-- ── ERROR ── -->
+<div class="error-state" id="error-state">
+  <h2 id="err-title">Không tìm thấy địa điểm</h2>
+  <p id="err-msg"></p>
+  <a href="journey.html" class="btn btn-ghost" id="err-back">← Trở lại hành trình</a>
+</div>
+
+<footer>
+  <span id="footer-copyright">© 2026 Hành trình Bảo vật Việt Nam</span>
+  <span id="footer-credit">Dữ liệu: <em>357 Bảo vật Quốc gia</em></span>
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- App data & logic -->
+<script src="location_en.js"></script>
+<script src="national_treasures.js"></script>
+<script src="treasure_common.js"></script>
+<script src="journey_sites.js"></script>
+<script>
+const STRINGS = {
+  vi: {
+    navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navJourney: 'Hành trình Bảo vật',
+    pageTitle: ' — VietHeritage Map',
+    breadJourney: 'Hành trình Bảo vật',
+    step: 'Chặng',
+    lblTimeline: 'Dòng thời gian', lblArtifacts: 'Bảo vật tại đây', lblInfo: 'Thông tin',
+    region: 'Vùng', treasures: 'Bảo vật', eras: 'Thời kỳ', coords: 'Tọa độ',
+    openMaps: 'Mở Google Maps', backJourney: '← Trở lại hành trình',
+    errTitle: 'Không tìm thấy địa điểm', errMsg: 'Địa điểm này không tồn tại hoặc đã bị di chuyển.',
+    footerCopyright: '© 2026 Hành trình Bảo vật Việt Nam',
+    footerCredit: 'Dữ liệu: <em>357 Bảo vật Quốc gia</em>',
+  },
+  en: {
+    navHome: 'Home', navMap: 'Map', navDb: 'Database', navAbout: 'About', navJourney: 'Treasures Journey',
+    pageTitle: ' — VietHeritage Map',
+    breadJourney: 'Treasures Journey',
+    step: 'Stop',
+    lblTimeline: 'Timeline', lblArtifacts: 'Treasures here', lblInfo: 'Information',
+    region: 'Region', treasures: 'Treasures', eras: 'Eras', coords: 'Coordinates',
+    openMaps: 'Open Google Maps', backJourney: '← Back to journey',
+    errTitle: 'Site not found', errMsg: 'This site does not exist or has been moved.',
+    footerCopyright: '© 2026 Vietnam Treasures Journey',
+    footerCredit: 'Data: <em>357 National Treasures</em>',
+  },
+};
+function t(key) { return STRINGS[lang][key]; }
+
+const params = new URLSearchParams(location.search);
+const siteId = params.get('id');
+const site = SITES.find(s => s.id === siteId);
+
+let siteMap = null, siteMarker = null;
+
+function infoRow(k, v) {
+  return '<div class="info-row"><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + '</span></div>';
+}
+
+function render() {
+  const content = document.getElementById('content');
+  const hero = document.getElementById('hero');
+  const err = document.getElementById('error-state');
+
+  if (!site) {
+    content.style.display = 'none';
+    hero.style.display = 'none';
+    err.style.display = 'block';
+    document.getElementById('err-title').textContent = t('errTitle');
+    document.getElementById('err-msg').textContent = t('errMsg');
+    document.getElementById('err-back').textContent = t('backJourney');
+    return;
+  }
+
+  document.title = siteName(site) + t('pageTitle');
+  document.getElementById('hero-img').src = panoramaSVG(site, 1200, 600, false);
+  document.getElementById('hero-breadcrumb').innerHTML =
+    '<a href="journey.html">' + esc(t('breadJourney')) + '</a> › ' + esc(siteName(site));
+  document.getElementById('hero-region').textContent = t('step') + ' ' + site.order + ' · ' + site.region[lang];
+  document.getElementById('hero-title').textContent = siteName(site);
+  document.getElementById('desc').textContent = site.desc[lang] || site.desc.vi;
+
+  document.getElementById('timeline').innerHTML = site.eras.map(k =>
+    '<span class="chip" style="color:' + eraColor(k) + ';border-color:' + eraColor(k) + '55;background:' + eraColor(k) + '11">' + esc(eraLabel(k)) + '</span>'
+  ).join('');
+
+  const byEra = {};
+  site.treasures.forEach(tr => { const k = ntEraKey(tr); (byEra[k] = byEra[k] || []).push(tr); });
+  const eraKeys = ERA_ORDER.filter(k => byEra[k]);
+  document.getElementById('artifacts').innerHTML = eraKeys.map(k => {
+    const rows = byEra[k].map(tr => {
+      const title = lang === 'vi' ? (tr.name || tr.english) : (tr.english || tr.name);
+      const sub = lang === 'vi' ? (tr.english || '') : (tr.name || '');
+      return (
+        '<a class="artifact-row" href="treasure.html?id=' + tr.id + '" target="_blank">' +
+          '<span class="artifact-dot" style="background:' + eraColor(k) + '"></span>' +
+          '<span class="artifact-name">' + esc(title) + '</span>' +
+          (sub ? '<span class="artifact-sub">' + esc(sub) + '</span>' : '') +
+        '</a>'
+      );
+    }).join('');
+    return (
+      '<div class="era-block">' +
+        '<div class="era-block-head" style="color:' + eraColor(k) + '">' + esc(eraLabel(k)) + ' <span class="era-count">' + byEra[k].length + '</span></div>' +
+        rows +
+      '</div>'
+    );
+  }).join('') || '<p class="empty">—</p>';
+
+  document.getElementById('info').innerHTML =
+    infoRow(t('region'), site.region[lang]) +
+    infoRow(t('treasures'), String(site.treasures.length)) +
+    infoRow(t('eras'), String(site.eras.length)) +
+    infoRow(t('coords'), site.lat.toFixed(4) + ', ' + site.lng.toFixed(4));
+
+  document.getElementById('btn-maps').href = 'https://www.google.com/maps?q=' + site.lat + ',' + site.lng;
+  document.getElementById('btn-maps').textContent = t('openMaps');
+  document.getElementById('btn-back').textContent = t('backJourney');
+
+  initMap();
+}
+
+function initMap() {
+  if (!site) return;
+  if (!siteMap) {
+    siteMap = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([site.lat, site.lng], 12);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }).addTo(siteMap);
+  } else {
+    siteMap.setView([site.lat, site.lng], 12);
+  }
+  if (siteMarker) siteMarker.remove();
+  siteMarker = L.marker([site.lat, site.lng]).addTo(siteMap);
+}
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('nav-home', t('navHome'));
+  set('nav-map', t('navMap'));
+  set('nav-db', t('navDb'));
+  set('nav-about', t('navAbout'));
+  set('nav-journey', t('navJourney'));
+  set('lbl-timeline', t('lblTimeline'));
+  set('lbl-artifacts', t('lblArtifacts'));
+  set('lbl-info', t('lblInfo'));
+  set('footer-copyright', t('footerCopyright'));
+  document.getElementById('footer-credit').innerHTML = t('footerCredit');
+  render();
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    lang = btn.dataset.lang;
+    localStorage.setItem('vnmt_lang', lang);
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    applyLang();
+  });
+});
+
+applyLang();
+</script>
+
+</body>
+</html>
+

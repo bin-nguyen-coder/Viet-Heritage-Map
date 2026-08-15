@@ -52,7 +52,7 @@ function ntEraKey(t) {
   if (/nhà mạc|thời mạc|\bmạc\b/.test(s)) return 'mac';
   if (/tây sơn|tay son/.test(s)) return 'tayson';
   if (/nhà nguyễn|triều nguyễn|nguyễn dynasty|thời nguyễn|\bnguyễn\b|huế|hoàng thành|thiệu trị|minh mạng|tự đức|thái hòa/.test(s)) return 'nguyen';
-  if (/nhà lê|thời lê|lam kinh|lê dynasty|\blê\s*$|lê sơ|lê trung|lê trung hưng/.test(s)) return 'le';
+  if (/nhà lê|thời lê|lam kinh|lê dynasty|\blê\s*$|lê sơ|lê trung|lê trung hưng|kính thiên|kinh thien/.test(s)) return 'le';
   if (/20th century|20th-century|19th|18th|17th|16th|15th|14th|13th|12th|11th|10th|9th|8th|7th|6th|century|19[0-9]{2}|20[0-9]{2}|1847|1975|1972|1954|1947|1946|1969|1966|2012|2013|2015|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|hiện đại|modern/.test(s)) return 'modern';
   return 'other';
 }
