@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Cửa hàng di sản — VietHeritage Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page-bg:  #f7f3ec;
+      --card-bg:  #fdfaf5;
+      --border:   #d9cfc0;
+      --text:     #2a1f0f;
+      --muted:    #7a6a52;
+      --heading:  #1a1008;
+      --red:      #7a1f1f;
+      --red-bright: #c42b2b;
+      --gold:     #8a6a20;
+      --gold-light: #c9a84c;
+      --nav-bg:   #0a0900;
+      --nav-gold: #c9a84c;
+      --nav-muted:#8a7c5e;
+      --nav-text: #e8dfc8;
+      --nav-brd:  rgba(201,168,76,0.14);
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+    }
+    html.lang-vi { --font-body: 'Merriweather', serif; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--page-bg);color:var(--text);font-family:var(--font-body);min-height:100vh;}
+
+    /* ── NAV ── */
+    nav{position:sticky;top:0;z-index:200;height:62px;display:flex;align-items:center;
+        justify-content:space-between;padding:0 48px;
+        background:var(--nav-bg);border-bottom:1px solid var(--nav-brd);}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;
+              color:var(--nav-text);font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+              flex:0 0 auto;}
+    .nav-logo svg{color:var(--nav-gold);}
+    .nav-links{display:flex;gap:32px;list-style:none;flex:1;justify-content:center;}
+    .nav-links a{text-decoration:none;font-size:11px;font-weight:500;letter-spacing:0.18em;
+                 text-transform:uppercase;color:var(--nav-muted);transition:color .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--nav-gold);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .lang-toggle{display:flex;gap:3px;background:rgba(255,255,255,0.04);
+                 border:1px solid #2c2507;border-radius:20px;padding:3px;}
+    .lang-btn{background:transparent;border:none;color:var(--nav-muted);padding:4px 12px;
+              border-radius:16px;font-size:11px;font-weight:500;font-family:var(--font-body);
+              cursor:pointer;transition:all .2s;}
+    .lang-btn:hover{color:var(--nav-gold);}
+    .lang-btn.active{background:var(--nav-gold);color:#1a1400;}
+    .nav-cart{
+      display:inline-flex;align-items:center;gap:7px;
+      background:var(--red);color:var(--nav-text);text-decoration:none;
+      padding:8px 18px;border-radius:4px;
+      font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      transition:background .2s;position:relative;
+    }
+    .nav-cart:hover{background:var(--red-bright);}
+    .nav-cart-count{
+      position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;border-radius:9px;
+      background:var(--gold);color:#1a1400;font-size:10px;font-weight:700;
+      display:flex;align-items:center;justify-content:center;padding:0 4px;
+    }
+    .nav-cart-count.hidden{display:none;}
+
+    /* ── PAGE HERO ── */
+    .page-hero{
+      background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);
+      border-bottom:2px solid var(--nav-gold);
+      padding:52px 48px 48px; position:relative; overflow:hidden;
+    }
+    .page-hero::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--nav-gold) 30%,#c42b2b 50%,var(--nav-gold) 70%,transparent);
+    }
+    .page-hero-inner{max-width:900px;}
+    .page-eyebrow{font-size:9.5px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
+                  color:var(--nav-gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+    .page-eyebrow::before{content:'';width:24px;height:1px;background:var(--nav-gold);}
+    .page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);
+                  font-weight:700;color:#f5f0e6;line-height:1.1;margin-bottom:16px;}
+    .page-hero h1 em{font-style:italic;color:var(--nav-gold);}
+    .page-hero p{font-size:14.5px;color:#8a7c5e;line-height:1.75;max-width:700px;}
+
+    /* ── CONTENT ── */
+    .content{max-width:1280px;margin:0 auto;padding:52px 48px 80px;}
+
+    /* section label */
+    .sec-label{font-size:9.5px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;
+                color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+    .sec-label::before{content:'';width:22px;height:1px;background:var(--gold);}
+    .sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.5vw,2rem);
+               font-weight:700;color:var(--heading);margin-bottom:36px;line-height:1.2;}
+
+    /* gold rule */
+    .gold-rule{height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--red) 50%,var(--gold) 70%,transparent 100%);margin:48px 0;}
+
+    /* ── CATEGORY FILTER ── */
+    .shop-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:36px;}
+    .cats{display:flex;gap:10px;flex-wrap:wrap;}
+    .cat-btn{
+      background:transparent;border:1px solid var(--border);color:var(--muted);
+      padding:9px 18px;border-radius:20px;font-size:12px;font-weight:500;
+      font-family:var(--font-body);cursor:pointer;transition:all .2s;
+    }
+    .cat-btn:hover{border-color:var(--gold);color:var(--gold);}
+    .cat-btn.active{background:var(--gold);border-color:var(--gold);color:#1a1400;font-weight:600;}
+    .shop-count{font-size:12px;color:var(--muted);}
+
+    /* ── PRODUCT GRID ── */
+    .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+    .product-card{
+      background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
+      overflow:hidden;display:flex;flex-direction:column;
+      transition:transform .22s,box-shadow .22s,border-color .22s;
+    }
+    .product-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.1);border-color:var(--gold);}
+    .product-media{position:relative;aspect-ratio:4/3;background:#eae2d2;overflow:hidden;}
+    .product-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+    .product-card:hover .product-media img{transform:scale(1.05);}
+    .product-badge{
+      position:absolute;top:12px;left:12px;background:rgba(10,9,0,0.82);color:var(--gold-light);
+      font-size:10px;font-weight:600;letter-spacing:.05em;padding:5px 11px;border-radius:4px;
+      backdrop-filter:blur(4px);
+    }
+    .product-body{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1;}
+    .product-heritage{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;}
+    .product-name{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--heading);margin-bottom:10px;line-height:1.3;}
+    .product-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;flex:1;}
+    .product-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;}
+    .product-price{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--red);white-space:nowrap;}
+    .product-price small{font-size:11px;font-weight:500;color:var(--muted);}
+    .add-btn{
+      display:inline-flex;align-items:center;gap:7px;
+      background:var(--red);color:#f5f0e6;border:none;cursor:pointer;
+      padding:10px 18px;border-radius:4px;
+      font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+      font-family:var(--font-body);transition:all .2s;
+    }
+    .add-btn:hover{background:var(--red-bright);transform:translateY(-1px);}
+    .add-btn.added{background:var(--gold);color:#1a1400;}
+
+    /* ── EMPTY STATE ── */
+    .empty-state{display:none;text-align:center;padding:60px 20px;color:var(--muted);}
+    .empty-state.show{display:block;}
+    .empty-state .empty-icon{width:56px;height:56px;margin:0 auto 18px;color:var(--gold);opacity:.5;}
+    .empty-state p{font-size:14px;}
+
+    /* ── CART / CHECKOUT PANEL ── */
+    .cart-overlay{
+      display:none;position:fixed;inset:0;z-index:300;background:rgba(10,9,0,0.55);
+      backdrop-filter:blur(3px);align-items:flex-end;justify-content:center;
+    }
+    .cart-overlay.show{display:flex;align-items:center;justify-content:center;}
+    .cart-panel{
+      background:var(--page-bg);width:min(560px,92vw);max-height:86vh;overflow-y:auto;
+      border-radius:16px;border:1px solid var(--gold);padding:32px;position:relative;
+    }
+    .cart-panel h2{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--heading);margin-bottom:6px;}
+    .cart-panel .cart-sub{font-size:12.5px;color:var(--muted);margin-bottom:24px;}
+    .cart-close{
+      position:absolute;top:16px;right:16px;background:transparent;border:none;cursor:pointer;
+      color:var(--muted);font-size:22px;line-height:1;transition:color .2s;
+    }
+    .cart-close:hover{color:var(--red);}
+    .cart-items{display:flex;flex-direction:column;gap:16px;max-height:42vh;overflow-y:auto;padding-right:4px;}
+    .cart-footer{
+      position:sticky;bottom:-32px;background:var(--page-bg);
+      margin:0 -32px -32px;padding:20px 36px 8px;
+      border-top:1px solid var(--border);
+    }
+    .cart-item{display:flex;gap:14px;align-items:center;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:12px;}
+    .cart-item img{width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0;}
+    .cart-item-info{flex:1;min-width:0;}
+    .cart-item-name{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3;}
+    .cart-item-price{font-size:12px;color:var(--gold);font-weight:600;}
+    .cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:8px;}
+    .qty-btn{
+      width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);
+      color:var(--text);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;
+    }
+    .qty-btn:hover{border-color:var(--gold);color:var(--gold);}
+    .qty-val{font-size:13px;font-weight:600;min-width:24px;text-align:center;}
+    .cart-item .item-remove{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;transition:color .2s;}
+    .cart-item .item-remove:hover{color:var(--red);}
+    .cart-total{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .cart-total-label{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+    .cart-total-value{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--red);}
+    .checkout-btn{
+      display:block;width:100%;text-align:center;background:var(--red);color:#f5f0e6;
+      border:none;cursor:pointer;padding:15px;border-radius:6px;
+      font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+      font-family:var(--font-body);transition:background .2s;
+    }
+    .checkout-btn:hover{background:var(--red-bright);}
+    .cart-empty{text-align:center;color:var(--muted);padding:40px 0;font-size:14px;}
+    .checkout-success{display:none;text-align:center;padding:48px 20px;}
+    .checkout-success.show{display:block;}
+    .checkout-success .ok-icon{width:64px;height:64px;margin:0 auto 18px;color:var(--gold);}
+    .checkout-success h3{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--heading);margin-bottom:10px;}
+    .checkout-success p{font-size:14px;color:var(--muted);margin-bottom:24px;}
+
+    /* ── FOOTER CTA ── */
+    .footer-cta{
+      background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);
+      border:1px solid var(--nav-gold);border-radius:16px;
+      padding:48px;text-align:center;position:relative;overflow:hidden;
+    }
+    .footer-cta::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 60% 80% at 50% 30%,rgba(201,168,76,0.06),transparent 70%);
+      pointer-events:none;
+    }
+    .footer-cta-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:#f5f0e6;margin-bottom:12px;position:relative;}
+    .footer-cta-title em{color:var(--nav-gold);}
+    .footer-cta-desc{font-size:14.5px;color:#8a7c5e;line-height:1.75;max-width:600px;margin:0 auto 28px;position:relative;}
+    .footer-cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:14px 28px;border-radius:4px;
+      font-size:11.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      text-decoration:none;transition:all .22s;
+    }
+    .btn-primary{background:var(--red);color:#f5f0e6;border:none;}
+    .btn-primary:hover{background:var(--red-bright);transform:translateY(-2px);box-shadow:0 8px 24px rgba(139,28,28,0.4);}
+    .btn-secondary{background:transparent;color:var(--nav-gold);border:1.5px solid rgba(201,168,76,0.5);}
+    .btn-secondary:hover{border-color:var(--nav-gold);background:rgba(201,168,76,0.07);transform:translateY(-2px);}
+
+    /* ── FOOTER ── */
+    footer{border-top:1px solid var(--border);padding:24px 48px;
+           display:flex;align-items:center;justify-content:space-between;
+           flex-wrap:wrap;gap:14px;background:var(--card-bg);font-size:10.5px;color:var(--muted);}
+    footer em{color:var(--gold);font-style:normal;}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px){
+      .content{padding:32px 20px 60px;}
+      .page-hero{padding:32px 20px 36px;}
+      nav{padding:0 20px;}
+      .nav-links{display:none;}
+      .nav-cart span.cart-label{display:none;}
+      footer{padding:20px;flex-direction:column;align-items:flex-start;}
+      .footer-cta{padding:32px 20px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="main-nav">
+  <a href="index.html" class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8" fill="currentColor"/>
+    </svg>
+    <span id="nav-logo-text">VietHeritage Map</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+    <li><a href="VNMT.html" id="nav-map-link">Bản đồ di sản</a></li>
+    <li><a href="journey.html" id="nav-journey-link">Hành trình Bảo vật</a></li>
+    <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
+    <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+    <li><a href="shop.html" class="active" id="nav-shop">Cửa hàng</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="#" class="nav-cart" id="nav-cart-btn" aria-label="Cart">
+      <span class="cart-label" id="nav-cart-label">Giỏ hàng</span>
+      <span class="nav-cart-count hidden" id="nav-cart-count">0</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ── PAGE HERO ── -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow" id="page-eyebrow">Cửa hàng</div>
+    <h1><span id="page-title-main">Di sản</span><br><em id="page-title-sub">mang về nhà</em></h1>
+    <p id="page-desc">Những sản phẩm thủ công lấy cảm hứng từ 16 di sản văn hóa phi vật thể của Việt Nam.</p>
+  </div>
+</section>
+
+<!-- ── CONTENT ── -->
+<main class="content">
+
+  <!-- TOOLBAR -->
+  <div class="shop-toolbar">
+    <div class="cats" id="cat-filters">
+      <!-- Built by JS -->
+    </div>
+    <div class="shop-count" id="shop-count"></div>
+  </div>
+
+  <!-- PRODUCT GRID -->
+  <section class="shop-grid" id="shop-grid">
+    <!-- Built by JS -->
+  </section>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" id="empty-state">
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+    </div>
+    <p id="empty-text">Không có sản phẩm phù hợp.</p>
+  </div>
+
+  <div class="gold-rule"></div>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta" id="footer-cta">
+    <h2 class="footer-cta-title" id="cta-title"></h2>
+    <p class="footer-cta-desc" id="cta-desc"></p>
+    <div class="footer-cta-buttons">
+      <a href="VNMT.html" class="btn btn-primary" id="cta-map-btn">
+        <span id="cta-map-text">Khám phá bản đồ</span>
+      </a>
+      <a href="database.html" class="btn btn-secondary" id="cta-db-btn">
+        <span id="cta-db-text">Xem kho di sản</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span id="foot-copy">© 2026 Di sản văn hóa phi vật thể Việt Nam</span>
+  <span id="foot-data">Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em></span>
+</footer>
+
+<!-- ── CART OVERLAY ── -->
+<div class="cart-overlay" id="cart-overlay">
+  <div class="cart-panel" id="cart-panel">
+    <button class="cart-close" id="cart-close" aria-label="Close">&times;</button>
+    <div id="cart-view">
+      <h2 id="cart-title">Giỏ hàng</h2>
+      <div class="cart-sub" id="cart-sub">Sản phẩm yêu thích của bạn</div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span class="cart-total-label" id="cart-total-label">Tổng cộng</span>
+        <span class="cart-total-value" id="cart-total-value">0 ₫</span>
+      </div>
+      <button class="checkout-btn" id="checkout-btn">Thanh toán</button>
+    </div>
+    </div>
+    <div class="checkout-success" id="checkout-success">
+      <div class="ok-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h3 id="success-title">Cảm ơn bạn!</h3>
+      <p id="success-desc">Đây là trang demo — đơn hàng của bạn chưa được gửi đi.</p>
+      <button class="checkout-btn" id="success-close">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONTENT DATA ── -->
+<script src="shop.js"></script>
+
+<!-- ── RENDER LOGIC ── -->
+<script>
+/* ═══════════════════════════════════════
+   SHOP PAGE RENDERER
+   Uses window.SHOP_CONTENT from shop.js
+═══════════════════════════════════════ */
+
+let lang = localStorage.getItem('vnmt_lang') || 'vi';
+let activeCat = 'all';
+
+function $(id) { return document.getElementById(id); }
+function setText(id, val) { const el = $(id); if (el) el.textContent = val; }
+function setHTML(id, val) { const el = $(id); if (el) el.innerHTML = val; }
+
+function getContent(key, fallback = '') {
+  const C = window.SHOP_CONTENT;
+  if (!C) return fallback;
+  const parts = key.split('.');
+  let val = C;
+  for (const p of parts) {
+    if (val && typeof val === 'object' && p in val) {
+      val = val[p];
+    } else {
+      return fallback;
+    }
+  }
+  if (typeof val === 'object' && val !== null && lang in val) {
+    return val[lang];
+  }
+  return val;
+}
+
+function formatPrice(n) {
+  return n.toLocaleString('vi-VN') + ' ₫';
+}
+
+function productById(id) {
+  return (window.SHOP_CONTENT?.products || []).find((p) => p.id === id);
+}
+
+function categoryLabel(id) {
+  const cat = (window.SHOP_CONTENT?.categories || []).find((c) => c.id === id);
+  return cat ? cat.label[lang] : '';
+}
+
+/* ═══ CART STATE ═══ */
+function renderCartCount() {
+  const cart = SHOP_CART.load();
+  const total = cart.reduce((sum, item) => sum + item.qty, 0);
+  const el = $('nav-cart-count');
+  if (total > 0) {
+    el.textContent = total;
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+function renderCartItems() {
+  const container = $('cart-items');
+  const cart = SHOP_CART.load();
+  if (!container) return;
+
+  if (cart.length === 0) {
+    container.innerHTML = `<div class="cart-empty" id="cart-empty-text">${lang === 'vi' ? 'Giỏ hàng của bạn đang trống.' : 'Your cart is empty.'}</div>`;
+    setText('cart-total-value', formatPrice(0));
+    return;
+  }
+
+  container.innerHTML = cart.map((item) => {
+    const p = productById(item.id);
+    if (!p) return '';
+    return `
+      <div class="cart-item">
+        <img src="${p.image}" alt="${p.name[lang]}" />
+        <div class="cart-item-info">
+          <div class="cart-item-name">${p.name[lang]}</div>
+          <div class="cart-item-price">${formatPrice(p.price * item.qty)}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" data-action="dec" data-id="${p.id}">−</button>
+            <span class="qty-val">${item.qty}</span>
+            <button class="qty-btn" data-action="inc" data-id="${p.id}">+</button>
+          </div>
+        </div>
+        <button class="item-remove" data-action="remove" data-id="${p.id}" aria-label="Remove">&times;</button>
+      </div>
+    `;
+  }).join('');
+
+  const total = cart.reduce((sum, item) => {
+    const p = productById(item.id);
+    return sum + (p ? p.price * item.qty : 0);
+  }, 0);
+  setText('cart-total-value', formatPrice(total));
+}
+
+/* ═══ PRODUCTS ═══ */
+function renderProducts() {
+  const grid = $('shop-grid');
+  const empty = $('empty-state');
+  const products = window.SHOP_CONTENT?.products || [];
+  const filtered = activeCat === 'all' ? products : products.filter((p) => p.category === activeCat);
+
+  if (!grid) return;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.classList.add('show');
+    return;
+  }
+
+  empty.classList.remove('show');
+
+  const cart = SHOP_CART.load();
+  grid.innerHTML = filtered.map((p) => {
+    const inCart = cart.some((item) => item.id === p.id);
+    return `
+      <article class="product-card" data-cat="${p.category}">
+        <div class="product-media">
+          <img src="${p.image}" alt="${p.name[lang]}" loading="lazy" />
+          <span class="product-badge">${categoryLabel(p.category)}</span>
+        </div>
+        <div class="product-body">
+          <div class="product-heritage">${p.heritage[lang]}</div>
+          <h3 class="product-name">${p.name[lang]}</h3>
+          <p class="product-desc">${p.desc[lang]}</p>
+          <div class="product-footer">
+            <span class="product-price">${formatPrice(p.price)}</span>
+            <button class="add-btn ${inCart ? 'added' : ''}" data-add="${p.id}">
+              ${inCart ? (lang === 'vi' ? 'Đã thêm' : 'Added') : (lang === 'vi' ? 'Thêm vào giỏ' : 'Add to cart')}
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  setText('shop-count', filtered.length + ' / ' + products.length + ' ' + (lang === 'vi' ? 'sản phẩm' : 'products'));
+}
+
+/* ═══ CATEGORY FILTER ═══ */
+function renderCats() {
+  const container = $('cat-filters');
+  const cats = window.SHOP_CONTENT?.categories || [];
+  if (!container) return;
+  container.innerHTML = cats.map((c) => `
+    <button class="cat-btn ${activeCat === c.id ? 'active' : ''}" data-cat="${c.id}">${c.label[lang]}</button>
+  `).join('');
+}
+
+/* ═══ LANGUAGE ═══ */
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.documentElement.classList.toggle('lang-vi', lang === 'vi');
+
+  const meta = window.SHOP_CONTENT?.meta;
+  if (meta) {
+    document.title = meta.title[lang];
+    setText('page-eyebrow', meta.pageEyebrow[lang]);
+    setText('page-title-main', meta.pageTitleMain[lang]);
+    setText('page-title-sub', meta.pageTitleSub[lang]);
+    setText('page-desc', meta.pageDesc[lang]);
+  }
+
+  const nav = window.SHOP_CONTENT?.nav;
+  if (nav) {
+    setText('nav-home', nav[lang].home);
+    setText('nav-map-link', nav[lang].map);
+    setText('nav-journey-link', nav[lang].journey);
+    setText('nav-db-link', nav[lang].db);
+    setText('nav-about', nav[lang].about);
+    setText('nav-shop', nav[lang].shop);
+    setText('nav-cart-label', lang === 'vi' ? 'Giỏ hàng' : 'Cart');
+  }
+
+  // Cart panel
+    setText('cart-title', lang === 'vi' ? 'Giỏ hàng' : 'Your Cart');
+    setText('cart-sub', lang === 'vi' ? 'Sản phẩm yêu thích của bạn' : 'Your favorite items');
+    setText('empty-text', lang === 'vi' ? 'Không có sản phẩm phù hợp.' : 'No products match your filter.');
+    setText('cart-total-label', lang === 'vi' ? 'Tổng cộng' : 'Total');
+  setText('checkout-btn', lang === 'vi' ? 'Thanh toán' : 'Checkout');
+  setText('success-title', lang === 'vi' ? 'Cảm ơn bạn!' : 'Thank you!');
+  setText('success-desc', lang === 'vi'
+    ? 'Đây là trang demo — đơn hàng của bạn chưa được gửi đi.'
+    : 'This is a demo page — your order has not been submitted.');
+  setText('success-close', lang === 'vi' ? 'Đóng' : 'Close');
+
+  // Footer CTA
+  const cta = window.SHOP_CONTENT?.footerCta;
+  if (cta) {
+    setHTML('cta-title', cta.title[lang]);
+    setHTML('cta-desc', cta.desc[lang]);
+    setText('cta-map-text', cta.buttons.map[lang]);
+    setText('cta-db-text', cta.buttons.heritage[lang]);
+  }
+
+  // Footer
+  setText('foot-copy', lang === 'vi' ? '© 2026 Di sản văn hóa phi vật thể Việt Nam' : '© 2026 Vietnam Intangible Cultural Heritage');
+  setHTML('foot-data', lang === 'vi'
+    ? 'Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em>'
+    : 'Data: <em>UNESCO</em> · Map: <em>CartoDB / OpenStreetMap</em>');
+
+  // Lang buttons
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.lang === lang)
+  );
+
+  // Re-render dynamic parts
+  renderCats();
+  renderProducts();
+  renderCartItems();
+  renderCartCount();
+}
+
+/* ═══ EVENT LISTENERS ═══ */
+// Language toggle
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    lang = btn.dataset.lang;
+    localStorage.setItem('vnmt_lang', lang);
+    applyLang();
+  });
+});
+
+// Category filter (event delegation)
+$('cat-filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.cat-btn');
+  if (!btn) return;
+  activeCat = btn.dataset.cat;
+  renderCats();
+  renderProducts();
+});
+
+// Add-to-cart (event delegation)
+$('shop-grid').addEventListener('click', (e) => {
+  const btn = e.target.closest('.add-btn');
+  if (!btn) return;
+  const id = parseInt(btn.dataset.add, 10);
+  SHOP_CART.add(id);
+  btn.classList.add('added');
+  const span = btn.querySelector('span');
+  if (span) span.textContent = lang === 'vi' ? 'Đã thêm' : 'Added';
+  renderCartCount();
+});
+
+// Cart panel controls (event delegation)
+$('cart-items').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const id = parseInt(btn.dataset.id, 10);
+  const action = btn.dataset.action;
+  const cart = SHOP_CART.load();
+  const item = cart.find((c) => c.id === id);
+
+  if (action === 'inc' && item) SHOP_CART.setQty(id, item.qty + 1);
+  if (action === 'dec' && item) SHOP_CART.setQty(id, item.qty - 1);
+  if (action === 'remove') SHOP_CART.remove(id);
+
+  renderCartItems();
+  renderCartCount();
+  renderProducts();
+});
+
+// Open cart
+$('nav-cart-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  $('cart-overlay').classList.add('show');
+  $('checkout-success').classList.remove('show');
+  $('cart-view').style.display = '';
+  renderCartItems();
+});
+
+// Close cart (overlay click, X, or Escape)
+$('cart-overlay').addEventListener('click', (e) => {
+  if (e.target === $('cart-overlay')) $('cart-overlay').classList.remove('show');
+});
+$('cart-close').addEventListener('click', () => $('cart-overlay').classList.remove('show'));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') $('cart-overlay').classList.remove('show');
+});
+
+// Checkout
+$('checkout-btn').addEventListener('click', () => {
+  $('cart-view').style.display = 'none';
+  $('checkout-success').classList.add('show');
+  SHOP_CART.clear();
+  renderCartCount();
+  renderProducts();
+});
+
+// Close success
+$('success-close').addEventListener('click', () => {
+  $('cart-overlay').classList.remove('show');
+  $('cart-view').style.display = '';
+  $('checkout-success').classList.remove('show');
+});
+
+// ── Nav Scroll Effect ────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  if (nav) {
+    nav.style.background = window.scrollY > 50 ? 'rgba(10,9,0,0.97)' : 'rgba(10,9,0,0.82)';
+  }
+}, { passive: true });
+
+// ── Init ─────────────────────────────────────────────────────────
+applyLang();
+</script>
+</body>
+</html>
