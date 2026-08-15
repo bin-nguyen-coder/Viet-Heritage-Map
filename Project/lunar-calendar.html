@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lịch Âm Việt — Vietnamese Lunar Calendar</title>
+  <meta name="description" content="Check key Vietnamese lunar dates and understand how they map to the Western (Gregorian) calendar for planning your heritage trips." />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page-bg:  #f7f3ec;
+      --card-bg:  #fdfaf5;
+      --border:   #d9cfc0;
+      --text:     #2a1f0f;
+      --muted:    #7a6a52;
+      --heading:  #1a1008;
+      --red:      #7a1f1f;
+      --red-bright: #c42b2b;
+      --gold:     #8a6a20;
+      --gold-light: #c9a84c;
+      --nav-bg:   #0a0900;
+      --nav-gold: #c9a84c;
+      --nav-muted:#8a7c5e;
+      --nav-text: #e8dfc8;
+      --nav-brd:  rgba(201,168,76,0.14);
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Playfair Display', serif;
+    }
+    html.lang-vi { --font-body: 'Merriweather', serif; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--page-bg);color:var(--text);font-family:var(--font-body);min-height:100vh;}
+
+    /* ── NAV (mirrors database.html / about.html) ── */
+    nav{position:sticky;top:0;z-index:200;height:62px;display:flex;align-items:center;
+        justify-content:space-between;padding:0 48px;
+        background:var(--nav-bg);border-bottom:1px solid var(--nav-brd);}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;
+              color:var(--nav-text);font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+              flex:0 0 auto;}
+    .nav-logo svg{color:var(--nav-gold);}
+    .nav-links{display:flex;gap:28px;list-style:none;flex:1;justify-content:center;flex-wrap:wrap;}
+    .nav-links a{text-decoration:none;font-size:11px;font-weight:500;letter-spacing:0.18em;
+                 text-transform:uppercase;color:var(--nav-muted);transition:color .2s;
+                 white-space:nowrap;}
+    .nav-links a:hover,.nav-links a.active{color:var(--nav-gold);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .lang-toggle{display:flex;gap:3px;background:rgba(255,255,255,0.04);
+                 border:1px solid #2c2507;border-radius:20px;padding:3px;}
+    .lang-btn{background:transparent;border:none;color:var(--nav-muted);padding:4px 12px;
+              border-radius:16px;font-size:11px;font-weight:500;font-family:var(--font-body);
+              cursor:pointer;transition:all .2s;}
+    .lang-btn:hover{color:var(--nav-gold);}
+    .lang-btn.active{background:var(--nav-gold);color:#1a1400;}
+    .nav-map-btn{
+      display:inline-flex;align-items:center;gap:7px;
+      background:var(--red);color:var(--nav-text);text-decoration:none;
+      padding:8px 18px;border-radius:4px;
+      font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      transition:background .2s;white-space:nowrap;
+    }
+    .nav-map-btn:hover{background:var(--red-bright);}
+
+    /* ── PAGE HERO ── */
+    .page-hero{
+      background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);
+      border-bottom:2px solid var(--nav-gold);
+      padding:52px 48px 48px; position:relative; overflow:hidden;
+    }
+    .page-hero::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--nav-gold) 30%,#c42b2b 50%,var(--nav-gold) 70%,transparent);
+    }
+    .page-hero-inner{max-width:960px;}
+    .page-eyebrow{font-size:9.5px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
+                  color:var(--nav-gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+    .page-eyebrow::before{content:'';width:24px;height:1px;background:var(--nav-gold);}
+    .page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);
+                  font-weight:700;color:#f5f0e6;line-height:1.1;margin-bottom:16px;}
+    .page-hero h1 em{font-style:italic;color:var(--nav-gold);}
+    .page-hero p{font-size:14.5px;color:#a69572;line-height:1.75;max-width:720px;}
+    .page-hero p b{color:var(--nav-gold);font-weight:600;}
+
+    /* ── CONTENT ── */
+    .content{max-width:1280px;margin:0 auto;padding:44px 48px 80px;}
+
+    /* ── CONVERTER CARD ── */
+    .card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;
+          padding:32px;box-shadow:0 2px 14px rgba(0,0,0,0.06);margin-bottom:40px;}
+    .card-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;
+                color:var(--heading);margin-bottom:8px;}
+    .card-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;}
+    .toggle-row{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+    .seg{display:inline-flex;gap:3px;background:#ede7db;border:1px solid var(--border);
+         border-radius:24px;padding:4px;}
+    .seg-btn{background:transparent;border:none;color:var(--muted);padding:8px 20px;
+             border-radius:20px;font-size:12px;font-weight:600;font-family:var(--font-body);
+             cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+    .seg-btn:hover{color:var(--heading);}
+    .seg-btn.active{background:var(--red);color:#fff;}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px 20px;align-items:end;}
+    .field{display:flex;flex-direction:column;gap:7px;}
+    .field label{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+    .field label small{text-transform:none;letter-spacing:0;font-weight:400;color:#a09080;}
+    .field select,.field input{
+      background:#fff;border:1.5px solid var(--border);border-radius:6px;
+      padding:9px 12px;color:var(--text);font-size:13.5px;font-family:var(--font-body);
+      outline:none;transition:border-color .2s;width:100%;
+    }
+    .field select:focus,.field input:focus{border-color:var(--gold);}
+    .leap-row{display:flex;align-items:center;gap:8px;margin-top:18px;}
+    .leap-row input[type=checkbox]{accent-color:var(--red);width:15px;height:15px;}
+    .leap-row label{font-size:13px;color:var(--text);}
+    .calc-result{
+      margin-top:20px;background:#f0ebe2;border:1px solid var(--border);
+      border-radius:8px;padding:18px 22px;display:none;
+      grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 20px;
+    }
+    .calc-result.visible{display:grid;}
+    .res-cell label{font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;}
+    .res-cell .res-val{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--heading);}
+    .res-cell .res-val .lunar-small{font-family:var(--font-body);font-size:.8em;font-weight:500;color:var(--gold);}
+
+    /* ── MONTH GRID ── */
+    .grid-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;}
+    .grid-head h2{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--heading);}
+    .grid-head .lunar-year{font-size:12px;color:var(--gold);font-weight:600;margin-top:2px;}
+    .grid-nav{display:flex;gap:8px;}
+    .nav-btn{background:#fff;border:1.5px solid var(--border);border-radius:6px;padding:8px 16px;
+             font-size:12.5px;font-weight:600;font-family:var(--font-body);color:var(--muted);
+             cursor:pointer;transition:all .18s;}
+    .nav-btn:hover{border-color:var(--red);color:var(--red);}
+    .nav-btn.primary{background:var(--red);border-color:var(--red);color:#fff;}
+    .nav-btn.primary:hover{background:var(--red-bright);border-color:var(--red-bright);}
+    .week-row{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;}
+    .week-cell{text-align:center;font-size:10px;font-weight:700;letter-spacing:.14em;
+               text-transform:uppercase;color:var(--muted);padding:6px 0;}
+    .day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+    .day-btn{
+      min-height:74px;border:1px solid var(--border);border-radius:8px;background:#fff;
+      padding:7px 9px;display:flex;flex-direction:column;justify-content:space-between;gap:5px;
+      cursor:pointer;text-align:left;font-family:var(--font-body);
+      transition:border-color .16s,background .16s,box-shadow .16s;position:relative;
+    }
+    .day-btn:hover{border-color:var(--gold);background:#fcf9f2;}
+    .day-btn.empty{background:transparent;border-color:transparent;cursor:default;box-shadow:none;}
+    .day-btn.empty:hover{background:transparent;}
+    .day-btn.selected{border-color:var(--red);box-shadow:0 0 0 2px rgba(122,31,31,0.18);background:#fbf5f2;}
+    .day-top{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;}
+    .day-num{font-size:14px;font-weight:700;color:var(--heading);}
+    .day-btn.outside .day-num{color:#b7ab97;}
+    .badge{font-size:8.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+           padding:2px 7px;border-radius:10px;background:var(--gold);color:#fff;flex-shrink:0;}
+    .badge.newmoon{background:#7a1f1f;}
+    .badge.fest{background:#1e7a4b;}
+    .day-lunar{font-size:11.5px;color:var(--muted);line-height:1.25;}
+    .day-lunar b{color:var(--gold);font-weight:700;}
+    .day-btn.fullmoon{border-color:#8a6a20;background:#fbf3dc;}
+    .day-btn.newlunar{border-color:#7a1f1f;background:#f7e9e3;}
+    .day-btn.festday{border-color:#1e7a4b;background:#e9f4ec;}
+    .day-btn.today{box-shadow:inset 0 0 0 2px var(--gold);}
+    .fest-names{font-size:9px;color:var(--heading);line-height:1.3;display:-webkit-box;
+                -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px;font-size:12px;color:var(--muted);}
+    .day-detail{
+      margin-top:20px;background:#f0ebe2;border:1px solid var(--border);border-radius:8px;
+      padding:18px 22px;display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 20px;
+    }
+    .day-detail-note{font-size:13px;color:var(--muted);grid-column:1/-1;}
+    .detail-cell{display:flex;flex-direction:column;gap:3px;}
+    .detail-label{font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+    .detail-val{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--heading);}
+    .fest-section-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;
+                        color:var(--gold);margin:4px 0 16px;grid-column:1/-1;}
+    .legend span{display:inline-flex;align-items:center;gap:7px;}
+    .legend i{width:14px;height:14px;border-radius:4px;display:inline-block;border:1px solid var(--border);}
+    .legend i.full{background:#fbf3dc;border-color:#8a6a20;}
+    .legend i.new{background:#f7e9e3;border-color:#7a1f1f;}
+    .legend i.fest{background:#e9f4ec;border-color:#1e7a4b;}
+
+    /* ── FESTIVAL LIST ── */
+    .fest-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
+    .fest-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;
+               padding:18px 20px;transition:border-color .2s,box-shadow .2s;}
+    .fest-card:hover{border-color:var(--gold);box-shadow:0 8px 24px rgba(0,0,0,0.07);}
+    .fest-name{font-family:'Playfair Display',serif;font-size:1.02rem;font-weight:700;color:var(--heading);margin-bottom:5px;}
+    .fest-lunar{font-size:12px;color:var(--red);font-weight:600;margin-bottom:3px;}
+    .fest-solar{font-size:12.5px;color:var(--muted);}
+    .fest-solar b{color:var(--text);}
+
+    /* ── INFO NOTE ── */
+    .info-note{margin-top:36px;background:#efe8da;border:1px solid var(--border);
+               border-radius:8px;padding:16px 20px;font-size:12.5px;color:var(--muted);line-height:1.7;}
+    .info-note b{color:var(--text);}
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px){
+      .nav-links{display:none;}
+      nav{padding:0 20px;}
+      .page-hero{padding:40px 20px 36px;}
+      .content{padding:32px 20px 64px;}
+      .card{padding:22px;}
+      .day-btn{min-height:64px;}
+    }
+    @media (max-width:560px){
+      .day-btn{min-height:56px;padding:5px 6px;}
+      .day-num{font-size:12px;}
+      .day-lunar{font-size:9.5px;}
+      .badge{font-size:7px;padding:1px 5px;}
+      .fest-names{font-size:8px;}
+      .seg-btn{padding:7px 14px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor">
+      <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/>
+    </svg>
+    <span id="nav-logo-text">VietHeritage Map</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+    <li><a href="booking.html" id="nav-book">Đặt tour</a></li>
+    <li><a href="festivals.html" id="nav-fest">Lễ hội</a></li>
+    <li><a href="VNMT.html" id="nav-map">Bản đồ</a></li>
+    <li><a href="journey.html" id="nav-journey">Hành trình Bảo vật</a></li>
+    <li><a href="database.html" id="nav-db">Kho lưu trữ</a></li>
+    <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+    <li><a href="lunar-calendar.html" class="active" id="nav-lunar">Lịch Âm</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow" id="ph-eyebrow">Lịch Âm Dương</div>
+    <h1><span id="ph-h1a">Lịch Âm Việt Nam</span> <em id="ph-h1b">& Âm Đổi Sang Dương</em></h1>
+    <p id="ph-desc">Xem nhanh các ngày lễ quan trọng theo lịch âm của Việt Nam và cách chúng tương ứng với ngày dương lịch, để bạn sắp xếp các sự kiện văn hóa vào kế hoạch du lịch của mình.</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- CONVERTER -->
+  <div class="card">
+    <div class="card-title" id="cv-title">Chuyển đổi giữa lịch Dương và lịch Âm</div>
+    <div class="card-sub" id="cv-sub">Nhập một ngày dương lịch để xem ngày âm lịch tương ứng, hoặc nhập ngày âm lịch để biết chính xác ngày dương. Chuyển đổi chính xác cho năm 1200–2199.</div>
+    <div class="toggle-row">
+      <div class="seg" id="cv-mode">
+        <button class="seg-btn active" data-mode="lunar2solar" id="cv-l2s">Âm → Dương</button>
+        <button class="seg-btn" data-mode="solar2lunar" id="cv-s2l">Dương → Âm</button>
+      </div>
+    </div>
+
+    <!-- Lunar -> Solar inputs -->
+    <div class="form-grid" id="form-lunar">
+      <div class="field">
+        <label id="lbl-l-day">Ngày <small>/ Day</small></label>
+        <select id="in-l-day"></select>
+      </div>
+      <div class="field">
+        <label id="lbl-l-month">Tháng <small>/ Month</small></label>
+        <select id="in-l-month"></select>
+      </div>
+      <div class="field">
+        <label id="lbl-l-year">Năm âm lịch <small>/ Lunar Year</small></label>
+        <select id="in-l-year"></select>
+      </div>
+    </div>
+
+    <!-- Solar -> Lunar inputs -->
+    <div class="form-grid" id="form-solar" style="display:none;">
+      <div class="field">
+        <label id="lbl-s-day">Ngày <small>/ Day</small></label>
+        <select id="in-s-day"></select>
+      </div>
+      <div class="field">
+        <label id="lbl-s-month">Tháng <small>/ Month</small></label>
+        <select id="in-s-month"></select>
+      </div>
+      <div class="field">
+        <label id="lbl-s-year">Năm dương lịch <small>/ Solar Year</small></label>
+        <select id="in-s-year"></select>
+      </div>
+    </div>
+
+    <div class="leap-row" id="leap-row">
+      <input type="checkbox" id="in-l-leap" />
+      <label for="in-l-leap" id="lbl-l-leap">Tháng nhuận</label>
+    </div>
+
+    <div class="calc-result" id="calc-result"></div>
+  </div>
+
+  <!-- MONTH GRID -->
+  <div class="card">
+    <div class="grid-head">
+      <div>
+        <h2 id="grid-title">Tháng 3 Năm 2026</h2>
+        <div class="lunar-year" id="grid-lunar-year">Năm âm lịch: Ất Tỵ — Bính Ngọ</div>
+      </div>
+      <div class="grid-nav">
+        <button class="nav-btn" id="btn-prev">← <span id="btn-prev-label">Tháng trước</span></button>
+        <button class="nav-btn primary" id="btn-today"><span id="btn-today-label">Hôm nay</span></button>
+        <button class="nav-btn" id="btn-next"><span id="btn-next-label">Tháng sau</span> →</button>
+      </div>
+    </div>
+    <div class="week-row" id="week-row">
+      <div class="week-cell" id="wk-0"></div>
+      <div class="week-cell" id="wk-1"></div>
+      <div class="week-cell" id="wk-2"></div>
+      <div class="week-cell" id="wk-3"></div>
+      <div class="week-cell" id="wk-4"></div>
+      <div class="week-cell" id="wk-5"></div>
+      <div class="week-cell" id="wk-6"></div>
+    </div>
+    <div class="day-grid" id="day-grid"></div>
+    <div class="legend" id="legend"></div>
+    <div class="day-detail" id="day-detail"></div>
+  </div>
+
+  <!-- FESTIVAL LIST -->
+  <div class="card">
+    <div class="card-title" id="fl-title">Lễ hội theo lịch âm năm 2026</div>
+    <div class="card-sub" id="fl-sub">Các ngày dương lịch được tính tự động theo lịch âm Việt Nam.</div>
+    <div class="fest-list" id="fest-list"></div>
+  </div>
+
+  <div class="info-note" id="info-note">
+    <b style="color:var(--text);">Ghi chú:</b> Các phép chuyển đổi sử dụng thư viện tính lịch dân gian tiêu chuẩn, chính xác cho năm 1200–2199 theo đúng quy tắc lịch âm Việt Nam (múi giờ UTC+7). Ngày Rằm (15 âm lịch) và ngày mùng 1 (đầu tháng âm) được đánh dấu riêng.
+  </div>
+</div>
+
+<footer style="background:var(--nav-bg);color:var(--nav-text);border-top:4px solid var(--nav-gold);padding:28px 48px;text-align:center;font-size:12px;">
+  <span id="foot-copy">© 2026 Di sản văn hóa phi vật thể Việt Nam</span> &nbsp;·&nbsp;
+  <span id="foot-note">Lịch Âm — Lịch Dương</span>
+</footer>
+
+<!-- Lunar engine: lunar-core.js = lunar-javascript v1.6.12 (MIT License)
+     https://github.com/6tail/lunar-javascript — exposes Solar/Lunar/LunarYear/LunarMonth globals -->
+<script src="lunar-core.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Vietnamese Lunar Calendar — app logic (i18n + converter + grid)
+   Shares the vnmt_lang localStorage key with the other pages.
+════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  /* ── i18n ── */
+  var UI = {
+    vi: {
+      navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navLunar: 'Lịch Âm',
+      navBook: 'Đặt tour', navFest: 'Lễ hội', navJourney: 'Hành trình Bảo vật',
+      phEy: 'Lịch Âm Dương', phH1a: 'Lịch Âm Việt Nam', phH1b: '& Chuyển Đổi Dương Lịch',
+      phDesc: 'Xem nhanh các ngày lễ quan trọng theo lịch âm của Việt Nam và cách chúng tương ứng với ngày dương lịch, để bạn sắp xếp các sự kiện văn hóa vào kế hoạch du lịch của mình.',
+      cvTitle: 'Chuyển đổi giữa lịch Dương và lịch Âm',
+      cvSub: 'Nhập một ngày dương lịch để xem ngày âm lịch tương ứng, hoặc nhập ngày âm lịch để biết chính xác ngày dương. Chuyển đổi chính xác cho năm 1200–2199 theo quy tắc lịch âm Việt Nam.',
+      l2s: 'Âm → Dương', s2l: 'Dương → Âm',
+      lblLDay: 'Ngày', lblLMonth: 'Tháng', lblLYear: 'Năm âm lịch',
+      lblSDay: 'Ngày', lblSMonth: 'Tháng', lblSYear: 'Năm dương lịch',
+      lblLeap: 'Tháng nhuận',
+      resWestern: 'Ngày Dương lịch', resWeekday: 'Thứ trong tuần', resGanZhi: 'Năm Can Chi', resLunar: 'Ngày Âm lịch',
+      gridMonth: 'Tháng {m} Năm {y}', gridLunarYear: 'Năm âm lịch:',
+      btnPrev: 'Tháng trước', btnToday: 'Hôm nay', btnNext: 'Tháng sau',
+      weeks: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+      weekdays: ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'],
+      legendFull: 'Ngày Rằm (15 âm lịch)', legendNew: 'Mùng 1 âm lịch (đầu tháng)', legendFest: 'Ngày lễ hội',
+      festBadge: 'Lễ',
+      selWestern: 'Ngày Dương lịch đã chọn', selLunar: 'Ngày Âm lịch', selWeekday: 'Thứ', selGanZhi: 'Năm Can Chi',
+      selEmpty: 'Chọn một ngày trên lịch để xem chi tiết.',
+      flTitle: 'Lễ hội theo lịch âm năm {y}', flSub: 'Các ngày dương lịch được tính tự động theo lịch âm Việt Nam (thay đổi theo năm đang xem).',
+      flLunarHeader: 'Theo ngày âm lịch', flSolarHeader: 'Sự kiện theo ngày dương lịch cố định',
+      infoNote: 'Các phép chuyển đổi sử dụng thư viện tính lịch dân gian tiêu chuẩn, chính xác cho năm 1200–2199 theo đúng quy tắc lịch âm Việt Nam (UTC+7). Ngày Rằm (15 âm lịch) và ngày mùng 1 (đầu tháng âm) được đánh dấu riêng.',
+      footCopy: '© 2026 Di sản văn hóa phi vật thể Việt Nam', footNote: 'Lịch Âm — Lịch Dương'
+    },
+    en: {
+      navHome: 'Home', navMap: 'Map', navDb: 'Database', navAbout: 'About', navLunar: 'Lunar Calendar',
+      navBook: 'Book a Trip', navFest: 'Festivals', navJourney: 'Treasure Journey',
+      phEy: 'Lunar & Solar', phH1a: 'Vietnamese Lunar', phH1b: '& Gregorian Converter',
+      phDesc: 'Quickly see how important Vietnamese lunar dates map to Western (Gregorian) dates, so you can match cultural events to your travel plans.',
+      cvTitle: 'Convert between Western (Gregorian) and Vietnamese lunar dates',
+      cvSub: 'Enter a Gregorian date to see its Vietnamese lunar equivalent, or enter a lunar date for the exact Western day. Accurate for years 1200–2199 following Vietnamese lunar calendar rules.',
+      l2s: 'Lunar → Western', s2l: 'Western → Lunar',
+      lblLDay: 'Day', lblLMonth: 'Month', lblLYear: 'Lunar Year',
+      lblSDay: 'Day', lblSMonth: 'Month', lblSYear: 'Solar Year',
+      lblLeap: 'Leap month',
+      resWestern: 'Western date', resWeekday: 'Weekday', resGanZhi: 'Can Chi year', resLunar: 'Vietnamese lunar date',
+      gridMonth: 'Month {m}, {y}', gridLunarYear: 'Lunar year:',
+      btnPrev: 'Previous month', btnToday: 'Today', btnNext: 'Next month',
+      weeks: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+      weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      legendFull: 'Full moon (15th lunar day)', legendNew: 'New lunar month (1st lunar day)', legendFest: 'Festival',
+      festBadge: 'Fest',
+      selWestern: 'Selected Western date', selLunar: 'Vietnamese lunar date', selWeekday: 'Day of week', selGanZhi: 'Year (Can Chi)',
+      selEmpty: 'Select a day on the calendar to see details.',
+      flTitle: 'Festivals by lunar date — {y}', flSub: 'Gregorian dates are computed automatically from the Vietnamese lunar calendar (they change with the viewed year).',
+      flLunarHeader: 'By lunar date', flSolarHeader: 'Fixed solar-calendar events',
+      infoNote: 'Conversions use a standard calendar library, accurate for years 1200–2199 following Vietnamese lunar calendar rules (UTC+7). Full moons (15th lunar day) and new lunar months (1st lunar day) are highlighted.',
+      footCopy: '© 2026 Vietnam Intangible Cultural Heritage', footNote: 'Lunar — Solar Calendar'
+    }
+  };
+
+  var lang = localStorage.getItem('vnmt_lang') || 'vi';
+  function s() { return UI[lang] || UI.vi; }
+  function $(id) { return document.getElementById(id); }
+  function setText(id, val) { var e = $(id); if (e) e.textContent = val; }
+  function setHTML(id, val) { var e = $(id); if (e) e.innerHTML = val; }
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+  /* ── Vietnamese Can Chi + month names ── */
+  var CAN = { '甲': 'Giáp', '乙': 'Ất', '丙': 'Bính', '丁': 'Đinh', '戊': 'Mậu', '己': 'Kỷ', '庚': 'Canh', '辛': 'Tân', '壬': 'Nhâm', '癸': 'Quý' };
+  var CHI = { '子': 'Tý', '丑': 'Sửu', '寅': 'Dần', '卯': 'Mão', '辰': 'Thìn', '巳': 'Tỵ', '午': 'Ngọ', '未': 'Mùi', '申': 'Thân', '酉': 'Dậu', '戌': 'Tuất', '亥': 'Hợi' };
+
+  function vnCanChi(ganZhiCn) {
+    if (!ganZhiCn) return '';
+    var out = '';
+    for (var i = 0; i < ganZhiCn.length; i++) {
+      var ch = ganZhiCn.charAt(i);
+      out += (CAN[ch] || CHI[ch] || ch) + ' ';
+    }
+    return out.trim();
+  }
+
+  function vnMonthName(m) {
+    var leap = m < 0;
+    var a = Math.abs(m);
+    var names = { 1: 'Tháng Giêng', 11: 'Tháng Một', 12: 'Tháng Chạp' };
+    var base = names[a] || ('Tháng ' + a);
+    return leap ? ('Tháng ' + a + ' nhuận') : base;
+  }
+
+  function lunarLabel(lm, ld, leap) {
+    var m = leap ? -Math.abs(lm) : Math.abs(lm);
+    return vnMonthName(m) + ' ngày ' + ld;
+  }
+
+  /* ── All festivals are annual (applied to every year 2024-2028) ── */
+
+  var YEAR_START = 2024;
+  var YEAR_END = 2028;
+
+  /* Fixed solar-date festivals: [solarMonth, solarDay, nameVi, nameEn] */
+  var SOLAR_FIXED = [
+    [1, 1, 'Tết Dương lịch', 'New Year\'s Day'],
+    [1, 1, 'Lễ hội Đua thuyền Đuôi én', 'Swallow-tail Boat Race'],
+    [4, 30, 'Ngày Giải phóng Miền Nam thống nhất đất nước', 'Reunification Day'],
+    [5, 1, 'Ngày Quốc tế Lao động', 'International Labor Day'],
+    [7, 27, 'Ngày Thương binh Liệt sĩ', 'War Invalids and Martyrs Day'],
+    [9, 2, 'Quốc khánh nước CHXHCN Việt Nam', 'National Day of Vietnam'],
+    [11, 1, 'Lễ hội Buckwheat Flower', 'Buckwheat Flower Festival'],
+    [11, 20, 'Ngày Nhà giáo Việt Nam', 'Vietnamese Teachers\' Day'],
+    [12, 20, 'Festival Hoa Đà Lạt', 'Da Lat Flower Festival'],
+    [12, 22, 'Ngày thành lập Quân đội Nhân dân Việt Nam', 'Vietnam People\'s Army Founding Day'],
+    [12, 25, 'Giáng sinh tại Việt Nam', 'Christmas in Vietnam']
+  ];
+
+  /* Lunar-date festivals (solar date computed per year):
+     [lunarMonth, dayStart, dayEnd(0=single), nameVi, nameEn] */
+  var LUNAR_FEST = [
+    [12, 23, 0, 'Lễ tiễn Ông Công Ông Táo về trời', 'Kitchen Gods Day'],
+    [1, 1, 3, 'Tết Nguyên Đán', 'Lunar New Year (Tết)'],
+    [1, 4, 0, 'Lễ hội Gầu Tào', 'Gau Tao Festival'],
+    [1, 5, 0, 'Lễ hội Đống Đa', 'Dong Da Festival'],
+    [1, 6, 0, 'Lễ hội Chùa Hương', 'Perfume Pagoda Festival'],
+    [1, 6, 0, 'Lễ hội Đền Hai Bà Trưng', 'Hai Ba Trung Temple Festival'],
+    [1, 10, 0, 'Lễ hội Yên Tử', 'Yen Tu Festival'],
+    [1, 12, 0, 'Lễ hội Cầu Ngư', 'Whale Festival'],
+    [1, 13, 0, 'Hội Lim', 'Lim Festival'],
+    [1, 15, 0, 'Lễ hội Đền Trần', 'Tran Temple Festival'],
+    [1, 15, 0, 'Lễ hội Vía Bà Thiên Hậu', 'Ba Thien Hau Festival'],
+    [2, 10, 12, 'Lễ hội Dinh Cô', 'Dinh Co Festival'],
+    [2, 19, 0, 'Lễ hội Quán Thế Âm', 'Avalokitesvara Festival'],
+    [2, 27, 0, 'Chol Chnam Thmay', 'Khmer New Year'],
+    [3, 3, 0, 'Lễ hội Phủ Dầy', 'Phu Day Festival'],
+    [3, 4, 0, 'Lễ hội Phủ Dầy', 'Phu Day Festival'],
+    [3, 5, 7, 'Lễ hội Chùa Thầy', 'Thay Pagoda Festival'],
+    [3, 8, 0, 'Lễ hội Phủ Dầy', 'Phu Day Festival'],
+    [3, 10, 0, 'Giỗ Tổ Hùng Vương', 'Hung Kings Commemoration'],
+    [3, 14, 16, 'Lễ hội Đền Đô', 'Den Do Festival'],
+    [3, 20, 23, 'Lễ hội Tháp Bà Ponagar', 'Po Nagar Temple Festival'],
+    [4, 6, 9, 'Lễ hội Gióng', 'Giong Festival'],
+    [4, 15, 0, 'Lễ Phật Đản (Vesak)', 'Vesak (Buddha\'s Birthday)'],
+    [4, 23, 27, 'Lễ hội Bà Chúa Xứ', 'Lady of the Realm Festival'],
+    [5, 1, 0, 'Nha Trang Sea Festival', 'Nha Trang Sea Festival'],
+    [5, 4, 6, 'Lễ Vía Bà Đen', 'Ba Den Festival'],
+    [5, 5, 0, 'Tết Đoan Ngọ', 'Doan Ngo Festival'],
+    [6, 1, 0, 'Lễ hội Trà Cổ', 'Tra Co Festival'],
+    [6, 10, 20, 'Lễ hội Quan Lạn', 'Quan Lan Festival'],
+    [7, 15, 0, 'Lễ Vu Lan', 'Vu Lan (Ghost) Festival'],
+    [7, 29, 0, 'Lễ hội Lăng Ông Bà Chiểu', 'Lang Ong Ba Chieu Festival'],
+    [8, 9, 0, 'Lễ hội Chọi Trâu Đồ Sơn', 'Do Son Buffalo Fighting'],
+    [8, 15, 0, 'Tết Trung Thu', 'Mid-Autumn Festival'],
+    [8, 15, 17, 'Lễ hội Nghinh Ông', 'Nghinh Ong Festival'],
+    [8, 16, 20, 'Lễ hội Côn Sơn - Kiếp Bạc', 'Con Son - Kiep Bac Festival'],
+    [8, 22, 0, 'Lễ hội Lam Kinh', 'Lam Kinh Festival'],
+    [8, 26, 28, 'Lễ hội đền Nguyễn Trung Trực', 'Nguyen Trung Truc Temple Festival'],
+    [9, 13, 15, 'Lễ hội Keo Pagoda', 'Keo Pagoda Festival'],
+    [9, 14, 16, 'Lễ hội Dinh Thầy Thím', 'Dinh Thay Thim Festival'],
+    [10, 15, 0, 'Lễ hội Ok Om Bok', 'Ok Om Bok Festival']
+  ];
+
+  /* ── Converter state ── */
+  var mode = 'lunar2solar';
+  var L_YEARS = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+
+  function fillRange(el, from, to, selected) {
+    el.innerHTML = '';
+    for (var i = from; i <= to; i++) {
+      var o = document.createElement('option');
+      o.value = i;
+      o.textContent = i;
+      if (i === selected) o.selected = true;
+      el.appendChild(o);
+    }
+  }
+
+  function fillLunarYear() {
+    var el = $('in-l-year');
+    el.innerHTML = '';
+    L_YEARS.forEach(function (y) {
+      var o = document.createElement('option');
+      o.value = y;
+      o.textContent = y;
+      if (y === 2026) o.selected = true;
+      el.appendChild(o);
+    });
+  }
+
+  function renderResult() {
+    var box = $('calc-result');
+    var out = '';
+    try {
+      if (mode === 'lunar2solar') {
+        var y = +$('in-l-year').value, m = +$('in-l-month').value, d = +$('in-l-day').value;
+        var leap = !!$('in-l-leap').checked && leapMonthOf(y) === m;
+        var lun = Lunar.fromYmd(y, m, d, leap);
+        var sol = lun.getSolar();
+        var wd = s().weekdays[sol.getWeek()];
+        var gz = vnCanChi(lun.getYearInGanZhiExact());
+        out =
+          '<div class="res-cell"><label>' + s().resWestern + '</label>' +
+          '<div class="res-val">' + pad(sol.getDay()) + '/' + pad(sol.getMonth()) + '/' + sol.getYear() + '</div></div>' +
+          '<div class="res-cell"><label>' + s().resWeekday + '</label>' +
+          '<div class="res-val">' + wd + '</div></div>' +
+          '<div class="res-cell"><label>' + s().resGanZhi + '</label>' +
+          '<div class="res-val">' + gz + '</div></div>';
+      } else {
+        var sy = +$('in-s-year').value, sm = +$('in-s-month').value, sd = +$('in-s-day').value;
+        var sol2 = Solar.fromYmd(sy, sm, sd);
+        var lun2 = sol2.getLunar();
+        var leap2 = lun2.getMonth() < 0;
+        var lm = Math.abs(lun2.getMonth());
+        var lunarText = lun2.getDay() + '/' + lm + '/' + lun2.getYear() + (leap2 ? ' <span class="lunar-small">(nhuận)</span>' : '');
+        var gz2 = vnCanChi(lun2.getYearInGanZhiExact());
+        out =
+          '<div class="res-cell"><label>' + s().resLunar + '</label>' +
+          '<div class="res-val">' + lunarText + '</div></div>' +
+          '<div class="res-cell"><label>' + s().resGanZhi + '</label>' +
+          '<div class="res-val">' + gz2 + '</div></div>';
+      }
+      box.classList.add('visible');
+    } catch (e) {
+      out = '<div class="res-cell" style="grid-column:1/-1;"><div class="res-val" style="color:var(--red);font-family:var(--font-body);font-size:13px;">' +
+        (lang === 'vi' ? 'Ngày không hợp lệ cho lịch âm Việt Nam. Vui lòng kiểm tra lại.' : 'Invalid date for the Vietnamese lunar calendar. Please check your input.') +
+        '</div></div>';
+      box.classList.add('visible');
+    }
+    box.innerHTML = out;
+  }
+
+  function leapMonthOf(year) {
+    try { return LunarYear.fromYear(year).getLeapMonth() || 0; } catch (e) { return 0; }
+  }
+
+  function converterEvents() {
+    ['in-l-day', 'in-l-month', 'in-l-year', 'in-l-leap', 'in-s-day', 'in-s-month', 'in-s-year'].forEach(function (id) {
+      $(id).addEventListener('change', renderResult);
+    });
+    var btns = document.querySelectorAll('#cv-mode .seg-btn');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        btns.forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        mode = b.dataset.mode;
+        $('form-lunar').style.display = mode === 'lunar2solar' ? '' : 'none';
+        $('form-solar').style.display = mode === 'solar2lunar' ? '' : 'none';
+        $('leap-row').style.display = mode === 'lunar2solar' ? '' : 'none';
+        renderResult();
+      });
+    });
+  }
+
+  /* ── Month grid ── */
+  var gridY, gridM, sel = { Y: 0, M: 0, D: 0 };
+
+  function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); }
+  function firstWeekday(y, m) { return new Date(y, m - 1, 1).getDay(); }
+
+  function solarFestForYear(y) {
+    // key "Y-M-D" -> array of festival name(Vi/En) + badge flag
+    var map = {};
+    function add(ky, vi, en, isLunar) {
+      if (!map[ky]) map[ky] = [];
+      map[ky].push({ vi: vi, en: en, lunar: isLunar });
+    }
+    SOLAR_FIXED.forEach(function (f) {
+      add(y + '-' + f[0] + '-' + f[1], f[2], f[3], false);
+    });
+    LUNAR_FEST.forEach(function (f) {
+      var lm = f[0], start = f[1], end = f[2], vnName = f[3], enName = f[4];
+      var to = end > 0 ? end : start;
+      for (var d = start; d <= to; d++) {
+        try {
+          var sol = Lunar.fromYmd(y, lm, d).getSolar();
+          add(sol.getYear() + '-' + sol.getMonth() + '-' + sol.getDay(), vnName, enName, true);
+        } catch (e) { /* day does not exist in that lunar month */ }
+      }
+    });
+    return map;
+  }
+
+  function renderGrid() {
+    var ui = s();
+    var title = ui.gridMonth.replace('{m}', gridM).replace('{y}', gridY);
+    setText('grid-title', title);
+    // dominant lunar year (representative day 15)
+    try {
+      var rep = Solar.fromYmd(gridY, gridM, Math.min(15, daysInMonth(gridY, gridM))).getLunar();
+      setText('grid-lunar-year', ui.gridLunarYear + ' ' + vnCanChi(rep.getYearInGanZhiExact()) + ' (' + rep.getYear() + ')');
+    } catch (e) {
+      setText('grid-lunar-year', ui.gridLunarYear);
+    }
+
+    var festMap = solarFestForYear(gridY);
+    var grid = $('day-grid');
+    grid.innerHTML = '';
+    var total = daysInMonth(gridY, gridM);
+    var lead = firstWeekday(gridY, gridM);
+    var today = new Date();
+    var isTodayY = today.getFullYear() === gridY && today.getMonth() + 1 === gridM;
+
+    for (var i = 0; i < lead; i++) {
+      var blank1 = document.createElement('div');
+      blank1.className = 'day-btn empty';
+      grid.appendChild(blank1);
+    }
+
+    for (var d = 1; d <= total; d++) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day-btn';
+      // lunar info
+      var lun;
+      try { lun = Solar.fromYmd(gridY, gridM, d).getLunar(); } catch (e) { continue; }
+      var lday = lun.getDay();
+      var lmonth = lun.getMonth(); // negative if leap
+      var isFullMoon = lday === 15;
+      var isNewLunar = lday === 1;
+      var feasts = festMap[gridY + '-' + gridM + '-' + d] || [];
+
+      var cls = [];
+      if (isFullMoon) cls.push('fullmoon');
+      if (isNewLunar) cls.push('newlunar');
+      if (feasts.length) cls.push('festday');
+      if (sel.Y === gridY && sel.M === gridM && sel.D === d) cls.push('selected');
+      if (isTodayY && d === today.getDate()) cls.push('today');
+      btn.className = 'day-btn ' + cls.join(' ');
+
+      var badge = '';
+      if (isFullMoon) badge += '<span class="badge">Rằm</span>';
+      if (isNewLunar) badge += '<span class="badge newmoon">Mùng 1</span>';
+      if (feasts.length) badge += '<span class="badge fest">' + ui.festBadge + '</span>';
+
+      var lunarText = String(lday);
+      if (isNewLunar) {
+        var mAbs = Math.abs(lmonth);
+        lunarText = '1/' + mAbs;
+        if (lmonth < 0) lunarText += ' (nhuận)';
+      } else if (isFullMoon) {
+        lunarText = '15';
+      }
+
+      var festNames = feasts.map(function (f) { return lang === 'vi' ? f.vi : f.en; }).join(' · ');
+      btn.innerHTML =
+        '<div class="day-top"><span class="day-num">' + d + '</span>' + badge + '</div>' +
+        '<div class="day-lunar"><b>' + lunarText + '</b></div>' +
+        (festNames ? '<div class="fest-names">' + festNames + '</div>' : '');
+
+      btn.addEventListener('click', (function (yy, mm, dd) {
+        return function () { selectDay(yy, mm, dd); };
+      })(gridY, gridM, d));
+
+      grid.appendChild(btn);
+    }
+
+    // trailing blanks
+    var used = lead + total;
+    var rem = used % 7;
+    if (rem > 0) for (var k = 0; k < 7 - rem; k++) {
+      var blank2 = document.createElement('div');
+      blank2.className = 'day-btn empty';
+      grid.appendChild(blank2);
+    }
+    renderSelectedInfo();
+  }
+
+  function selectDay(y, m, d) {
+    sel = { Y: y, M: m, D: d };
+    renderGrid();
+  }
+
+  function renderSelectedInfo() {
+    var box = $('day-detail');
+    if (!box) return;
+    if (!sel.Y) {
+      box.innerHTML = '<div class="day-detail-note">' + s().selEmpty + '</div>';
+      return;
+    }
+    var lun, sol;
+    try {
+      sol = Solar.fromYmd(sel.Y, sel.M, sel.D);
+      lun = sol.getLunar();
+    } catch (e) {
+      box.innerHTML = '';
+      return;
+    }
+    var leap = lun.getMonth() < 0;
+    var lunarText = lun.getDay() + '/' + Math.abs(lun.getMonth()) + '/' + lun.getYear() + (leap ? ' (nhuận)' : '');
+    var gz = vnCanChi(lun.getYearInGanZhiExact());
+    var festNames = '';
+    var dayFests = solarFestForYear(sel.Y)[sel.Y + '-' + sel.M + '-' + sel.D];
+    if (dayFests && dayFests.length) {
+      festNames = '<div class="detail-cell" style="grid-column:1/-1;"><span class="detail-label">' +
+        (lang === 'vi' ? 'Lễ hội' : 'Festival') + '</span>' +
+        '<span class="detail-val" style="color:var(--red);">' +
+        dayFests.map(function (f) { return lang === 'vi' ? f.vi : f.en; }).join(' · ') +
+        '</span></div>';
+    }
+    box.innerHTML =
+      '<div class="detail-cell"><span class="detail-label">' + s().selWestern + '</span>' +
+      '<span class="detail-val">' + pad(sel.D) + '/' + pad(sel.M) + '/' + sel.Y + '</span></div>' +
+      '<div class="detail-cell"><span class="detail-label">' + s().selLunar + '</span>' +
+      '<span class="detail-val">' + lunarText + '</span></div>' +
+      '<div class="detail-cell"><span class="detail-label">' + s().selWeekday + '</span>' +
+      '<span class="detail-val">' + s().weekdays[sol.getWeek()] + '</span></div>' +
+      '<div class="detail-cell"><span class="detail-label">' + s().selGanZhi + '</span>' +
+      '<span class="detail-val">' + gz + '</span></div>' +
+      festNames;
+  }
+
+  function gridEvents() {
+    $('btn-prev').addEventListener('click', function () {
+      gridM--;
+      if (gridM < 1) { gridM = 12; gridY--; }
+      if (gridY < YEAR_START) gridY = YEAR_START;
+      renderGrid(); renderFestivals();
+    });
+    $('btn-next').addEventListener('click', function () {
+      gridM++;
+      if (gridM > 12) { gridM = 1; gridY++; }
+      if (gridY > YEAR_END) gridY = YEAR_END;
+      renderGrid(); renderFestivals();
+    });
+    $('btn-today').addEventListener('click', function () {
+      var t = new Date();
+      gridY = t.getFullYear(); gridM = t.getMonth() + 1;
+      selectDay(gridY, gridM, t.getDate());
+      renderFestivals();
+    });
+  }
+
+  /* ── Festival list (chronologically sorted, deduped) ── */
+  function renderFestivals() {
+    var ui = s();
+    var y = gridY || new Date().getFullYear();
+    setText('fl-title', ui.flTitle.replace('{y}', y));
+    var box = $('fest-list');
+    box.innerHTML = '';
+
+    var entries = [];
+
+    // Solar-fixed festivals
+    SOLAR_FIXED.forEach(function (f) {
+      entries.push({
+        sort: f[0] * 100 + f[1],
+        solar: pad(f[1]) + '/' + pad(f[0]) + '/' + y,
+        lunar: '—',
+        vi: f[2], en: f[3]
+      });
+    });
+
+    // Lunar-date festivals (solar date computed per year)
+    var seen = {};
+    LUNAR_FEST.forEach(function (f) {
+      var lm = f[0], start = f[1], end = f[2], vnName = f[3], enName = f[4];
+      var to = end > 0 ? end : start;
+      var solarStr = '';
+      var solarMonth = 99;
+      try {
+        var sSol = Lunar.fromYmd(y, lm, start).getSolar();
+        solarMonth = sSol.getMonth();
+        solarStr = pad(sSol.getDay()) + '/' + pad(sSol.getMonth()) + '/' + sSol.getYear();
+        if (to > start) {
+          var eSol = Lunar.fromYmd(y, lm, to).getSolar();
+          solarStr += ' – ' + pad(eSol.getDay()) + '/' + pad(eSol.getMonth()) + '/' + eSol.getYear();
+        }
+      } catch (e) {
+        solarStr = '—';
+      }
+      var key = (lang === 'vi' ? vnName : enName);
+      if (seen[key]) return; // dedupe by name
+      seen[key] = true;
+      entries.push({
+        sort: solarMonth * 100 + start,
+        solar: solarStr,
+        lunar: start === to ? 'Ngày ' + start + ' tháng ' + Math.abs(lm) : 'Ngày ' + start + '–' + to + ' tháng ' + Math.abs(lm),
+        vi: vnName, en: enName
+      });
+    });
+
+    // Sort chronologically by solar month then day
+    entries.sort(function (a, b) { return a.sort - b.sort; });
+
+    var html = '';
+    entries.forEach(function (e) {
+      var name = lang === 'vi' ? e.vi : e.en;
+      html +=
+        '<div class="fest-card"><div class="fest-name">' + name + '</div>' +
+        '<div class="fest-lunar">' + e.lunar + '</div>' +
+        '<div class="fest-solar">' + y + ': <b>' + e.solar + '</b></div></div>';
+    });
+
+    box.innerHTML = html;
+  }
+
+  /* ── Language ── */
+  function applyLang() {
+    var ui = UI[lang];
+    document.documentElement.lang = lang;
+    document.documentElement.classList.toggle('lang-vi', lang === 'vi');
+    setText('nav-home', ui.navHome);
+    setText('nav-book', ui.navBook);
+    setText('nav-fest', ui.navFest);
+    setText('nav-map', ui.navMap);
+    setText('nav-journey', ui.navJourney);
+    setText('nav-db', ui.navDb);
+    setText('nav-about', ui.navAbout);
+    setText('nav-lunar', ui.navLunar);
+    setText('ph-eyebrow', ui.phEy);
+    setHTML('ph-h1a', ui.phH1a);
+    setHTML('ph-h1b', ui.phH1b);
+    setText('ph-desc', ui.phDesc);
+    setText('cv-title', ui.cvTitle);
+    setText('cv-sub', ui.cvSub);
+    setText('cv-l2s', ui.l2s);
+    setText('cv-s2l', ui.s2l);
+    setText('lbl-l-day', ui.lblLDay + ' <small>/ ' + (lang === 'vi' ? 'Day' : 'Ngày') + '</small>');
+    setText('lbl-l-month', ui.lblLMonth + ' <small>/ ' + (lang === 'vi' ? 'Month' : 'Tháng') + '</small>');
+    setText('lbl-l-year', ui.lblLYear + ' <small>/ ' + (lang === 'vi' ? 'Lunar Year' : 'Năm âm lịch') + '</small>');
+    setText('lbl-s-day', ui.lblSDay + ' <small>/ ' + (lang === 'vi' ? 'Day' : 'Ngày') + '</small>');
+    setText('lbl-s-month', ui.lblSMonth + ' <small>/ ' + (lang === 'vi' ? 'Month' : 'Tháng') + '</small>');
+    setText('lbl-s-year', ui.lblSYear + ' <small>/ ' + (lang === 'vi' ? 'Solar Year' : 'Năm dương lịch') + '</small>');
+    setHTML('lbl-l-leap', ui.lblLeap);
+    setText('btn-prev-label', ui.btnPrev);
+    setText('btn-today-label', ui.btnToday);
+    setText('btn-next-label', ui.btnNext);
+    for (var i = 0; i < 7; i++) setText('wk-' + i, ui.weeks[i]);
+    setHTML('legend', 
+      '<span><i class="full"></i>' + ui.legendFull + '</span>' +
+      '<span><i class="new"></i>' + ui.legendNew + '</span>' +
+      '<span><i class="fest"></i>' + ui.legendFest + '</span>');
+    setText('fl-sub', ui.flSub);
+    setText('info-note', ui.infoNote);
+    setText('foot-copy', ui.footCopy);
+    setText('foot-note', ui.footNote);
+    document.querySelectorAll('.lang-btn').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    renderGrid();
+    renderFestivals();
+  }
+
+  /* ── Init ── */
+  function init() {
+    fillRange($('in-l-day'), 1, 30, 1);
+    fillRange($('in-l-month'), 1, 12, 1);
+    fillLunarYear();
+    fillRange($('in-s-day'), 1, 31, 15);
+    fillRange($('in-s-month'), 1, 12, 8);
+    fillRange($('in-s-year'), 1900, 2100, 2026);
+
+    var t = new Date();
+    gridY = 2026; gridM = 3; // match reference preview month
+    sel = { Y: 2026, M: 3, D: 2 };
+
+    converterEvents();
+    gridEvents();
+    applyLang();
+    document.querySelectorAll('.lang-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        lang = b.dataset.lang;
+        localStorage.setItem('vnmt_lang', lang);
+        applyLang();
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
