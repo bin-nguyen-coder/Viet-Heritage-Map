@@ -1144,9 +1144,27 @@ function stopAllRecordings() {
   });
 }
 
+let activeNativeModalViewer = null;
+
+function destroyNativeModalViewer() {
+  if (activeNativeModalViewer?.destroy) {
+    try {
+      activeNativeModalViewer.destroy();
+    } catch (error) {
+      console.warn("Unable to destroy native Chua Mot Cot viewer", error);
+    }
+  }
+  activeNativeModalViewer = null;
+  const modalBox = document.getElementById('modal-box');
+  if (modalBox) {
+    modalBox.classList.remove('modal-box-3d');
+  }
+}
+
 function closeArtifactModal() {
   /* CRITICAL: Stop all microphone recordings before closing */
   stopAllRecordings();
+  destroyNativeModalViewer();
 
   document.getElementById('modal-overlay').classList.remove('visible');
   activeItemId = null;
@@ -2280,7 +2298,9 @@ function openNTModal(t) {
   const eraLbl  = NT_ERA_CONFIG[eraKey]?.[lang]?.short       || eraKey;
   const desc  = lang === 'vi' ? (t.desc_vi || t.desc) : t.desc;
   const pending = (lang === 'vi' && !t.desc_vi) ? ' <span class="desc-pending">(EN)</span>' : '';
-  const model3d = t.model3d || '';
+  const localModelDae = t.localModelDae || '';
+  const localTextureRoot = t.localTextureRoot || './chua_mot_cot/model/';
+  const hasNativeModel = Boolean(localModelDae);
   const imageUrl = t.image || `images/treasures/${t.id}.jpg`;
 
   const lblType  = lang === 'vi' ? 'Loại' : 'Type';
@@ -2292,6 +2312,8 @@ function openNTModal(t) {
 
   const coord = (typeof t.lat === 'number' && typeof t.lng === 'number')
     ? `<div class="modal-info-item"><div class="modal-info-label">🗺️ ${lblCoord}</div><div class="modal-info-value">${t.lat.toFixed(4)}, ${t.lng.toFixed(4)}</div></div>` : '';
+
+  destroyNativeModalViewer();
 
   let html = `
     <div class="modal-image-container">
@@ -2314,14 +2336,72 @@ function openNTModal(t) {
     ${desc ? `<div class="modal-desc-section"><div class="modal-desc-label">${lblDesc}</div><div class="modal-desc">${esc(desc)}${pending}</div></div>` : ''}
   `;
 
-  if (model3d) {
-    html += `<div class="modal-desc-section"><div class="modal-desc-label">3D</div>
-      <iframe src="${model3d}" title="${esc(title)}" style="width:100%;height:420px;border:0;border-radius:8px;background:#000" allowfullscreen></iframe>
-    </div>`;
+  if (hasNativeModel) {
+    html = `
+      <div class="native-model-modal">
+        <div class="native-model-meta">
+          <div class="modal-badge-row">
+            <span class="modal-badge" style="color:${typeC};border-color:${typeC}55">${esc(typeLbl)}</span>
+            <span class="modal-badge" style="color:${catC};border-color:${catC}55">${esc(catLbl)}</span>
+            <span class="modal-badge" style="color:${eraC};border-color:${eraC}55">${esc(eraLbl)}</span>
+          </div>
+          <div class="modal-title">${esc(title)}</div>
+          ${sub ? `<div class="modal-subtitle">${esc(sub)}</div>` : ''}
+          <div class="modal-info-grid">
+            <div class="modal-info-item"><div class="modal-info-label">🏷️ ${lblType}</div><div class="modal-info-value">${esc(typeLbl)}</div></div>
+            <div class="modal-info-item"><div class="modal-info-label">🏷️ ${lblCat}</div><div class="modal-info-value">${esc(catLbl)}</div></div>
+            <div class="modal-info-item"><div class="modal-info-label">📅 ${lblYear}</div><div class="modal-info-value">${esc(t.year || '')}</div></div>
+            <div class="modal-info-item"><div class="modal-info-label">📍 ${lblLoc}</div><div class="modal-info-value">${esc(ntLocation(t))}</div></div>
+            ${coord}
+          </div>
+          ${desc ? `<div class="modal-desc-section"><div class="modal-desc-label">${lblDesc}</div><div class="modal-desc">${esc(desc)}${pending}</div></div>` : ''}
+        </div>
+        <div class="native-model-stage">
+          <div id="native-model-canvas-host" class="native-model-canvas-host"></div>
+          <div id="native-model-loading" class="native-model-loading">
+            <div class="native-model-loading-spinner"></div>
+            <div class="native-model-progress"><span id="native-model-progress"></span></div>
+            <div class="native-model-caption" data-loading-text>${lang === 'vi' ? 'Đang tải mô hình Chùa Một Cột...' : 'Loading Chua Mot Cot model...'}</div>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
-  document.getElementById('modal-content').innerHTML = html;
+  const modalBox = document.getElementById('modal-box');
+  const modalContent = document.getElementById('modal-content');
+  modalBox.classList.toggle('modal-box-3d', hasNativeModel);
+  modalContent.innerHTML = html;
   document.getElementById('modal-overlay').classList.add('visible');
+
+  if (hasNativeModel) {
+    requestAnimationFrame(() => {
+      const viewerApi = window.NativeChuaMotCotViewer;
+      if (!viewerApi?.mount) {
+        const loadingEl = document.getElementById('native-model-loading');
+        if (loadingEl) {
+          loadingEl.innerHTML = `<div class="native-model-caption">${lang === 'vi' ? 'Không thể khởi tạo trình xem 3D cục bộ.' : 'Unable to initialize the local 3D viewer.'}</div>`;
+        }
+        return;
+      }
+
+      viewerApi.mount('native-model-canvas-host', {
+        modelUrl: localModelDae,
+        textureRoot: localTextureRoot,
+        loadingTarget: 'native-model-loading',
+        progressTarget: 'native-model-progress',
+      }).then((viewer) => {
+        activeNativeModalViewer = viewer;
+      }).catch((error) => {
+        console.error('Unable to mount native Chua Mot Cot viewer', error);
+        const loadingEl = document.getElementById('native-model-loading');
+        if (loadingEl) {
+          loadingEl.innerHTML = `<div class="native-model-caption">${lang === 'vi' ? 'Không thể tải mô hình 3D cục bộ.' : 'Unable to load the local 3D model.'}</div>`;
+          loadingEl.classList.remove('is-hidden');
+        }
+      });
+    });
+  }
 }
 
 /* ═══════════════════════════════════════

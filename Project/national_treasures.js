@@ -514,10 +514,8 @@ const NATIONAL_TREASURES = [
     badge: "Lý Dynasty Stele",
     type: "academic",
     year: "Lý",
-    model3d: "https://sketchfab.com/models/84fd26141dcf432b81d15527733ca27b/embed",
-    model3d_title: "Bia Sùng Thiện Diên Linh | Bảo Vật Quốc Gia",
-    model3d_author: "Atlantic Truong | Vietnam 3D",
-    model3d_author_url: "https://sketchfab.com/atlantictruong19",
+    localModelDae: "./chua_mot_cot/model.dae",
+    localTextureRoot: "./chua_mot_cot/model/",
     script: {
       han: `            <strong>皇越李家第四帝龍隊山崇善延齡塔碑銘御書飛帛碑額</strong>
 
