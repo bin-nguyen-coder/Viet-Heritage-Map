@@ -325,6 +325,7 @@ const NAV_LABELS = {
     map: 'Bản đồ di sản',
     db: 'Kho lưu trữ',
     about: 'Giới thiệu',
+    shop: 'Cửa hàng',
   },
   en: {
     home: 'Home',
@@ -333,6 +334,7 @@ const NAV_LABELS = {
     map: 'Heritage Map',
     db: 'Archive',
     about: 'About',
+    shop: 'Shop',
   }
 };
 
