@@ -13,6 +13,7 @@
 
   <!-- Leaflet MarkerCluster -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
   <!-- App styles -->
   <link rel="stylesheet" href="VNMT.css" />
@@ -64,7 +65,11 @@
 
     <!-- Legend + View toggle — stacked at bottom-left of map -->
     <div class="map-bottom-left">
-      <div class="view-toggle">
+      <div class="mode-toggle" id="mode-toggle">
+        <button class="mode-btn active" data-mode="unesco">UNESCO</button>
+        <button class="mode-btn" data-mode="treasure">Bảo vật</button>
+      </div>
+      <div class="view-toggle" id="view-toggle">
         <span class="view-toggle-label" id="view-toggle-label">View by</span>
         <button class="view-btn active" data-view="status">Status</button>
         <button class="view-btn" data-view="genre">Genre</button>
@@ -76,6 +81,12 @@
       <div class="tile-switcher-label" id="tile-switcher-label">Map Style</div>
       <button class="tile-option active" data-tile="positron"><span class="tile-dot"></span> Positron</button>
       <button class="tile-option" data-tile="osm"><span class="tile-dot"></span> <span id="tile-osm-label">Street Map</span></button>
+      <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+      <button class="tile-option active" id="btn-provinces"
+              title="Hiện / ẩn ranh giới tỉnh">
+        <span class="tile-dot" style="background:var(--gold);border-color:var(--gold)"></span>
+        <span id="btn-provinces-label">Province Borders</span>
+      </button>
     </div>
   </div>
 </div>
@@ -105,6 +116,8 @@
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <!-- App logic & data -->
+<script src="location_en.js"></script>
+<script src="national_treasures.js"></script>
 <script src="VNMT.js"></script>
 
 </body>

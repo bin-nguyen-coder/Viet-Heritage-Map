@@ -156,6 +156,21 @@
     }
     .result-summary strong { color:var(--text); font-weight:600; }
 
+    /* ── MODE TOGGLE (UNESCO ↔ Treasures) ── */
+    .db-mode-toggle {
+      display:inline-flex; gap:4px;
+      background:#ede7db; border:1px solid var(--border);
+      border-radius:6px; padding:4px; margin-bottom:20px;
+    }
+    .db-mode-btn {
+      background:transparent; border:none; border-radius:4px;
+      padding:8px 18px; font-size:11px; font-weight:600; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--muted);
+      font-family:var(--font-body); cursor:pointer; transition:all .2s;
+    }
+    .db-mode-btn:hover  { color:var(--red); }
+    .db-mode-btn.active { background:var(--red); color:#fff; }
+
     /* ── RESULTS TABLE ── */
     .table-wrap {
       background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
@@ -271,6 +286,10 @@
 
   <!-- SEARCH PANEL -->
   <div class="search-panel">
+    <div class="db-mode-toggle">
+      <button class="db-mode-btn active" data-dbmode="unesco" id="db-mode-unesco">UNESCO</button>
+      <button class="db-mode-btn" data-dbmode="treasure" id="db-mode-treasure">Bảo vật</button>
+    </div>
     <div class="search-grid">
 
       <!-- Name search -->
@@ -287,7 +306,7 @@
       </div>
 
       <!-- Genre -->
-      <div class="search-field">
+      <div class="search-field field-unesco">
         <label class="search-label" id="lbl-genre">Thể loại</label>
         <select class="search-select" id="q-genre">
           <option value="">-- Tất cả --</option>
@@ -300,7 +319,7 @@
       </div>
 
       <!-- Status -->
-      <div class="search-field">
+      <div class="search-field field-unesco">
         <label class="search-label" id="lbl-status">Trạng thái</label>
         <select class="search-select" id="q-status">
           <option value="">-- Tất cả --</option>
@@ -309,6 +328,18 @@
           <option value="national"  id="opt-national">Quốc gia</option>
           <option value="tentative" id="opt-tentative">Đề cử</option>
         </select>
+      </div>
+
+      <!-- Type (treasures) -->
+      <div class="search-field field-treasure" style="display:none">
+        <label class="search-label" id="lbl-type">Loại</label>
+        <select class="search-select" id="q-type"></select>
+      </div>
+
+      <!-- Era (treasures) -->
+      <div class="search-field field-treasure" style="display:none">
+        <label class="search-label" id="lbl-era">Niên đại</label>
+        <select class="search-select" id="q-era"></select>
       </div>
 
       <!-- Keyword -->
@@ -358,6 +389,9 @@
 </div><!-- /content -->
 
 <script src="data.js"></script>
+<script src="location_en.js"></script>
+<script src="national_treasures.js"></script>
+<script src="treasure_common.js"></script>
 <script>
 /* ═══════════════════════════════════════
    CONFIG & STATE
@@ -366,6 +400,7 @@ const PAGE_SIZE = 30;
 let lang        = localStorage.getItem('vnmt_lang') || 'vi';
 let filtered    = [];
 let currentPage = 1;
+let mode        = 'unesco';   // 'unesco' | 'treasure'
 
 /* ── Label readers (status / genre) — STATUS_CONFIG & GENRE_CONFIG
    come from data.js. ── */
@@ -399,6 +434,11 @@ const DB_STRINGS = {
     namePlaceholder:'Nhập tên di sản…',
     locPlaceholder:'Nhập địa điểm hoặc tỉnh…',
     kwPlaceholder:'Nhập từ khóa…',
+    dbModeUnesco:'UNESCO', dbModeTreasure:'Bảo vật',
+    lblType:'Loại', lblEra:'Niên đại',
+    thYearT:'Niên đại', phH1bT:'Bảo Vật Quốc Gia',
+    resultSummaryT: n => `Hiển thị <strong>${n}</strong> bảo vật`,
+    emptyMsgT:'Không tìm thấy bảo vật phù hợp.',
   },
   en: {
     navHome:'Home', navMap:'Map', navDb:'Database',
@@ -419,6 +459,11 @@ const DB_STRINGS = {
     namePlaceholder:'Search by name…',
     locPlaceholder:'Enter location or province…',
     kwPlaceholder:'Enter keyword…',
+    dbModeUnesco:'UNESCO', dbModeTreasure:'Treasures',
+    lblType:'Type', lblEra:'Era',
+    thYearT:'Period', phH1bT:'National Treasures',
+    resultSummaryT: n => `Showing <strong>${n}</strong> treasures`,
+    emptyMsgT:'No treasures match your search.',
   },
 };
 
@@ -443,9 +488,14 @@ function applyLang() {
   document.getElementById('lbl-btn-reset').textContent  = s.btnReset;
   document.getElementById('th-no').textContent   = s.thNo;
   document.getElementById('th-name').textContent = s.thName;
-  document.getElementById('th-year').textContent = s.thYear;
+  document.getElementById('th-year').textContent = (mode === 'treasure') ? s.thYearT : s.thYear;
   document.getElementById('th-loc').textContent  = s.thLoc;
-  document.getElementById('empty-msg').textContent = s.emptyMsg;
+  document.getElementById('empty-msg').textContent = (mode === 'treasure') ? s.emptyMsgT : s.emptyMsg;
+  document.getElementById('db-mode-unesco').textContent   = s.dbModeUnesco;
+  document.getElementById('db-mode-treasure').textContent = s.dbModeTreasure;
+  document.getElementById('lbl-type').textContent = s.lblType;
+  document.getElementById('lbl-era').textContent  = s.lblEra;
+  document.getElementById('ph-h1b').textContent = (mode === 'treasure') ? s.phH1bT : s.phH1b;
   document.getElementById('q-name').placeholder = s.namePlaceholder;
   document.getElementById('q-loc').placeholder  = s.locPlaceholder;
   document.getElementById('q-kw').placeholder   = s.kwPlaceholder;
@@ -467,6 +517,7 @@ function applyLang() {
     b.classList.toggle('active', b.dataset.lang === lang)
   );
   /* re-render table in new language */
+  populateTreasureFilters();
   renderPage(currentPage);
 }
 
@@ -478,35 +529,95 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
   });
 });
 
+/* Populate treasure type/era filter selects (bilingual) */
+function populateTreasureFilters() {
+  const selType = document.getElementById('q-type');
+  const curType = selType.value;
+  selType.innerHTML = `<option value="">${S('optAll')}</option>` +
+    Object.keys(NT_TYPE_CONFIG).filter(k => k !== 'all')
+      .map(k => `<option value="${k}">${NT_TYPE_CONFIG[k][lang].short}</option>`).join('');
+  selType.value = curType;
+
+  const selEra = document.getElementById('q-era');
+  const curEra = selEra.value;
+  selEra.innerHTML = `<option value="">${S('optAll')}</option>` +
+    Object.keys(NT_ERA_CONFIG).filter(k => k !== 'all')
+      .map(k => `<option value="${k}">${NT_ERA_CONFIG[k][lang].short}</option>`).join('');
+  selEra.value = curEra;
+}
+
+/* Switch between UNESCO and Treasures search modes */
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.db-mode-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.dbmode === m));
+  document.querySelectorAll('.field-unesco').forEach(el =>
+    el.style.display = (m === 'unesco') ? '' : 'none');
+  document.querySelectorAll('.field-treasure').forEach(el =>
+    el.style.display = (m === 'treasure') ? '' : 'none');
+  resetSearch();
+  applyLang();
+}
+
+document.querySelectorAll('.db-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => setMode(btn.dataset.dbmode));
+});
+
 /* ═══════════════════════════════════════
    SEARCH & FILTER
 ═══════════════════════════════════════ */
 function doSearch() {
-  const name   = document.getElementById('q-name').value.trim().toLowerCase();
-  const loc    = document.getElementById('q-loc').value.trim().toLowerCase();
-  const kw     = document.getElementById('q-kw').value.trim().toLowerCase();
-  const genre  = document.getElementById('q-genre').value;
-  const status = document.getElementById('q-status').value;
+  const name = document.getElementById('q-name').value.trim().toLowerCase();
+  const loc  = document.getElementById('q-loc').value.trim().toLowerCase();
+  const kw   = document.getElementById('q-kw').value.trim().toLowerCase();
 
-  filtered = TREASURES.filter(t => {
-    const eName = (t.english || '').toLowerCase();
-    const vName = (t.name    || '').toLowerCase();
-    const tLoc  = (t.location|| '').toLowerCase();
-    const tDesc = (t.desc    || '').toLowerCase();
-    const tDescVi = (t.desc_vi|| '').toLowerCase();
-    const tBadge = (t.badge  || '').toLowerCase();
-    const tProv  = (Array.isArray(t.provinces) ? t.provinces.join(' ') : '').toLowerCase();
+  if (mode === 'treasure') {
+    const type = document.getElementById('q-type').value;
+    const era  = document.getElementById('q-era').value;
 
-    if (name && !eName.includes(name) && !vName.includes(name)) return false;
-    if (loc  && !tLoc.includes(loc) && !tProv.includes(loc))         return false;
-    if (kw   && !eName.includes(kw) && !vName.includes(kw)
-             && !tDesc.includes(kw) && !tDescVi.includes(kw)
-             && !tBadge.includes(kw) && !tLoc.includes(kw)
-             && !tProv.includes(kw))                                  return false;
-    if (genre  && getGenre(t) !== genre)          return false;
-    if (status && getStatus(t) !== status)        return false;
-    return true;
-  });
+    filtered = NATIONAL_TREASURES.filter(t => {
+      const eName   = (t.english || '').toLowerCase();
+      const vName   = (t.name    || '').toLowerCase();
+      const tLoc    = (t.location|| '').toLowerCase();
+      const tLocEn  = (LOCATION_EN && LOCATION_EN[t.location] ? LOCATION_EN[t.location] : '').toLowerCase();
+      const tDesc   = (t.desc    || '').toLowerCase();
+      const tDescVi = (t.desc_vi || '').toLowerCase();
+      const tBadge  = (t.badge   || '').toLowerCase();
+
+      if (name && !eName.includes(name) && !vName.includes(name)) return false;
+      if (loc  && !tLoc.includes(loc) && !tLocEn.includes(loc))    return false;
+      if (kw   && !eName.includes(kw) && !vName.includes(kw)
+               && !tDesc.includes(kw) && !tDescVi.includes(kw)
+               && !tBadge.includes(kw) && !tLoc.includes(kw)
+               && !tLocEn.includes(kw))                             return false;
+      if (type && ntType(t)   !== type) return false;
+      if (era  && ntEraKey(t) !== era)  return false;
+      return true;
+    });
+  } else {
+    const genre  = document.getElementById('q-genre').value;
+    const status = document.getElementById('q-status').value;
+
+    filtered = TREASURES.filter(t => {
+      const eName   = (t.english || '').toLowerCase();
+      const vName   = (t.name    || '').toLowerCase();
+      const tLoc    = (t.location|| '').toLowerCase();
+      const tDesc   = (t.desc    || '').toLowerCase();
+      const tDescVi = (t.desc_vi || '').toLowerCase();
+      const tBadge  = (t.badge   || '').toLowerCase();
+      const tProv   = (Array.isArray(t.provinces) ? t.provinces.join(' ') : '').toLowerCase();
+
+      if (name && !eName.includes(name) && !vName.includes(name)) return false;
+      if (loc  && !tLoc.includes(loc) && !tProv.includes(loc))         return false;
+      if (kw   && !eName.includes(kw) && !vName.includes(kw)
+               && !tDesc.includes(kw) && !tDescVi.includes(kw)
+               && !tBadge.includes(kw) && !tLoc.includes(kw)
+               && !tProv.includes(kw))                                  return false;
+      if (genre  && getGenre(t) !== genre)          return false;
+      if (status && getStatus(t) !== status)        return false;
+      return true;
+    });
+  }
 
   currentPage = 1;
   renderPage(1);
@@ -515,9 +626,15 @@ function doSearch() {
 function resetSearch() {
   ['q-name','q-loc','q-kw'].forEach(id =>
     { document.getElementById(id).value = ''; });
-  document.getElementById('q-genre').value  = '';
-  document.getElementById('q-status').value = '';
-  filtered = [...TREASURES];
+  if (mode === 'treasure') {
+    document.getElementById('q-type').value = '';
+    document.getElementById('q-era').value  = '';
+    filtered = [...NATIONAL_TREASURES];
+  } else {
+    document.getElementById('q-genre').value  = '';
+    document.getElementById('q-status').value = '';
+    filtered = [...TREASURES];
+  }
   currentPage = 1;
   renderPage(1);
 }
@@ -532,7 +649,8 @@ function renderPage(page) {
   const slice  = filtered.slice(start, start + PAGE_SIZE);
 
   /* result summary */
-  document.getElementById('result-summary').innerHTML = S('resultSummary')(total);
+  document.getElementById('result-summary').innerHTML =
+    (mode === 'treasure' ? S('resultSummaryT') : S('resultSummary'))(total);
 
   /* table body */
   const tbody = document.getElementById('results-body');
@@ -544,35 +662,42 @@ function renderPage(page) {
   } else {
     empty.style.display = 'none';
     tbody.innerHTML = slice.map((t, i) => {
-      const status   = getStatus(t);
-      const genre    = getGenre(t);
-      const stC      = STATUS_CONFIG[status]?.color || '#8a7c5e';
-      const gnC      = GENRE_CONFIG[genre]?.color   || '#8a7c5e';
-      const stLbl    = statusLabel(status, 'short');
-      const gnLbl    = genreLabel(genre, 'short');
-      const nameMain = lang === 'vi' ? t.name : t.english;
-      const nameSub  = lang === 'vi' ? t.english : t.name;
+      const nameMain = lang === 'vi' ? t.name : (t.english || t.name);
+      const nameSub  = lang === 'vi' ? (t.english || '') : t.name;
+      let tags    = '';
+      let onClick = '';
+      let location = t.location;
+
+      if (mode === 'treasure') {
+        const tk = ntType(t);
+        const ek = ntEraKey(t);
+        const tc = NT_TYPE_CONFIG[tk]?.color || '#d4875e';
+        const ec = NT_ERA_CONFIG[ek]?.color  || '#8a7c5e';
+        tags = `
+          <span class="td-tag" style="color:${tc};border-color:${tc}55;background:${tc}11">${NT_TYPE_CONFIG[tk]?.[lang]?.short || tk}</span>
+          <span class="td-tag" style="color:${ec};border-color:${ec}55;background:${ec}11">${NT_ERA_CONFIG[ek]?.[lang]?.short || ek}</span>`;
+        location = ntLocation(t);
+      } else {
+        const status = getStatus(t);
+        const genre  = getGenre(t);
+        const stC    = STATUS_CONFIG[status]?.color || '#8a7c5e';
+        const gnC    = GENRE_CONFIG[genre]?.color   || '#8a7c5e';
+        tags = `
+          <span class="td-tag" style="color:${stC};border-color:${stC}55;background:${stC}11">${statusLabel(status, 'short')}</span>
+          <span class="td-tag" style="color:${gnC};border-color:${gnC}55;background:${gnC}11">${genreLabel(genre, 'short')}</span>`;
+        onClick = `onclick="window.location='artifact.html?id=${t.id}'" style="cursor:pointer" title="${nameMain}"`;
+      }
+
       return `
-        <tr onclick="window.location='artifact.html?id=${t.id}'"
-            style="cursor:pointer"
-            title="${nameMain}">
+        <tr ${onClick}>
           <td class="td-no">${start + i + 1}</td>
           <td>
             <div class="td-name-en">${nameMain}</div>
             <div class="td-name-vi">${nameSub}</div>
-            <div class="td-tags">
-              <span class="td-tag"
-                    style="color:${stC};border-color:${stC}55;background:${stC}11">
-                ${stLbl}
-              </span>
-              <span class="td-tag"
-                    style="color:${gnC};border-color:${gnC}55;background:${gnC}11">
-                ${gnLbl}
-              </span>
-            </div>
+            <div class="td-tags">${tags}</div>
           </td>
           <td class="td-year">${t.year || '—'}</td>
-          <td class="td-loc">${t.location}</td>
+          <td class="td-loc">${location}</td>
         </tr>`;
     }).join('');
   }

@@ -271,7 +271,27 @@ const STRINGS = {
     legendGenre: 'Thể loại di sản',
     resultCountUnit: 'Di sản',
     provinceHover: 'Di sản',
+    ntProvinceHover: 'Bảo vật',
     pieCta: 'Xem chi tiết →',
+    /* ── National Treasures mode ── */
+    modeUnesco: 'UNESCO',
+    modeTreasure: 'Bảo vật',
+    ntEyebrow: '357 Bảo Vật Quốc Gia Việt Nam',
+    ntEyebrowEn: 'National Treasures',
+    ntLegend: 'Loại bảo vật',
+    ntCatAll: 'Tất cả',
+    ntCatHistorical: 'Lịch sử',
+    ntCatReligious: 'Tôn giáo',
+    ntStatLocs: 'Điểm',
+    ntTotalLabel: 'Bảo vật',
+    ntCatLabel: 'Phân loại',
+    ntDescLabel: 'Mô tả',
+    ntLocLabel: 'Vị trí',
+    ntTypeLabel: 'Loại',
+    ntYearLabel: 'Niên đại',
+    ntViewCategory: 'Loại',
+    ntViewEra: 'Niên đại',
+    ntProvinceTitle: 'Bảo vật trong tỉnh',
   },
   en: {
     headerEyebrow: 'UNESCO-Recognized Intangible Cultural Heritage',
@@ -298,7 +318,27 @@ const STRINGS = {
     legendGenre: 'Heritage Genre',
     resultCountUnit: 'heritages',
     provinceHover: 'heritages',
+    ntProvinceHover: 'Treasures',
     pieCta: 'View details →',
+    /* ── National Treasures mode ── */
+    modeUnesco: 'UNESCO',
+    modeTreasure: 'Treasures',
+    ntEyebrow: '357 National Treasures of Vietnam',
+    ntEyebrowEn: 'National Treasures',
+    ntLegend: 'Treasure type',
+    ntCatAll: 'All',
+    ntCatHistorical: 'Historical',
+    ntCatReligious: 'Religious',
+    ntStatLocs: 'Sites',
+    ntTotalLabel: 'Treasures',
+    ntCatLabel: 'Category',
+    ntDescLabel: 'Description',
+    ntLocLabel: 'Location',
+    ntTypeLabel: 'Type',
+    ntYearLabel: 'Period',
+    ntViewCategory: 'Type',
+    ntViewEra: 'Era',
+    ntProvinceTitle: 'Treasures in province',
   },
 };
 
@@ -311,6 +351,29 @@ function resultCountText(shown, total) {
 }
 function provinceHoverText(n) {
   return lang === 'vi' ? `${n} ${t('provinceHover')}` : `${n} ${t('provinceHover')}`;
+}
+
+/* Tooltip content for a province, mode-aware:
+   UNESCO mode → heritage count; Treasures mode → artifact (treasure) count. */
+function provinceTooltipHTML(name) {
+  const items = nationalMode
+    ? (ntProvinceIndex[name] || [])
+    : (provinceIndex[name] || []);
+  if (!items.length) return `<div class="tt-title">${name}</div>`;
+  const dot = nationalMode ? '#d4875e' : provinceDominantColor(name);
+  const label = nationalMode
+    ? `${items.length} ${t('ntProvinceHover')}`
+    : provinceHoverText(items.length);
+  return `<div class="tt-title">${name}</div>
+     <div class="tt-meta"><span class="tt-dot" style="background:${dot}"></span>${label}</div>`;
+}
+
+/* Rebuild every province tooltip (used on mode / language change). */
+function refreshProvinceTooltips() {
+  Object.keys(provinceLayers).forEach(name => {
+    const layer = provinceLayers[name];
+    if (layer) layer.setTooltipContent(provinceTooltipHTML(name));
+  });
 }
 
 /* ═══════════════════════════════════════
@@ -397,6 +460,94 @@ let activeItemId = null;
 let activeProvince = null;     // name of province currently highlighted from a card click
 
 /* ═══════════════════════════════════════
+   NATIONAL TREASURES MODE  (separate layer from the 16 UNESCO sites)
+   ═══════════════════════════════════════ */
+let nationalMode = false;      // false → UNESCO province map; true → Bảo vật marker layer
+let ntLayer   = null;          // L.markerClusterGroup for NATIONAL_TREASURES
+let ntMarkers = {};            // id -> L.marker  (for activation / filtering)
+let ntView    = 'type';        // 'type' | 'era'  (national-treasure view dimension)
+let ntProvinceIndex = {};      // province name -> treasure ids (built after vn_geo loads)
+let PROVINCE_GEO = {};         // province name -> GeoJSON geometry
+
+const NT_CATEGORY_CONFIG = {
+  all:        { color:'#d4875e', vi:{label:'Tất cả',            short:'Tất cả'},    en:{label:'All',       short:'All'}       },
+  historical: { color:'#d4875e', vi:{label:'Bảo vật lịch sử',   short:'Lịch sử'},   en:{label:'Historical',short:'Historical'} },
+  religious:  { color:'#a97fd0', vi:{label:'Bảo vật tôn giáo',  short:'Tôn giáo'},  en:{label:'Religious', short:'Religious'} },
+};
+
+const NT_TYPE_CONFIG = {
+  all:        { color:'#8a7c5e', vi:{label:'Tất cả',              short:'Tất cả'},    en:{label:'All',        short:'All'}       },
+  academic:   { color:'#5a8a9f', vi:{label:'Văn bia · Học thuật', short:'Học thuật'}, en:{label:'Academic',    short:'Academic'}   },
+  art:        { color:'#d4875e', vi:{label:'Nghệ thuật',          short:'Nghệ thuật'}, en:{label:'Art',         short:'Art'}       },
+  historical: { color:'#c4624a', vi:{label:'Lịch sử',             short:'Lịch sử'},    en:{label:'Historical',  short:'Historical'} },
+  religious:  { color:'#a97fd0', vi:{label:'Tôn giáo',            short:'Tôn giáo'},   en:{label:'Religious',   short:'Religious'} },
+  tools:      { color:'#4caf84', vi:{label:'Công cụ · Vũ khí',    short:'Công cụ'},    en:{label:'Tools',       short:'Tools'}     },
+};
+
+const NT_ERA_CONFIG = {
+  all:        { color:'#8a7c5e', vi:{label:'Tất cả',         short:'Tất cả'},   en:{label:'All',        short:'All'}    },
+  dongson:    { color:'#c4624a', vi:{label:'Đông Sơn',       short:'Đông Sơn'}, en:{label:'Đông Sơn',   short:'Đông Sơn'} },
+  prehistoric:{ color:'#8a6f3f', vi:{label:'Tiền sử',        short:'Tiền sử'},  en:{label:'Prehistoric',short:'Prehistoric'} },
+  ly:         { color:'#d4875e', vi:{label:'Nhà Lý',         short:'Lý'},       en:{label:'Lý dynasty', short:'Lý'}       },
+  tran:       { color:'#4caf84', vi:{label:'Nhà Trần',       short:'Trần'},     en:{label:'Trần dynasty',short:'Trần'}     },
+  dinh:       { color:'#7fa64b', vi:{label:'Nhà Đinh',       short:'Đinh'},     en:{label:'Đinh dynasty',short:'Đinh'}     },
+  le:         { color:'#e8c96a', vi:{label:'Nhà Lê',         short:'Lê'},       en:{label:'Lê dynasty', short:'Lê'}       },
+  mac:        { color:'#b08968', vi:{label:'Nhà Mạc',        short:'Mạc'},      en:{label:'Mạc dynasty', short:'Mạc'}      },
+  nguyen:     { color:'#5a8a9f', vi:{label:'Nhà Nguyễn',     short:'Nguyễn'},   en:{label:'Nguyễn dynasty',short:'Nguyễn'}   },
+  tayson:     { color:'#c45c4a', vi:{label:'Tây Sơn',        short:'Tây Sơn'},  en:{label:'Tây Sơn',    short:'Tây Sơn'}     },
+  cham:       { color:'#a97fd0', vi:{label:'Văn hóa Chăm Pa',short:'Chăm Pa'},  en:{label:'Champa',     short:'Champa'}     },
+  oceo:       { color:'#6fbf9b', vi:{label:'Văn hóa Óc Eo',  short:'Óc Eo'},    en:{label:'Óc Eo',      short:'Óc Eo'}     },
+  modern:     { color:'#d4524a', vi:{label:'Hiện đại',       short:'Hiện đại'}, en:{label:'Modern',     short:'Modern'}     },
+  other:      { color:'#8a7c5e', vi:{label:'Khác',           short:'Khác'},     en:{label:'Other',      short:'Other'}     },
+};
+
+function ntCategory(t) { return (t && t.category === 'religious') ? 'religious' : 'historical'; }
+function ntType(t)     { return (t && t.type) ? t.type : ntCategory(t); }
+
+/* Map a treasure to an era group from its year/badge text */
+function ntEraKey(t) {
+  const s = (((t.year || '') + ' ' + (t.badge || '') + ' ' + (t.name || '')) + ' ' + (t.english || '')).toLowerCase();
+  if (/đông sơn|dong son|ngọc lũ|đào thịnh|hoàng hạ/.test(s)) return 'dongson';
+  if (/phùng nguyên|sa huỳnh|hoa lộc|đồng nai|tiền sử|prehistoric|3\.000|3,000|2000–3000|2000-3000|4\.000|4,000|3 000|4 000/.test(s)) return 'prehistoric';
+  if (/óc eo|oc eo|funan/.test(s)) return 'oceo';
+  if (/chăm pa|cham pa|champa|\bcham\b|mỹ sơn|pô klong|po klong|đồng dương|trà kiệu|tháp|khmer/.test(s)) return 'cham';
+  if (/hùng vương|hung vuong|ân lạc|Âu Lạc|an dương/.test(s)) return 'dongson';
+  if (/nhà đinh|\bđinh\b|cột kinh phật thời đinh/.test(s)) return 'dinh';
+  if (/nhà lý|thời lý|\bly\b|thăng long|phật tích/.test(s)) return 'ly';
+  if (/nhà trần|thời trần|\btrần\b|yên tử|trúc lâm/.test(s)) return 'tran';
+  if (/nhà mạc|thời mạc|\bmạc\b/.test(s)) return 'mac';
+  if (/tây sơn|tay son/.test(s)) return 'tayson';
+  if (/nhà nguyễn|triều nguyễn|nguyễn dynasty|thời nguyễn|\bnguyễn\b|huế|hoàng thành|thiệu trị|minh mạng|tự đức|thái hòa/.test(s)) return 'nguyen';
+  if (/nhà lê|thời lê|lam kinh|lê dynasty|\blê\s*$|lê sơ|lê trung|lê trung hưng/.test(s)) return 'le';
+  if (/20th century|20th-century|19th|18th|17th|16th|15th|14th|13th|12th|11th|10th|9th|8th|7th|6th|century|19[0-9]{2}|20[0-9]{2}|1847|1975|1972|1954|1947|1946|1969|1966|2012|2013|2015|16[0-9]{2}|17[0-9]{2}|18[0-9]{2}|hiện đại|modern/.test(s)) return 'modern';
+  return 'other';
+}
+
+/* Dimension-aware helpers for the national-treasure views */
+function ntDimConfig() { return ntView === 'era' ? NT_ERA_CONFIG : NT_TYPE_CONFIG; }
+function ntDimKey(t)   { return ntView === 'era' ? ntEraKey(t) : ntType(t); }
+function ntDimAll()    { return 'all'; }
+function ntDimColor(t) { const k = ntDimKey(t); return ntDimConfig()[k]?.color || '#d4875e'; }
+function ntDimLabel(k) { return ntDimConfig()[k]?.[lang]?.short || k || ''; }
+
+/* keep aliases used by earlier code */
+function ntCatColor(t) { return NT_CATEGORY_CONFIG[ntCategory(t)]?.color || '#d4875e'; }
+function ntCatLabel(k) { return NT_CATEGORY_CONFIG[k]?.[lang]?.short || k || ''; }
+
+/* Treasure location, translated to English when in English mode */
+function ntLocation(t) {
+  const loc = t ? (t.location || '') : '';
+  return (lang === 'en' && LOCATION_EN && LOCATION_EN[loc]) ? LOCATION_EN[loc] : loc;
+}
+
+/* Minimal HTML-escape helper (names/locations come from a data file) */
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ═══════════════════════════════════════
    MAP INIT
 ═══════════════════════════════════════ */
 const map = L.map('map', {
@@ -452,11 +603,7 @@ const borderLayer = L.geoJSON(null, {
     provinceLayers[name] = layer;
 
     /* tooltip: province name (+ count once index is built) */
-    const items = provinceIndex[name] || [];
-    const tip = items.length
-      ? `<div class="tt-title">${name}</div>
-         <div class="tt-meta"><span class="tt-dot" style="background:${provinceDominantColor(name)}"></span>${provinceHoverText(items.length)}</div>`
-      : `<div class="tt-title">${name}</div>`;
+    const tip = provinceTooltipHTML(name);
     layer.bindTooltip(tip, {
       sticky: true,
       direction: 'top',
@@ -477,7 +624,7 @@ const borderLayer = L.geoJSON(null, {
       if (activeProvince !== name) recolorProvince(name);
     });
     layer.on('click', () => {
-      showProvinceModal(name);
+      onProvinceClick(name);
     });
   },
 }).addTo(map);
@@ -487,15 +634,17 @@ fetch('vn_geo.json')
   .then(geo => {
     borderLayer.addData(geo);
     buildProvinceIndex(geo);
+    /* record province geometry + build national-treasure province index */
+    PROVINCE_GEO = {};
+    (geo.features || []).forEach(f => {
+      const nm = f.properties?.name || 'Unknown';
+      PROVINCE_GEO[nm] = f.geometry;
+    });
+    buildNTProvinceIndex();
     /* attach tooltips (now that provinceIndex is built) + apply heritage colours */
     Object.keys(provinceLayers).forEach(name => {
       const layer = provinceLayers[name];
-      const items = provinceIndex[name] || [];
-      const tip = items.length
-        ? `<div class="tt-title">${name}</div>
-           <div class="tt-meta"><span class="tt-dot" style="background:${provinceDominantColor(name)}"></span>${provinceHoverText(items.length)}</div>`
-        : `<div class="tt-title">${name}</div>`;
-      layer.setTooltipContent(tip);
+      layer.setTooltipContent(provinceTooltipHTML(name));
       recolorProvince(name);
     });
     renderCards();   // refresh province-count stat now that index is built
@@ -608,11 +757,13 @@ function provinceDominantColor(name) {
 }
 
 /* Apply a Leaflet style to a province layer based on its heritage.
-   Honours the active viewMode and filter; respects the active highlight. */
+   Honours the active viewMode and filter; respects the active highlight.
+   In national-treasure mode provinces are kept neutral white (no colour). */
 function recolorProvince(name) {
   const layer = provinceLayers[name];
   if (!layer) return;
   if (activeProvince === name) return;  // don't override active highlight
+  if (nationalMode) { layer.setStyle(NT_PROVINCE_NEUTRAL); return; }
 
   const visible = visibleHeritageInProvince(name);
   const total   = (provinceIndex[name] || []).length;
@@ -641,6 +792,28 @@ function recolorProvince(name) {
     weight: 1.6,
     fillColor: color,
     fillOpacity: fillOpacity,
+  });
+}
+
+/* Neutral province style used in national-treasure mode.
+   Keeps the province borders visible (grey outline) but removes colour fill.
+   NOTE: fillColor must be a real colour and fillOpacity > 0 — a fully
+   transparent fill (`transparent` / 0) makes the SVG path "invisible" to
+   pointer events (Leaflet uses the default `visiblePainted`), so the hover
+   tooltip would only fire on the thin border, not the province interior. */
+const NT_PROVINCE_NEUTRAL = {
+  color: '#9aa0a6',
+  weight: 1.2,
+  opacity: 0.9,
+  fillColor: '#1a1400',
+  fillOpacity: 0.01,
+};
+
+/* Force every province to the neutral white style (used in Bảo vật mode). */
+function neutralizeProvinces() {
+  Object.keys(provinceLayers).forEach(name => {
+    const l = provinceLayers[name];
+    if (l) l.setStyle(NT_PROVINCE_NEUTRAL);
   });
 }
 
@@ -999,6 +1172,8 @@ document.addEventListener('keydown', e => {
    FILTERING  (sidebar cards)
 ═══════════════════════════════════════ */
 function getFilteredItems() {
+  if (nationalMode) return ntFilteredItems();
+
   let items = [...TREASURES];
 
   if (activeFilter !== 'all') {
@@ -1019,10 +1194,31 @@ function getFilteredItems() {
   return items;
 }
 
+/* ── NATIONAL TREASURES: filtered sidebar list ── */
+function ntFilteredItems() {
+  let items = Array.isArray(NATIONAL_TREASURES) ? [...NATIONAL_TREASURES] : [];
+  if (activeFilter !== 'all') {
+    items = items.filter(t => ntDimKey(t) === activeFilter);
+  }
+  if (searchQuery) {
+    const q = searchQuery;
+    items = items.filter(t =>
+      String(t.name||'').toLowerCase().includes(q)     ||
+      String(t.english||'').toLowerCase().includes(q)  ||
+      String(t.location||'').toLowerCase().includes(q) ||
+      String(t.year||'').toLowerCase().includes(q)     ||
+      String(t.badge||'').toLowerCase().includes(q)
+    );
+  }
+  return items;
+}
+
 /* ═══════════════════════════════════════
    RENDER FILTER BAR  (dynamic)
 ═══════════════════════════════════════ */
 function renderFilterBar() {
+  if (nationalMode) { renderNTFilterBar(); return; }
+
   const CONFIG    = viewMode === 'status' ? STATUS_CONFIG : GENRE_CONFIG;
   const allLabel  = viewMode === 'status' ? t('allStatuses') : t('allGenres');
 
@@ -1051,10 +1247,40 @@ function renderFilterBar() {
   });
 }
 
+/* ── NATIONAL TREASURES: dimension filter bar (category | era) ── */
+function renderNTFilterBar() {
+  const CONFIG = ntDimConfig();
+  const html = `
+    <button class="filter-btn ${activeFilter==='all'?'active':''}" data-filter="all">${t('ntCatAll')}</button>
+    ${Object.entries(CONFIG).filter(([k]) => k !== 'all').map(([key, cfg]) => {
+      const active = activeFilter === key;
+      return `<button class="filter-btn ${active?'active':''}" data-filter="${key}"
+                style="${active?`border-color:${cfg.color};color:${cfg.color};background:${cfg.color}22`:''}">
+        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;
+                     background:${cfg.color};margin-right:5px;vertical-align:middle;"></span>
+        ${cfg[lang]?.short || key}
+      </button>`;
+    }).join('')}
+  `;
+  document.getElementById('filter-bar').innerHTML = html;
+
+  document.querySelectorAll('#filter-bar .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.dataset.filter;
+      activeItemId = null;
+      renderFilterBar();
+      applyNTMarkerFilter();
+      renderCards();
+    });
+  });
+}
+
 /* ═══════════════════════════════════════
    RENDER MAP LEGEND  (dynamic)
 ═══════════════════════════════════════ */
 function renderLegend() {
+  if (nationalMode) { renderNTLegend(); return; }
+
   const CONFIG = viewMode === 'status' ? STATUS_CONFIG : GENRE_CONFIG;
   const title  = viewMode === 'status' ? t('legendStatus') : t('legendGenre');
   document.getElementById('map-legend').innerHTML = `
@@ -1067,10 +1293,29 @@ function renderLegend() {
   `;
 }
 
+/* ── NATIONAL TREASURES: dimension legend (category | era) ── */
+function renderNTLegend() {
+  const CONFIG = ntDimConfig();
+  const treasures = Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES : [];
+  const present = new Set(treasures.map(ntDimKey));
+  present.add('all');
+  const rows = Object.entries(CONFIG).filter(([k]) => k !== 'all' && present.has(k)).map(([k, cfg]) => `
+    <div class="legend-row nt">
+      <span class="legend-dot" style="background:${cfg.color}"></span>
+      ${cfg[lang]?.short || k}
+    </div>`).join('');
+  document.getElementById('map-legend').innerHTML = `
+    <div class="legend-title">${ntView === 'era' ? (lang==='vi'?'Niên đại':'Era') : t('ntLegend')}</div>
+    ${rows}
+  `;
+}
+
 /* ═══════════════════════════════════════
    RENDER CARDS  (sidebar list)
 ═══════════════════════════════════════ */
 function renderCards() {
+  if (nationalMode) { renderNTCards(); return; }
+
   const items = getFilteredItems();
 
   document.getElementById('stat-shown').textContent = items.length;
@@ -1110,11 +1355,70 @@ function renderCards() {
   }).join('');
 }
 
+/* ── NATIONAL TREASURES: sidebar cards + header stats ── */
+function renderNTCards() {
+  const selloc = document.getElementById('stat-locs-label');
+  if (selloc) selloc.textContent = t('ntStatLocs');
+
+  const items = getFilteredItems();
+  const total = (Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES.length : 0);
+
+  document.getElementById('stat-shown').textContent = items.length;
+  document.getElementById('stat-total').textContent = total;
+  /* Distinct treasure locations */
+  const locs = new Set(items.map(x => x.location).filter(Boolean));
+  document.getElementById('stat-locs').textContent = locs.size;
+  document.getElementById('result-count').textContent =
+    `${items.length}/${total} ${t('ntTotalLabel')}`;
+
+  document.getElementById('artifact-list').innerHTML = items.map((t, i) => {
+    const color = ntDimColor(t);
+    const cat   = ntDimLabel(ntDimKey(t));
+    const title = lang === 'vi' ? (t.name || t.english) : (t.english || t.name);
+    const desc  = lang === 'vi' ? (t.desc_vi || t.desc) : t.desc;
+    return `
+      <div class="a-card nt-card${activeItemId===t.id?' active':''}"
+           data-id="${t.id}"
+           onclick="activateItem(${t.id})"
+           style="animation-delay:${Math.min(i*0.01,0.4)}s">
+        <div class="a-num" style="color:${color}">${String(t.id).padStart(3,'0')}</div>
+        <div class="a-body">
+          <div class="a-title">${esc(title)}</div>
+          <div class="a-desc">${esc(desc||'')}</div>
+          <div class="a-loc"><span class="a-pin">●</span>${esc(ntLocation(t))}</div>
+        </div>
+        <span class="a-badge" style="color:${color};border-color:${color}44">${esc(cat)}</span>
+      </div>`;
+  }).join('');
+}
+
 /* ═══════════════════════════════════════
    ACTIVATE ITEM  (from sidebar card or province modal row)
 ═══════════════════════════════════════ */
 function activateItem(id) {
   activeItemId = id;
+
+  if (nationalMode) {
+    const tr = (Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES : []).find(x => x.id === id);
+    if (!tr) return;
+    renderActiveMapInfo();
+    openNTModal(tr);
+    /* pan to its marker (show and highlight) */
+    const m = ntMarkers[id];
+    if (m) {
+      map.flyTo([tr.lat, tr.lng], 8, { duration: 1.0, easeLinearity: 0.25 });
+      if (typeof m.openPopup === 'function') m.openPopup();
+    } else if (typeof tr.lat === 'number' && typeof tr.lng === 'number') {
+      map.flyTo([tr.lat, tr.lng], 8, { duration: 1.0, easeLinearity: 0.25 });
+    }
+    renderCards();
+    setTimeout(() => {
+      document.querySelector(`.a-card[data-id="${id}"]`)
+        ?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 50);
+    return;
+  }
+
   const t = TREASURES.find(x => x.id === id);
   if (!t) return;
 
@@ -1165,15 +1469,25 @@ window.activateItem = activateItem;
 ═══════════════════════════════════════ */
 document.querySelectorAll('.view-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    viewMode     = btn.dataset.view;
+    const v = btn.dataset.view;
     activeFilter = 'all';
     activeItemId = null;
     document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    recolorAllProvinces();
-    renderFilterBar();
-    renderLegend();
-    renderCards();
+    if (nationalMode) {
+      /* National treasures: Type / Era dimension */
+      ntView = (v === 'era') ? 'era' : 'type';
+      rebuildNTLayer();
+      renderFilterBar();
+      renderLegend();
+      renderCards();
+    } else {
+      viewMode = v;
+      recolorAllProvinces();
+      renderFilterBar();
+      renderLegend();
+      renderCards();
+    }
   });
 });
 
@@ -1216,6 +1530,26 @@ function hideMapInfoBox() {
 /* shows the currently selected heritage's info, or hides the box if none is selected */
 function renderActiveMapInfo() {
   if (activeItemId === null) { hideMapInfoBox(); return; }
+
+  if (nationalMode) {
+    const tr = (Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES : []).find(x => x.id === activeItemId);
+    if (!tr) { hideMapInfoBox(); return; }
+    const tTitle = lang === 'vi' ? (tr.name || tr.english) : (tr.english || tr.name);
+    const tSub   = lang === 'vi' ? (tr.english || '') : (tr.name || '');
+    const color  = ntCatColor(tr);
+    const cat    = ntCatLabel(ntCategory(tr));
+    showMapInfoBox(`
+      <div class="map-info-title">${esc(tTitle)}</div>
+      <div class="map-info-sub">${esc(tSub)}</div>
+      <div class="map-info-tags">
+        <span style="color:${color};border-color:${color}55;background:${color}11">${esc(cat)}</span>
+        ${tr.badge ? `<span style="color:${color};border-color:${color}55;background:${color}11">${esc(tr.badge)}</span>` : ''}
+      </div>
+      ${tr.year ? `<div class="map-info-count">${esc(ntLocation(tr))} · ${esc(tr.year)}</div>` : ''}
+    `);
+    return;
+  }
+
   const t = TREASURES.find(x => x.id === activeItemId);
   if (!t) { hideMapInfoBox(); return; }
   const title = lang === 'vi' ? t.name : t.english;
@@ -1250,7 +1584,7 @@ function applyStaticI18n() {
   document.documentElement.lang = lang;
   document.documentElement.classList.toggle('lang-vi', lang === 'vi');
 
-  document.getElementById('header-eyebrow').textContent = t('headerEyebrow');
+  document.getElementById('header-eyebrow').textContent = nationalMode ? t('ntEyebrow') : t('headerEyebrow');
   document.getElementById('title-line1').textContent    = t('titleLine1');
   document.getElementById('title-em').textContent       = t('titleEm');
   document.getElementById('title-line2').textContent    = t('titleLine2');
@@ -1267,9 +1601,29 @@ function applyStaticI18n() {
   const dl = document.getElementById('lang-db-link');
   if (dl) dl.textContent = t('dbLink');
 
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.textContent = b.dataset.mode === 'treasure' ? t('modeTreasure') : t('modeUnesco');
+  });
+
   document.getElementById('view-toggle-label').textContent = t('viewToggleLabel');
-  document.querySelector('.view-btn[data-view="status"]').textContent = t('viewStatus');
-  document.querySelector('.view-btn[data-view="genre"]').textContent  = t('viewGenre');
+  const vb = document.querySelectorAll('.view-btn');
+  if (vb && vb.length >= 2) {
+    if (nationalMode) {
+      vb[0].textContent = t('ntViewCategory');
+      vb[1].textContent = t('ntViewEra');
+      vb[0].dataset.view = 'type';
+      vb[1].dataset.view = 'era';
+      vb[0].classList.toggle('active', ntView === 'type');
+      vb[1].classList.toggle('active', ntView === 'era');
+    } else {
+      vb[0].textContent = t('viewStatus');
+      vb[1].textContent = t('viewGenre');
+      vb[0].dataset.view = 'status';
+      vb[1].dataset.view = 'genre';
+      vb[0].classList.toggle('active', viewMode === 'status');
+      vb[1].classList.toggle('active', viewMode === 'genre');
+    }
+  }
 
   document.getElementById('tile-switcher-label').textContent = t('tileStyleLabel');
   document.getElementById('tile-osm-label').textContent      = t('tileOsm');
@@ -1295,15 +1649,7 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 
     applyStaticI18n();
     /* refresh tooltips + province colours in the new language */
-    Object.keys(provinceLayers).forEach(name => {
-      const layer = provinceLayers[name];
-      const items = provinceIndex[name] || [];
-      const tip = items.length
-        ? `<div class="tt-title">${name}</div>
-           <div class="tt-meta"><span class="tt-dot" style="background:${provinceDominantColor(name)}"></span>${provinceHoverText(items.length)}</div>`
-        : `<div class="tt-title">${name}</div>`;
-      layer.setTooltipContent(tip);
-    });
+    refreshProvinceTooltips();
     renderFilterBar();
     renderLegend();
     renderCards();
@@ -1788,6 +2134,461 @@ window.clearRecording = clearRecording;
 window.analyzeUserRecording = analyzeUserRecording;
 window.hideAudioAnalysis = hideAudioAnalysis;
 window.stopAllRecordings = stopAllRecordings;
+
+/* ═══════════════════════════════════════
+   NATIONAL TREASURES (357) — separate marker layer
+   Clearly separated from the 16 UNESCO intangible-heritage sites.
+   ═══════════════════════════════════════ */
+
+/* Icon for a single treasure marker (coloured by active dimension: type | era) */
+function ntDivIcon(t) {
+  const color = ntDimColor(t);
+  return L.divIcon({
+    className: 'nt-marker',
+    html: `<span class="nt-dot" style="background:${color}"></span>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+  });
+}
+
+/* Rebuild the treasure marker layer (called on view-dimension change) */
+function rebuildNTLayer() {
+  if (!nationalMode) return;
+  if (ntLayer && map.hasLayer(ntLayer)) map.removeLayer(ntLayer);
+  ntMarkers = {};
+  ntLayer = buildNTLayer();
+  applyNTMarkerFilter();
+  if (!map.hasLayer(ntLayer)) ntLayer.addTo(map);
+}
+
+/* Polar + sector path helpers for the pie-chart cluster icons */
+function ntPolar(cx, cy, r, deg) {
+  const rad = (deg - 90) * Math.PI / 180;   // start at 12 o'clock
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+}
+function ntSectorPath(cx, cy, r, a0, a1) {
+  if (a1 - a0 >= 360) {
+    return `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx} ${cy + r} A ${r} ${r} 0 1 1 ${cx} ${cy - r} Z`;
+  }
+  const p0 = ntPolar(cx, cy, r, a0);
+  const p1 = ntPolar(cx, cy, r, a1);
+  const large = (a1 - a0) > 180 ? 1 : 0;
+  return `M ${cx} ${cy} L ${p0[0]} ${p0[1]} A ${r} ${r} 0 ${large} 1 ${p1[0]} ${p1[1]} Z`;
+}
+
+/* Cluster icon — pie chart showing the proportion of its treasures by active dimension */
+function ntClusterIcon(cluster) {
+  const n = cluster.getChildCount();
+  const s = n < 10 ? 36 : n < 100 ? 46 : 56;
+
+  // Tally treasure dimension keys among this cluster's children (cached on marker)
+  const CONFIG = ntDimConfig();
+  const counts = {};
+  cluster.getAllChildMarkers().forEach(m => {
+    const key = ntView === 'era' ? m.options.ntEraKey : m.options.ntTypeKey;
+    if (!key) return;
+    counts[key] = (counts[key] || 0) + 1;
+  });
+
+  const total = Math.max(1, Object.values(counts).reduce((a, b) => a + b, 0));
+  const order = Object.keys(CONFIG).filter(k => k !== 'all' && counts[k]);
+
+  let acc = 0;
+  const slices = order.map(k => {
+    const span = (counts[k] / total) * 360;
+    const a0 = acc;
+    const a1 = acc + span;
+    acc = a1;
+    const color = CONFIG[k]?.color || '#d4875e';
+    return `<path d="${ntSectorPath(50, 50, 50, a0, a1)}" fill="${color}" stroke="rgba(10,9,0,0.85)" stroke-width="1"/>`;
+  }).join('');
+
+  const html = `
+    <svg class="nt-cluster-pie" viewBox="0 0 100 100" width="${s}" height="${s}">
+      ${slices}
+      <circle cx="50" cy="50" r="27" fill="rgba(10,9,0,0.92)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
+            font-size="${n < 100 ? 16 : 13}" fill="#f7f0e1"
+            font-family="'DM Sans', sans-serif" font-weight="700">${n}</text>
+    </svg>`;
+
+  return L.divIcon({
+    className: 'nt-cluster-wrap',
+    html,
+    iconSize: [s, s],
+    iconAnchor: [s / 2, s / 2],
+  });
+}
+
+/* Build (once) the marker-cluster layer for all national treasures */
+function buildNTLayer() {
+  const cluster = L.markerClusterGroup({
+    chunkedLoading: true,
+    animate: true,
+    polygonOptions: { color: '#d4875e', fillColor: '#d4875e', fillOpacity: 0.15 },
+    showCoverageOnHover: false,
+    maxClusterRadius: 34,
+    iconCreateFunction: ntClusterIcon,
+  });
+
+  const treasures = Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES : [];
+  treasures.forEach(t => {
+    if (typeof t.lat !== 'number' || typeof t.lng !== 'number') return;
+    const title = lang === 'vi' ? (t.name || t.english) : (t.english || t.name);
+    const meta  = [t.badge, t.year].filter(Boolean).join(' · ');
+    const marker = L.marker([t.lat, t.lng], { icon: ntDivIcon(t), ntId: t.id, ntTypeKey: ntType(t), ntEraKey: ntEraKey(t) });
+    marker.bindTooltip(`<div class="tt-title">${esc(title)}</div>` +
+      (meta ? `<div class="tt-meta">${esc(meta)}</div>` : ''),
+      { direction: 'top', className: 'nt-tooltip', sticky: true });
+    marker.on('click', () => {
+      activeItemId = t.id;
+      renderActiveMapInfo();
+      openNTModal(t);
+      renderCards();
+    });
+    ntMarkers[t.id] = marker;
+    cluster.addLayer(marker);
+  });
+  return cluster;
+}
+
+/* Show/hide treasure markers to match the active filter (dimension-aware) */
+function applyNTMarkerFilter() {
+  if (!ntLayer) return;
+  ntLayer.eachLayer(m => {
+    const tr = (Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES : []).find(x => x.id === m.options.ntId);
+    if (!tr) return;
+    const match = activeFilter === 'all' || ntDimKey(tr) === activeFilter;
+    const present = ntLayer.hasLayer(m);
+    if (match && !present) ntLayer.addLayer(m);
+    else if (!match && present) ntLayer.removeLayer(m);
+  });
+}
+
+/* National treasure detail modal (artifact schema — separate from UNESCO modal) */
+function openNTModal(t) {
+  const title = lang === 'vi' ? (t.name || t.english) : (t.english || t.name);
+  const sub   = lang === 'vi' ? (t.english || '') : (t.name || '');
+  const typeKey = ntType(t);
+  const catKey  = ntCategory(t);
+  const eraKey  = ntEraKey(t);
+  const typeC = NT_TYPE_CONFIG[typeKey]?.color     || '#d4875e';
+  const catC  = NT_CATEGORY_CONFIG[catKey]?.color  || '#a97fd0';
+  const eraC  = NT_ERA_CONFIG[eraKey]?.color       || '#8a7c5e';
+  const typeLbl = NT_TYPE_CONFIG[typeKey]?.[lang]?.short     || typeKey;
+  const catLbl  = ntCatLabel(catKey);
+  const eraLbl  = NT_ERA_CONFIG[eraKey]?.[lang]?.short       || eraKey;
+  const desc  = lang === 'vi' ? (t.desc_vi || t.desc) : t.desc;
+  const pending = (lang === 'vi' && !t.desc_vi) ? ' <span class="desc-pending">(EN)</span>' : '';
+  const model3d = t.model3d || '';
+  const imageUrl = t.image || `images/treasures/${t.id}.jpg`;
+
+  const lblType  = lang === 'vi' ? 'Loại' : 'Type';
+  const lblCat   = lang === 'vi' ? 'Phân loại' : 'Category';
+  const lblYear  = lang === 'vi' ? 'Niên đại' : 'Period';
+  const lblLoc   = lang === 'vi' ? 'Địa điểm' : 'Location';
+  const lblCoord = lang === 'vi' ? 'Tọa độ' : 'Coordinates';
+  const lblDesc  = lang === 'vi' ? 'Mô tả' : 'Description';
+
+  const coord = (typeof t.lat === 'number' && typeof t.lng === 'number')
+    ? `<div class="modal-info-item"><div class="modal-info-label">🗺️ ${lblCoord}</div><div class="modal-info-value">${t.lat.toFixed(4)}, ${t.lng.toFixed(4)}</div></div>` : '';
+
+  let html = `
+    <div class="modal-image-container">
+      <img src="${imageUrl}" alt="${esc(title)}" class="modal-image" onerror="this.onerror=null; this.src='images/artifacts/placeholder.svg'" />
+    </div>
+    <div class="modal-badge-row">
+      <span class="modal-badge" style="color:${typeC};border-color:${typeC}55">${esc(typeLbl)}</span>
+      <span class="modal-badge" style="color:${catC};border-color:${catC}55">${esc(catLbl)}</span>
+      <span class="modal-badge" style="color:${eraC};border-color:${eraC}55">${esc(eraLbl)}</span>
+    </div>
+    <div class="modal-title">${esc(title)}</div>
+    ${sub ? `<div class="modal-subtitle">${esc(sub)}</div>` : ''}
+    <div class="modal-info-grid">
+      <div class="modal-info-item"><div class="modal-info-label">🏷️ ${lblType}</div><div class="modal-info-value">${esc(typeLbl)}</div></div>
+      <div class="modal-info-item"><div class="modal-info-label">🏷️ ${lblCat}</div><div class="modal-info-value">${esc(catLbl)}</div></div>
+      <div class="modal-info-item"><div class="modal-info-label">📅 ${lblYear}</div><div class="modal-info-value">${esc(t.year || '')}</div></div>
+      <div class="modal-info-item"><div class="modal-info-label">📍 ${lblLoc}</div><div class="modal-info-value">${esc(ntLocation(t))}</div></div>
+      ${coord}
+    </div>
+    ${desc ? `<div class="modal-desc-section"><div class="modal-desc-label">${lblDesc}</div><div class="modal-desc">${esc(desc)}${pending}</div></div>` : ''}
+  `;
+
+  if (model3d) {
+    html += `<div class="modal-desc-section"><div class="modal-desc-label">3D</div>
+      <iframe src="${model3d}" title="${esc(title)}" style="width:100%;height:420px;border:0;border-radius:8px;background:#000" allowfullscreen></iframe>
+    </div>`;
+  }
+
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('visible');
+}
+
+/* ═══════════════════════════════════════
+   MODE SWITCH  (UNESCO ↔ National Treasures)
+═══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   NATIONAL-TREASURE PROVINCE MODAL  + Province-Borders toggle
+═══════════════════════════════════════ */
+
+/* ── National-treasure province attribution ────────────────────────────
+   Each treasure's `location` string reliably ends with the province (or
+   municipality) where it is held. We resolve that name directly instead of
+   running a geometric point-in-polygon test, which is unreliable against the
+   simplified vn_geo.json boundaries (it mis-attributed hundreds of items,
+   e.g. reporting 0 for Hà Nội). This keeps province tooltips / modals
+   accurate. */
+
+/* Every Vietnamese province + municipality name, used to parse locations. */
+const NT_PROVINCE_NAMES = [
+  'An Giang','Bà Rịa - Vũng Tàu','Bạc Liêu','Bắc Giang','Bắc Kạn','Bắc Ninh','Bến Tre',
+  'Bình Dương','Bình Định','Bình Phước','Bình Thuận','Cà Mau','Cao Bằng','Cần Thơ','Đà Nẵng',
+  'Đắk Lắk','Đắk Nông','Điện Biên','Đồng Nai','Đồng Tháp','Gia Lai','Hà Giang','Hà Nam','Hà Nội',
+  'Hà Tĩnh','Hải Dương','Hải Phòng','Hậu Giang','Hòa Bình','Hồ Chí Minh','Hưng Yên','Khánh Hòa',
+  'Kiên Giang','Kon Tum','Lai Châu','Lạng Sơn','Lào Cai','Lâm Đồng','Long An','Nam Định','Nghệ An',
+  'Ninh Bình','Ninh Thuận','Phú Thọ','Phú Yên','Quảng Bình','Quảng Nam','Quảng Ngãi','Quảng Ninh',
+  'Quảng Trị','Sóc Trăng','Sơn La','Tây Ninh','Thái Bình','Thái Nguyên','Thanh Hóa','Thừa Thiên Huế',
+  'Tiền Giang','Trà Vinh','Tuyên Quang','Vĩnh Long','Vĩnh Phúc','Yên Bái'
+];
+
+/* Raw location-province name → the name used by the map (vn_geo.json). */
+const NT_PROVINCE_ALIAS = {
+  'Hồ Chí Minh': 'TP Hồ Chí Minh',
+};
+
+/* 2025 provincial reshuffle: pre-merger province → post-merger name.
+   Artifacts were recognised before the merger, so their `location` strings
+   still carry the old names; this maps them to the new province names. */
+const NT_PROVINCE_MERGE = {
+  'Yên Bái': 'Lào Cai',
+  'Hà Giang': 'Tuyên Quang',
+  'Bắc Kạn': 'Thái Nguyên',
+  'Vĩnh Phúc': 'Phú Thọ',
+  'Hòa Bình': 'Phú Thọ',
+  'Bắc Giang': 'Bắc Ninh',
+  'Thái Bình': 'Hưng Yên',
+  'Hải Dương': 'Hải Phòng',
+  'Hà Nam': 'Ninh Bình',
+  'Nam Định': 'Ninh Bình',
+  'Quảng Bình': 'Quảng Trị',
+  'Quảng Nam': 'Đà Nẵng',
+  'Kon Tum': 'Quảng Ngãi',
+  'Bình Định': 'Gia Lai',
+  'Ninh Thuận': 'Khánh Hòa',
+  'Đắk Nông': 'Lâm Đồng',
+  'Bình Thuận': 'Lâm Đồng',
+  'Phú Yên': 'Đắk Lắk',
+  'Bà Rịa - Vũng Tàu': 'TP Hồ Chí Minh',
+  'Bình Dương': 'TP Hồ Chí Minh',
+  'Bình Phước': 'Đồng Nai',
+  'Long An': 'Tây Ninh',
+  'Sóc Trăng': 'Cần Thơ',
+  'Hậu Giang': 'Cần Thơ',
+  'Bến Tre': 'Vĩnh Long',
+  'Trà Vinh': 'Vĩnh Long',
+  'Tiền Giang': 'Đồng Tháp',
+  'Bạc Liêu': 'Cà Mau',
+  'Kiên Giang': 'An Giang',
+};
+
+/* Resolve the province a treasure is held in, from its `location` string. */
+function ntProvinceOf(t) {
+  const loc = (t && t.location) ? t.location : '';
+  if (!loc) return null;
+  let raw = null;
+  /* A few locations omit the province name — resolve them explicitly. */
+  if (loc.indexOf('Cung đình Huế') !== -1 && loc.indexOf('Thừa Thiên') === -1) raw = 'Thừa Thiên Huế';
+  else if (loc.indexOf('Thừa Thiên - Huế') !== -1) raw = 'Thừa Thiên Huế';
+  else if (loc.indexOf('Cố đô Huế') !== -1 && loc.indexOf('Thừa Thiên') === -1) raw = 'Thừa Thiên Huế';
+  else if (loc.indexOf('Lưu trữ quốc gia III') !== -1) raw = 'Hà Nội';
+  else if (loc === 'Bảo tàng Hải quân') raw = 'Hải Phòng';
+  else {
+    /* Otherwise take the right-most province/city name that appears. */
+    let best = null, bestIdx = -1;
+    for (const p of NT_PROVINCE_NAMES) {
+      const idx = loc.lastIndexOf(p);
+      if (idx > bestIdx) { bestIdx = idx; best = p; }
+    }
+    raw = best;
+  }
+  if (!raw) return null;
+  /* Normalise name aliases (e.g. Hồ Chí Minh → TP Hồ Chí Minh). */
+  raw = NT_PROVINCE_ALIAS[raw] || raw;
+  /* Apply the 2025 provincial reshuffle: merged provinces → new name. */
+  return NT_PROVINCE_MERGE[raw] || raw;
+}
+
+/* Index of national treasures by province (from the `location` field). */
+function buildNTProvinceIndex() {
+  ntProvinceIndex = {};
+  if (!PROVINCE_GEO) return;
+  Object.keys(PROVINCE_GEO).forEach(name => { ntProvinceIndex[name] = []; });
+  const treasures = Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES : [];
+  treasures.forEach(t => {
+    const p = ntProvinceOf(t);
+    if (p && ntProvinceIndex[p]) ntProvinceIndex[p].push(t.id);
+  });
+}
+
+/* SVG pie chart for national treasures (dimension-aware colours) */
+function buildNTPieSVG(counts, total) {
+  const CONFIG = ntDimConfig();
+  const sz = 100, cx = sz/2, r = cx - 6, ir = cx * 0.42;
+  const slices = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+  let paths = '', dividers = '', angle = -90;
+  for (const [key, count] of slices) {
+    const color = CONFIG[key]?.color || '#8a7c5e';
+    const sweep = (count / total) * 360;
+    if (sweep >= 359.9) { paths = `<circle cx="${cx}" cy="${cx}" r="${r}" fill="${color}"/>`; break; }
+    const a1 = angle * Math.PI / 180, a2 = (angle + sweep) * Math.PI / 180;
+    const x1 = (cx + r * Math.cos(a1)).toFixed(2), y1 = (cx + r * Math.sin(a1)).toFixed(2);
+    const x2 = (cx + r * Math.cos(a2)).toFixed(2), y2 = (cx + r * Math.sin(a2)).toFixed(2);
+    paths += `<path d="M${cx},${cx} L${x1},${y1} A${r},${r} 0 ${sweep>180?1:0},1 ${x2},${y2} Z" fill="${color}"/>`;
+    dividers += `<line x1="${cx}" y1="${cx}" x2="${x1}" y2="${y1}" stroke="rgba(10,9,0,0.5)" stroke-width="1"/>`;
+    angle += sweep;
+  }
+  return `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="${cx}" cy="${cx}" r="${r+1}" fill="rgba(10,9,0,0.3)"/>
+    ${paths}
+    ${slices.length > 1 ? dividers : ''}
+    <circle cx="${cx}" cy="${cx}" r="${ir}" fill="rgba(10,9,0,0.85)"/>
+    <text x="${cx}" y="${cx}" text-anchor="middle" dominant-baseline="central"
+          fill="#e8c96a" font-family="DM Sans,sans-serif" font-weight="700" font-size="18px">${total}</text>
+  </svg>`;
+}
+
+/* Dispatch a province click by mode. */
+function onProvinceClick(name) {
+  if (nationalMode) openNTProvinceModal(name);
+  else showProvinceModal(name);
+}
+
+/* National-treasure province modal (chart + clickable list). */
+function openNTProvinceModal(provinceName) {
+  const ids = ntProvinceIndex[provinceName] || [];
+  const treasures = (Array.isArray(NATIONAL_TREASURES) ? NATIONAL_TREASURES : [])
+    .filter(t => ids.includes(t.id));
+  const total = treasures.length;
+  const counts = {};
+  treasures.forEach(t => { const k = ntDimKey(t); counts[k] = (counts[k] || 0) + 1; });
+
+  const pieSVG = total > 0 ? buildNTPieSVG(counts, total) : '';
+  const legendRows = Object.entries(counts).sort((a,b) => b[1]-a[1]).map(([key, count]) => {
+    const cfg = ntDimConfig()[key];
+    return `<div class="province-pie-row">
+      <span class="province-pie-dot" style="background:${cfg?.color || '#8a7c5e'}"></span>
+      <span class="province-pie-label">${esc(ntDimLabel(key))}</span>
+      <span class="province-pie-count">${count}</span>
+    </div>`;
+  }).join('');
+
+  const itemRows = treasures.map(item => {
+    const color = ntDimColor(item);
+    const title = lang === 'vi' ? (item.name || item.english) : (item.english || item.name);
+    return `
+      <div class="province-item" data-id="${item.id}">
+        <span class="province-item-dot" style="background:${color}"></span>
+        <div class="province-item-body">
+          <div class="province-item-title">${esc(title)}</div>
+          <div class="province-item-tags">
+            <span style="color:${color}">${esc(item.year || '')}</span>
+            <span style="color:${color}">${esc(ntDimLabel(ntDimKey(item)))}</span>
+          </div>
+        </div>
+        <button class="province-item-cta" type="button">${t('pieCta')}</button>
+      </div>`;
+  }).join('');
+
+  const dimLabel = ntView === 'era'
+    ? (lang === 'vi' ? 'Phân bố niên đại' : 'Era distribution')
+    : (lang === 'vi' ? 'Phân bố theo loại' : 'Type distribution');
+
+  const html = total > 0 ? `
+    <div class="province-modal-title">${esc(provinceName)}</div>
+    <div class="province-modal-sub">${dimLabel}</div>
+    <div class="province-pie-wrap">
+      <div class="province-pie">${pieSVG}</div>
+      <div class="province-pie-legend">${legendRows}</div>
+    </div>
+    <div class="province-pie-total">
+      ${lang === 'vi' ? 'Tổng bảo vật' : 'Total treasures'}: <strong>${total}</strong>
+    </div>
+    <div class="province-item-list">${itemRows}</div>
+  ` : `
+    <div class="province-modal-title">${esc(provinceName)}</div>
+    <div class="province-modal-sub">${dimLabel}</div>
+    <div class="province-pie-empty">
+      ${lang === 'vi' ? 'Chưa có bảo vật trong tỉnh này' : 'No treasures in this province'}
+    </div>
+  `;
+
+  const modal = document.getElementById('province-modal');
+  document.getElementById('province-modal-content').innerHTML = html;
+  modal.classList.add('visible');
+
+  modal.querySelectorAll('.province-item').forEach(row => {
+    row.addEventListener('click', () => {
+      const id = parseInt(row.dataset.id, 10);
+      closeProvinceModal();
+      window.open(`treasure.html?id=${id}`, '_blank');
+    });
+  });
+}
+
+/* Province-borders toggle (shared by both modes) */
+(function wireProvinceToggle() {
+  const btn = document.getElementById('btn-provinces');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (map.hasLayer(borderLayer)) map.removeLayer(borderLayer);
+    else borderLayer.addTo(map);
+    btn.classList.toggle('active', map.hasLayer(borderLayer));
+  });
+})();
+
+function setNationalMode(on) {
+  if (on === nationalMode) return;
+  nationalMode = on;
+
+  activeFilter = 'all';
+  activeItemId = null;
+  activeProvince = null;
+  if (on) ntView = 'type';
+  hideMapInfoBox();
+  closeArtifactModal();
+
+  document.querySelectorAll('.mode-btn').forEach(b =>
+    b.classList.toggle('active', (b.dataset.mode === 'treasure') === on));
+
+  if (on) {
+    /* show treasure marker layer; provinces become neutral white (no colour) */
+    neutralizeProvinces();
+    if (!ntLayer) ntLayer = buildNTLayer();
+    if (!map.hasLayer(ntLayer)) ntLayer.addTo(map);
+    if (typeof ntLayer.bringToFront === 'function') ntLayer.bringToFront();
+  } else {
+    /* back to UNESCO province map and restore province colours */
+    if (ntLayer && map.hasLayer(ntLayer)) map.removeLayer(ntLayer);
+    if (!map.hasLayer(borderLayer)) borderLayer.addTo(map);
+    recolorAllProvinces();
+  }
+
+  /* header eyebrow reflects the active dataset */
+  const eyebrow = document.getElementById('header-eyebrow');
+  if (eyebrow) eyebrow.textContent = on ? t('ntEyebrow') : t('headerEyebrow');
+
+  applyStaticI18n();   // re-labels view buttons + set active view
+  renderFilterBar();
+  renderLegend();
+  renderCards();
+  refreshProvinceTooltips();
+  setTimeout(() => map.invalidateSize(), 50);
+}
+
+/* Mode-toggle wiring */
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => setNationalMode(btn.dataset.mode === 'treasure'));
+});
 
 /* ═══════════════════════════════════════
    INIT

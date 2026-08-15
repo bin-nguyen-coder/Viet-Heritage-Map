@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bảo vật — Chi tiết</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --hero-bg:    #7a1f1f;
+      --hero-deep:  #5c1616;
+      --page-bg:    #f7f3ec;
+      --card-bg:    #fdfaf5;
+      --border:     #d9cfc0;
+      --text:       #2a1f0f;
+      --muted:      #7a6a52;
+      --heading:    #1a1008;
+      --red:        #7a1f1f;
+      --red-btn:    #8b2222;
+      --gold:       #8a6a20;
+      --gold-light: #b8922c;
+      --nav-bg:     #0a0900;
+      --nav-border: rgba(201,168,76,0.14);
+      --nav-gold:   #c9a84c;
+      --nav-muted:  #8a7c5e;
+      --nav-text:   #e8dfc8;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--page-bg); color:var(--text); font-family:'Merriweather',serif; min-height:100vh; }
+
+    /* ── NAV ── */
+    nav {
+      position:sticky; top:0; z-index:200; height:62px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 48px;
+      background:var(--nav-bg); border-bottom:1px solid var(--nav-border);
+    }
+    .nav-logo {
+      display:flex; align-items:center; gap:10px; text-decoration:none;
+      color:var(--nav-text); font-family:'Merriweather',serif;
+      font-size:1.05rem; font-weight:700;
+    }
+    .nav-logo svg { color:var(--nav-gold); }
+    .nav-links {
+      display:flex; gap:32px; list-style:none;
+      position:absolute; left:50%; transform:translateX(-50%);
+    }
+    .nav-links a {
+      text-decoration:none; font-size:11px; font-weight:500;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--nav-muted); transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--nav-gold); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .lang-toggle {
+      display:flex; gap:3px;
+      background:rgba(255,255,255,0.04); border:1px solid #2c2507;
+      border-radius:20px; padding:3px;
+    }
+    .lang-btn {
+      background:transparent; border:none; color:var(--nav-muted);
+      padding:4px 12px; border-radius:16px; font-size:11px; font-weight:500;
+      font-family:'Merriweather',serif; cursor:pointer; transition:all .2s;
+    }
+    .lang-btn:hover  { color:var(--nav-gold); }
+    .lang-btn.active { background:var(--nav-gold); color:#1a1400; }
+
+    /* ── HERO ── */
+    .hero {
+      background:linear-gradient(135deg, var(--hero-bg) 0%, var(--hero-deep) 100%);
+      padding:32px 48px 44px;
+      display:grid; grid-template-columns:1fr auto;
+      gap:32px; align-items:center;
+      min-height:280px; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(ellipse 60% 120% at 100% 50%, rgba(201,168,76,0.06), transparent);
+    }
+    .hero-left { position:relative; z-index:1; }
+
+    /* breadcrumb */
+    .breadcrumb {
+      display:flex; align-items:center; gap:7px;
+      font-size:11.5px; color:rgba(245,240,230,0.55);
+      margin-bottom:18px; flex-wrap:wrap;
+    }
+    .breadcrumb a { color:rgba(245,240,230,0.55); text-decoration:none; transition:color .2s; }
+    .breadcrumb a:hover { color:var(--nav-gold); }
+    .breadcrumb-sep { opacity:.45; }
+    .breadcrumb-current { color:rgba(245,240,230,0.85); font-weight:500; }
+
+    /* title block */
+    .hero-title {
+      font-family:'Merriweather',serif;
+      font-size:clamp(2rem,4.5vw,3.4rem); font-weight:700;
+      color:#f5f0e6; line-height:1.1; letter-spacing:-0.02em; margin-bottom:10px;
+    }
+    .hero-subtitle {
+      font-family:'Merriweather',serif; font-style:italic;
+      font-size:clamp(1rem,2vw,1.35rem); color:var(--nav-gold);
+      margin-bottom:22px; display:block;
+    }
+    .hero-badges { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:7px;
+      background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22);
+      color:#f5f0e6; padding:6px 14px; border-radius:4px;
+      font-size:11.5px; font-weight:500; letter-spacing:0.06em;
+    }
+    .hero-location {
+      display:flex; align-items:flex-start; gap:8px;
+      font-size:13.5px; color:rgba(245,240,230,0.75); line-height:1.5;
+    }
+    .hero-location svg { flex-shrink:0; margin-top:2px; color:var(--nav-gold); }
+
+    /* hero image */
+    .hero-img-wrap {
+      position:relative; z-index:1;
+      width:clamp(260px,30vw,420px); flex-shrink:0;
+    }
+    .hero-img-wrap img {
+      width:100%; border-radius:6px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.45);
+      display:block; object-fit:cover; aspect-ratio:4/3;
+    }
+    .hero-img-placeholder {
+      width:100%; aspect-ratio:4/3; border-radius:6px;
+      background:rgba(255,255,255,0.08); border:2px dashed rgba(255,255,255,0.2);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:12px; color:rgba(245,240,230,0.35); font-size:12px; text-align:center;
+      padding:20px; font-family:'Merriweather',serif;
+    }
+    .hero-img-placeholder svg { opacity:.4; }
+
+    /* ── CONTENT SECTION ── */
+    .content-wrap {
+      max-width:1200px; margin:0 auto;
+      display:grid; grid-template-columns:1fr 340px;
+      gap:32px; padding:40px 48px 72px; align-items:start;
+    }
+
+    /* LEFT — description */
+    .desc-card {
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:8px; padding:40px 40px; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    }
+    .desc-card h2 {
+      font-family:'Merriweather',serif; font-size:clamp(1.5rem,2.5vw,2rem);
+      font-weight:700; color:var(--heading); margin-bottom:26px; line-height:1.2;
+    }
+
+    /* quote block */
+    .desc-quote {
+      border-left:3px solid var(--gold-light);
+      padding:16px 22px; margin-bottom:28px;
+      background:rgba(138,106,32,0.05); border-radius:0 4px 4px 0;
+      font-family:'Merriweather',serif; font-style:italic;
+      font-size:15px; color:var(--gold); line-height:1.8;
+    }
+    .desc-quote.empty {
+      color:var(--muted); font-size:13px; font-style:normal;
+      border-left-color:var(--border); background:transparent;
+    }
+
+    /* description text */
+    .desc-body {
+      font-size:14.5px; color:var(--text); line-height:1.85;
+    }
+    .desc-body p { margin-bottom:18px; }
+    .desc-body p:last-child { margin-bottom:0; }
+
+    /* info grid below description */
+    .info-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+      margin-top:32px; padding-top:28px; border-top:1px solid var(--border);
+    }
+    .info-label {
+      font-size:9.5px; font-weight:700; letter-spacing:0.2em;
+      text-transform:uppercase; color:var(--muted); margin-bottom:5px;
+    }
+    .info-value { font-size:13.5px; color:var(--text); }
+    .era-dot {
+      display:inline-block; width:8px; height:8px; border-radius:50%;
+      margin-right:6px; vertical-align:middle;
+    }
+
+    /* RIGHT — sidebar */
+    .sidebar { display:flex; flex-direction:column; gap:20px; }
+
+    .sidebar-card {
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:8px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    }
+    .sidebar-card-header {
+      background:#f0ebe2; border-bottom:1px solid var(--border);
+      padding:14px 20px;
+    }
+    .sidebar-card-header h3 {
+      font-family:'Merriweather',serif; font-size:15px;
+      font-weight:700; color:var(--heading); margin-bottom:3px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .sidebar-card-header p { font-size:12px; color:var(--muted); }
+    .sidebar-card-body { padding:18px 20px; }
+
+    .loc-name {
+      font-family:'Merriweather',serif; font-size:16px;
+      font-weight:700; color:var(--heading); margin-bottom:4px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+    }
+    .loc-type-badge {
+      font-size:9.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+      background:var(--red-btn); color:#fff; padding:3px 9px; border-radius:3px;
+      flex-shrink:0; margin-top:3px;
+    }
+    .loc-city {
+      display:flex; align-items:center; gap:6px;
+      font-size:12px; color:var(--muted); margin-bottom:12px;
+    }
+    .loc-address { font-size:12.5px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
+    .loc-links { display:flex; flex-direction:column; gap:8px; padding-top:14px; border-top:1px solid var(--border); }
+    .loc-link {
+      display:flex; align-items:center; gap:9px;
+      font-size:12.5px; color:var(--gold); text-decoration:none; transition:color .2s;
+    }
+    .loc-link:hover { color:var(--red); }
+    .loc-link-label { font-size:9px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+    .btn-view-map {
+      display:block; text-align:center; background:var(--red-btn); color:#fff;
+      text-decoration:none; padding:13px 20px; font-size:12px; font-weight:600;
+      letter-spacing:0.1em; text-transform:uppercase; font-family:'Merriweather',serif;
+      transition:background .2s;
+    }
+    .btn-view-map:hover { background:#9b2828; }
+
+    /* coords card */
+    .coords-row { display:flex; gap:12px; }
+    .coord-cell { flex:1; background:#f0ebe2; border-radius:5px; padding:10px 12px; }
+    .coord-lbl  { font-size:9px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+    .coord-val  { font-size:12.5px; color:var(--text); font-family:'Merriweather',serif; }
+
+    /* ── 3D MODEL BUTTON ── */
+    .btn-3d {
+      display:inline-flex; align-items:center; gap:9px;
+      background:rgba(201,168,76,0.12); color:#c9a84c;
+      border:1.5px solid rgba(201,168,76,0.45); border-radius:5px;
+      padding:11px 24px; font-size:11.5px; font-weight:600;
+      letter-spacing:0.12em; text-transform:uppercase;
+      font-family:'Merriweather',serif; cursor:pointer;
+      transition:all .22s; margin-top:20px;
+    }
+    .btn-3d:hover  { background:rgba(201,168,76,0.22); border-color:#c9a84c; }
+    .btn-3d.open   { background:rgba(201,168,76,0.28); border-color:#c9a84c; }
+    .btn-3d svg    { flex-shrink:0; }
+
+    /* ── SCRIPT (INSCRIPTION) BUTTON ── */
+    .btn-script {
+      display:inline-flex; align-items:center; gap:9px;
+      background:rgba(76,175,132,0.10); color:#4caf84;
+      border:1.5px solid rgba(76,175,132,0.4); border-radius:5px;
+      padding:11px 24px; font-size:11.5px; font-weight:600;
+      letter-spacing:0.12em; text-transform:uppercase;
+      font-family:'DM Sans',sans-serif; cursor:pointer;
+      transition:all .22s; margin-top:10px;
+    }
+    .btn-script:hover { background:rgba(76,175,132,0.2); border-color:#4caf84; }
+    .btn-script svg { flex-shrink:0; }
+
+    /* ── SCRIPT MODAL OVERLAY ── */
+    .script-overlay {
+      position:fixed; inset:0; z-index:4000;
+      background:rgba(5,4,0,0.78); backdrop-filter:blur(6px);
+      display:none; align-items:center; justify-content:center; padding:20px;
+    }
+    .script-overlay.visible { display:flex; }
+
+    .script-modal {
+      background:var(--card-bg); border:1px solid var(--border); border-radius:12px;
+      width:100%; max-width:860px; max-height:88vh;
+      display:flex; flex-direction:column;
+      box-shadow:0 24px 70px rgba(0,0,0,0.6);
+      animation:smIn .24s ease-out; overflow:hidden;
+    }
+    @keyframes smIn { from{opacity:0;transform:translateY(12px) scale(0.97)} to{opacity:1;transform:none} }
+
+    .script-modal-header {
+      display:flex; align-items:flex-start; justify-content:space-between;
+      padding:20px 28px 16px; border-bottom:1px solid var(--border);
+      background:var(--heading); flex-shrink:0;
+    }
+    .script-modal-eyebrow {
+      font-size:9px; font-weight:700; letter-spacing:.28em; text-transform:uppercase;
+      color:#8a7c5e; margin-bottom:5px;
+    }
+    .script-modal-title {
+      font-family:'Playfair Display',serif; font-size:1.25rem;
+      font-weight:700; color:#f5f0e6; line-height:1.2;
+    }
+    .script-modal-close {
+      background:none; border:1px solid #2c2507; color:#8a7c5e;
+      border-radius:50%; width:30px; height:30px; font-size:13px;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; transition:all .2s; margin-left:16px; margin-top:2px;
+    }
+    .script-modal-close:hover { color:#c9a84c; border-color:#c9a84c; }
+
+    .script-tabs {
+      display:flex; gap:0; border-bottom:1px solid var(--border);
+      background:#f0ebe2; flex-shrink:0; padding:0 28px;
+    }
+    .script-tab {
+      background:none; border:none; border-bottom:3px solid transparent;
+      padding:13px 20px 10px; font-size:12px; font-weight:600;
+      letter-spacing:.08em; color:var(--muted);
+      cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s;
+      white-space:nowrap;
+    }
+    .script-tab:hover { color:var(--text); }
+    .script-tab.active { color:var(--red); border-bottom-color:var(--red); }
+
+    .script-body {
+      flex:1; overflow-y:auto; padding:28px 32px;
+      scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+    }
+    .script-body::-webkit-scrollbar { width:4px; }
+    .script-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+    .han-text {
+      font-family:'Noto Serif SC','Noto Serif TC','SimSun',serif;
+      font-size:22px; line-height:2.2; color:var(--heading);
+      white-space:pre-wrap; word-break:break-all;
+    }
+    .han-text-hint {
+      font-size:11px; color:var(--muted); margin-bottom:18px;
+      padding:8px 12px; background:#f0ebe2; border-radius:4px;
+      border-left:3px solid var(--border);
+    }
+    .hanvan-text {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:16px; line-height:2; color:var(--heading);
+      white-space:pre-wrap;
+    }
+    .viet-text {
+      font-size:15px; line-height:2; color:var(--text);
+      white-space:pre-wrap;
+    }
+    .viet-col-pair {
+      display:grid; grid-template-columns:auto 1fr;
+      gap:0 28px; margin:2px 0; align-items:start;
+    }
+    .viet-col-left {
+      white-space:nowrap; font-style:italic; color:var(--heading);
+      padding-right:12px;
+    }
+    .viet-col-right {
+      font-style:normal; color:var(--text);
+    }
+    .viet-col-pair + br { display:none; }
+    .annotated {
+      color:var(--red); border-bottom:1.5px dotted var(--red);
+      cursor:pointer; transition:background .15s; border-radius:2px; padding:0 1px;
+    }
+    .annotated:hover { background:rgba(122,31,31,0.08); }
+    .annotated.active { background:rgba(122,31,31,0.12); }
+
+    .anno-popover {
+      position:absolute; z-index:10;
+      background:var(--heading); color:#e8dfc8;
+      border:1px solid #2c2507; border-radius:6px;
+      padding:12px 16px; max-width:320px; font-size:12.5px; line-height:1.65;
+      box-shadow:0 8px 28px rgba(0,0,0,0.45);
+      pointer-events:none;
+    }
+    .anno-popover::before {
+      content:''; position:absolute; top:-6px; left:16px;
+      width:10px; height:10px; background:var(--heading);
+      border-left:1px solid #2c2507; border-top:1px solid #2c2507;
+      transform:rotate(45deg);
+    }
+
+    .viet-toolbar {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
+      flex-wrap:wrap; gap:8px;
+    }
+    .viet-toolbar-note {
+      font-size:11px; color:var(--muted); line-height:1.5;
+    }
+    .viet-toolbar-note code {
+      background:#f0ebe2; border:1px solid var(--border);
+      padding:1px 5px; border-radius:3px; font-size:11px; color:var(--red);
+    }
+    .btn-edit-script {
+      display:inline-flex; align-items:center; gap:6px;
+      background:transparent; border:1px solid var(--border);
+      color:var(--muted); padding:6px 14px; border-radius:4px;
+      font-size:11px; font-weight:600; letter-spacing:.06em;
+      font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .2s;
+      white-space:nowrap;
+    }
+    .btn-edit-script:hover { border-color:var(--gold); color:var(--gold); }
+    .script-editor {
+      width:100%; min-height:320px; background:#f0ebe2;
+      border:1.5px solid var(--border); border-radius:6px;
+      padding:14px; font-size:13.5px; line-height:1.8;
+      font-family:'Playfair Display',serif; color:var(--heading);
+      resize:vertical; outline:none; transition:border-color .2s;
+    }
+    .script-editor:focus { border-color:var(--red); }
+    .editor-actions {
+      display:flex; gap:10px; margin-top:10px; justify-content:flex-end;
+    }
+    .btn-save-script {
+      background:var(--red); color:#fff; border:none; border-radius:4px;
+      padding:8px 20px; font-size:12px; font-weight:600;
+      font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s;
+    }
+    .btn-save-script:hover { background:#9b2828; }
+    .btn-cancel-edit {
+      background:transparent; border:1px solid var(--border); color:var(--muted);
+      border-radius:4px; padding:8px 16px; font-size:12px;
+      font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .2s;
+    }
+    .btn-cancel-edit:hover { border-color:var(--red); color:var(--red); }
+
+    .footnotes-section {
+      margin-top:28px; padding-top:20px; border-top:1px solid var(--border);
+    }
+    .footnotes-title {
+      font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:12px;
+    }
+    .footnote-item {
+      font-size:12.5px; color:var(--muted); line-height:1.65;
+      margin-bottom:6px; display:flex; gap:8px;
+    }
+    .footnote-num {
+      font-size:10px; color:var(--red); font-weight:700; flex-shrink:0; padding-top:2px;
+    }
+    .empty-script-note {
+      text-align:center; padding:48px 24px; color:var(--muted);
+      font-size:13.5px; line-height:1.8;
+    }
+    .empty-script-note strong { color:var(--text); display:block; margin-bottom:8px; font-size:15px; }
+
+    /* ── 3D VIEWER SECTION ── */
+    .model-section {
+      display:none; background:#0d0b02;
+      border-top:1px solid #2c2507; border-bottom:1px solid #2c2507;
+      animation:fadeIn .3s ease;
+    }
+    .model-section.visible { display:block; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .model-viewer { width:100%; height:540px; position:relative; }
+    .model-viewer iframe {
+      width:100%; height:100%; border:none; display:block;
+    }
+    .model-attribution {
+      padding:10px 32px; display:flex; align-items:center; gap:8px;
+      font-size:11.5px; color:#5a4e30;
+      border-top:1px solid #2c2507;
+    }
+    .model-attribution a { color:#1CAAD9; text-decoration:none; font-weight:600; }
+    .model-attribution a:hover { text-decoration:underline; }
+    .model-close-bar {
+      display:flex; align-items:center; justify-content:flex-end;
+      padding:8px 16px; background:#0a0900;
+    }
+    .model-close-btn {
+      background:none; border:1px solid #2c2507; border-radius:4px;
+      color:#8a7c5e; font-size:11px; padding:5px 12px;
+      cursor:pointer; font-family:'Merriweather',serif; transition:all .2s;
+    }
+    .model-close-btn:hover { color:#c9a84c; border-color:#c9a84c; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px) {
+      .hero { grid-template-columns:1fr; padding:24px 20px 32px; }
+      .hero-img-wrap { width:100%; max-width:400px; }
+      .content-wrap { grid-template-columns:1fr; padding:24px 20px 48px; }
+      nav { padding:0 20px; }
+      .nav-links { display:none; }
+      .info-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor">
+      <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/>
+    </svg>
+    <span>Bảo Vật Việt</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html"    id="nav-home">Trang chủ</a></li>
+    <li><a href="VNMT.html"     id="nav-map">Bản đồ</a></li>
+    <li><a href="database.html" id="nav-db">Kho lưu trữ</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO — filled by JS -->
+<div id="hero-section"></div>
+
+<!-- 3D MODEL VIEWER — shown/hidden by button -->
+<div class="model-section" id="model-section">
+  <div class="model-close-bar">
+    <button class="model-close-btn" id="model-close-btn">✕ <span id="lbl-close-3d">Đóng mô hình</span></button>
+  </div>
+  <div class="model-viewer">
+    <iframe id="model-iframe"
+            frameborder="0"
+            allowfullscreen
+            mozallowfullscreen="true"
+            webkitallowfullscreen="true"
+            allow="autoplay; fullscreen; xr-spatial-tracking"
+            xr-spatial-tracking
+            execution-while-out-of-viewport
+            execution-while-not-rendered
+            web-share
+            src="about:blank">
+    </iframe>
+  </div>
+  <div class="model-attribution" id="model-attribution"></div>
+</div>
+
+<!-- CONTENT — filled by JS -->
+<div class="content-wrap" id="content-section" style="display:none">
+
+  <!-- LEFT: description -->
+  <div class="desc-card">
+    <h2 id="desc-title"></h2>
+
+    <!-- Quote / poetic intro -->
+    <div class="desc-quote" id="desc-quote"></div>
+
+    <!-- Main description -->
+    <div class="desc-body" id="desc-body"></div>
+
+    <!-- Info grid -->
+    <div class="info-grid">
+      <div class="info-cell">
+        <div class="info-label" id="lbl-era">Thời kỳ</div>
+        <div class="info-value" id="info-era"></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label" id="lbl-type">Loại hình</div>
+        <div class="info-value" id="info-type"></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label" id="lbl-century">Thế kỷ</div>
+        <div class="info-value" id="info-century"></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label" id="lbl-year">Niên đại</div>
+        <div class="info-value" id="info-year"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: sidebar -->
+  <div class="sidebar">
+
+    <!-- Visit card -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-header">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span id="lbl-visit">Visit This Treasure</span>
+        </h3>
+        <p id="lbl-visit-sub">Explore the location where this national treasure is held.</p>
+      </div>
+      <div class="sidebar-card-body">
+        <div class="loc-name">
+          <span id="loc-name"></span>
+          <span class="loc-type-badge" id="loc-type-badge"></span>
+        </div>
+        <div class="loc-city">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span id="loc-city"></span>
+        </div>
+        <div class="loc-address" id="loc-address"></div>
+        <div class="loc-links">
+          <div>
+            <div class="loc-link-label" id="lbl-map-link">MAP</div>
+            <a class="loc-link" id="link-maps" target="_blank" rel="noopener">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                <line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+              </svg>
+              <span id="lbl-open-maps">Open in Google Maps</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a class="btn-view-map" href="VNMT.html" id="btn-view-map">
+        View on Interactive Map
+      </a>
+    </div>
+
+    <!-- Coordinates card -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-body">
+        <div class="info-label" style="margin-bottom:10px" id="lbl-coords">Tọa độ</div>
+        <div class="coords-row">
+          <div class="coord-cell">
+            <div class="coord-lbl">LAT</div>
+            <div class="coord-val" id="coord-lat">—</div>
+          </div>
+          <div class="coord-cell">
+            <div class="coord-lbl">LNG</div>
+            <div class="coord-val" id="coord-lng">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+</div><!-- /content-wrap -->
+
+<!-- Error state -->
+<div id="error-state" style="display:none; text-align:center; padding:80px 24px; color:#7a6a52;">
+  <p style="font-size:16px; margin-bottom:8px;" id="err-msg">Artifact not found.</p>
+  <a href="database.html" id="err-back-link" style="color:#7a1f1f; font-size:13px;">← Back to database</a>
+</div>
+
+<script src="national_treasures.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   CONFIG (mirrors VNMT.js, no Leaflet)
+═══════════════════════════════════════ */
+const ERA_CONFIG = {
+  prehistoric:   { color:'#c9943a', vi:'Tiền sử · Đông Sơn', en:'Prehistoric · Đông Sơn' },
+  century_1_10:  { color:'#c47c5a', vi:'Thế kỷ I–X',         en:'1st–10th Century' },
+  century_10_20: { color:'#4caf84', vi:'Thế kỷ X–XIX',        en:'10th–19th Century' },
+  modern_1945:   { color:'#5a8a9f', vi:'1900–Nay',            en:'1900–Present' },
+};
+const TYPE_CONFIG = {
+  tools:    { vi:'Công cụ & Vũ khí',       en:'Tools & Weapons' },
+  religious:{ vi:'Tôn giáo',               en:'Religious' },
+  art:      { vi:'Nghệ thuật & Trang trí', en:'Art & Decoration' },
+  academic: { vi:'Học thuật & Văn bản',    en:'Academic & Documents' },
+};
+const ERA_OVERRIDES = { 82:'century_10_20',87:'century_10_20',88:'century_10_20',91:'century_10_20' };
+
+function getEra(t) {
+  if (ERA_OVERRIDES[t.id]) return ERA_OVERRIDES[t.id];
+  const y = String(t.year||'');
+  if (['Đông Sơn','Phùng Nguyên','Đồng Nai','Tiền sử'].some(k=>y.includes(k))) return 'prehistoric';
+  if (['Óc Eo','Chăm Pa'].some(k=>y.includes(k))) return 'century_1_10';
+  if (/20th|19\d{2}|1945|1946/.test(y)) return 'modern_1945';
+  const yr = parseInt((y.match(/\d{3,4}/)||[])[0]);
+  if (!isNaN(yr)) { if (yr>=1900) return 'modern_1945'; if (yr<939) return 'century_1_10'; }
+  return 'century_10_20';
+}
+
+function toRoman(n) {
+  const v=[1000,900,500,400,100,90,50,40,10,9,5,4,1];
+  const r=['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+  let s='',x=n; for(let i=0;i<v.length;i++) while(x>=v[i]){s+=r[i];x-=v[i];} return s;
+}
+function getCentury(t) {
+  const y=String(t.year||'');
+  if(['Tiền sử','Phùng Nguyên'].some(k=>y.includes(k))) return -30;
+  if(y.includes('Đồng Nai')) return -5; if(y.includes('Đông Sơn')) return -3;
+  if(y.includes('Óc Eo')) return 5; if(y.includes('Chăm Pa')) return 8;
+  if(/20th|1900–Present|1900–Nay/.test(y)) return 20;
+  const yr=parseInt((y.match(/\d{4}/)||y.match(/\d{3}/)||[])[0]);
+  if(!isNaN(yr)){if(yr<0) return Math.floor(yr/100);if(yr===0) return 1;return Math.ceil(yr/100);}
+  const d={'Lý':11,'Trần':13,'Lê sơ':15,'Mạc':16,'Lê Trung Hưng':17,'Tây Sơn':18,'Nguyễn':19,'Đinh':10,'Tiền Lê':10};
+  for(const [k,v] of Object.entries(d)) if(y.includes(k)) return v;
+  return null;
+}
+function formatCentury(c) {
+  if(c===null||c===undefined) return '—';
+  if(c<0) {
+    const bce = lang === 'vi' ? 'TCN' : 'BCE';
+    const pfx = lang === 'vi' ? 'Thế kỷ' : 'c.';
+    return `${pfx} ${toRoman(Math.abs(c))} ${bce}`;
+  }
+  const pfx = lang === 'vi' ? 'Thế kỷ' : 'c.';
+  return `${pfx} ${toRoman(c)}`;
+}
+
+/* ═══════════════════════════════════════
+   LANGUAGE
+═══════════════════════════════════════ */
+let lang = localStorage.getItem('vnmt_lang') || 'vi';
+
+const STRINGS = {
+  vi: {
+    navHome:'Trang chủ', navMap:'Bản đồ', navDb:'Kho lưu trữ',
+    breadHome:'Trang chủ', breadDb:'Bảo Vật Quốc Gia',
+    lblVisit:'Tham quan Bảo vật', lblVisitSub:'Khám phá địa điểm lưu giữ bảo vật này.',
+    lblMapLink:'BẢN ĐỒ', lblOpenMaps:'Mở Google Maps',
+    btnViewMap:'XEM TRÊN BẢN ĐỒ TƯƠNG TÁC',
+    lblCoords:'Tọa độ', lblEra:'Thời kỳ', lblType:'Loại hình',
+    lblCentury:'Thế kỷ', lblYear:'Niên đại',
+    errMsg:'Không tìm thấy hiện vật. Vui lòng quay lại kho lưu trữ.',
+    btnBackDb:'← Quay lại kho lưu trữ',
+    quoteEmpty:'[ Chưa có mô tả chi tiết. Thêm trường quote vào national_treasures.js để hiển thị ở đây. ]',
+  },
+  en: {
+    navHome:'Home', navMap:'Map', navDb:'Database',
+    breadHome:'Home', breadDb:'National Treasures',
+    lblVisit:'Visit This Treasure', lblVisitSub:'Explore the location where this national treasure is held.',
+    lblMapLink:'MAP', lblOpenMaps:'Open in Google Maps',
+    btnViewMap:'VIEW ON INTERACTIVE MAP',
+    lblCoords:'Coordinates', lblEra:'Era', lblType:'Category',
+    lblCentury:'Century', lblYear:'Period',
+    errMsg:'Artifact not found. Please return to the database.',
+    btnBackDb:'← Back to database',
+    quoteEmpty:'[ No detailed quote yet. Add a quote field to national_treasures.js to display it here. ]',
+  },
+};
+const S = k => STRINGS[lang][k];
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  const set = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
+  set('nav-home', S('navHome')); set('nav-map', S('navMap')); set('nav-db', S('navDb'));
+  set('lbl-visit', S('lblVisit')); set('lbl-visit-sub', S('lblVisitSub'));
+  set('lbl-map-link', S('lblMapLink')); set('lbl-open-maps', S('lblOpenMaps'));
+  set('lbl-coords', S('lblCoords')); set('lbl-era', S('lblEra'));
+  set('lbl-type', S('lblType')); set('lbl-century', S('lblCentury'));
+  set('lbl-year', S('lblYear'));
+  const bvm = document.getElementById('btn-view-map');
+  if (bvm) bvm.textContent = S('btnViewMap');
+  const errBack = document.getElementById('err-back-link');
+  if (errBack) errBack.textContent = S('btnBackDb');
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    lang = btn.dataset.lang;
+    localStorage.setItem('vnmt_lang', lang);
+    applyLang();
+    renderArtifact();
+  });
+});
+
+/* ═══════════════════════════════════════
+   RENDER
+═══════════════════════════════════════ */
+function renderArtifact() {
+  const id = parseInt(new URLSearchParams(window.location.search).get('id'));
+  const t  = NATIONAL_TREASURES.find(x => x.id === id);
+  const contentSection = document.getElementById('content-section');
+  const errorState = document.getElementById('error-state');
+
+  if (!t) {
+    if (contentSection) contentSection.style.display = 'none';
+    if (errorState) {
+      errorState.style.display = 'block';
+      document.getElementById('err-msg').textContent = S('errMsg');
+    }
+    return;
+  }
+
+  if (errorState) errorState.style.display = 'none';
+  if (contentSection) contentSection.style.display = 'grid';
+
+  const era    = getEra(t);
+  const eraC   = ERA_CONFIG[era]?.color || '#8a7c5e';
+  const eraLbl = ERA_CONFIG[era]?.[lang] || '';
+  const typeLbl= TYPE_CONFIG[t.type]?.[lang] || t.type || '';
+  const cent   = getCentury(t);
+  const nameMain = lang === 'vi' ? t.name    : t.english;
+  const nameSub  = lang === 'vi' ? t.english : t.name;
+  const desc     = lang === 'vi' ? (t.desc_vi || t.desc) : t.desc;
+  const imgSrc   = `images/artifacts/${t.id}.jpg`;
+
+  document.title = `${nameMain} — Bảo Vật Việt`;
+
+  document.getElementById('hero-section').innerHTML = `
+    <div class="hero">
+      <div class="hero-left">
+        <div class="breadcrumb">
+          <a href="index.html">${S('breadHome')}</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="database.html">${S('breadDb')}</a>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">${nameMain.length>28 ? nameMain.slice(0,28)+'…' : nameMain}</span>
+        </div>
+        <h1 class="hero-title">${nameMain}</h1>
+        <span class="hero-subtitle">${nameSub}</span>
+        <div class="hero-badges">
+          <span class="hero-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18M9 21V9"/>
+            </svg>
+            ${eraLbl}
+          </span>
+          <span class="hero-badge" style="background:${eraC}33;border-color:${eraC}55;color:${eraC}">
+            ${typeLbl}
+          </span>
+        </div>
+        <div class="hero-location">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          ${t.location}
+        </div>
+        ${t.model3d ? `
+        <button class="btn-3d" id="btn-3d">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+          <span id="btn-3d-text">${lang === 'vi' ? 'Xem mô hình 3D' : 'View 3D Model'}</span>
+        </button>` : ''}
+        ${t.script ? `
+        <button class="btn-script" id="btn-script">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>${lang === 'vi' ? 'Xem văn bản' : 'See full script'}</span>
+        </button>` : ''}
+      </div>
+      <div class="hero-img-wrap">
+        <img src="${imgSrc}" alt="${nameMain}"
+             onerror="this.onerror=null; this.style.display='none'; var ph=document.getElementById('img-ph-${t.id}'); if(ph) ph.style.display='flex';" />
+        <div class="hero-img-placeholder" id="img-ph-${t.id}" style="display:none">
+          <svg width="48" height="48" viewBox="0 0 22 22" fill="currentColor">
+            <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/>
+          </svg>
+          <span>images/artifacts/${t.id}.jpg</span>
+        </div>
+      </div>
+    </div>`;
+
+  /* ── WIRE 3D MODEL VIEWER ── */
+  const modelSection = document.getElementById('model-section');
+  const modelIframe  = document.getElementById('model-iframe');
+  const modelAttr    = document.getElementById('model-attribution');
+  const closeBtn     = document.getElementById('model-close-btn');
+  const closeLbl     = document.getElementById('lbl-close-3d');
+
+  modelSection.classList.remove('visible');
+  modelIframe.src = 'about:blank';
+
+  if (t.model3d) {
+    modelAttr.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" style="flex-shrink:0">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      </svg>
+      <span>
+        <a href="https://sketchfab.com/3d-models/${t.model3d.split('/models/')[1]?.split('/embed')[0]}?utm_medium=embed"
+           target="_blank" rel="nofollow">${t.model3d_title || nameMain}</a>
+        ${lang === 'vi' ? 'bởi' : 'by'}
+        <a href="${t.model3d_author_url || 'https://sketchfab.com'}?utm_medium=embed"
+           target="_blank" rel="nofollow">${t.model3d_author || 'Sketchfab'}</a>
+        ${lang === 'vi' ? 'trên' : 'on'}
+        <a href="https://sketchfab.com?utm_medium=embed" target="_blank" rel="nofollow">Sketchfab</a>
+      </span>`;
+
+    const btn3d = document.getElementById('btn-3d');
+    const btn3dText = document.getElementById('btn-3d-text');
+    if (btn3d) {
+      btn3d.addEventListener('click', () => {
+        const isOpen = modelSection.classList.contains('visible');
+        if (!isOpen) {
+          modelSection.classList.add('visible');
+          if (modelIframe.src === 'about:blank' || !modelIframe.src.includes('sketchfab')) {
+            modelIframe.src = t.model3d;
+          }
+          btn3d.classList.add('open');
+          btn3dText.textContent = lang === 'vi' ? 'Đóng mô hình 3D' : 'Close 3D Model';
+          setTimeout(() => modelSection.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
+        } else {
+          modelSection.classList.remove('visible');
+          btn3d.classList.remove('open');
+          btn3dText.textContent = lang === 'vi' ? 'Xem mô hình 3D' : 'View 3D Model';
+        }
+      });
+    }
+
+    if (closeBtn) {
+      closeLbl.textContent = lang === 'vi' ? 'Đóng mô hình' : 'Close model';
+      closeBtn.onclick = () => {
+        modelSection.classList.remove('visible');
+        const b = document.getElementById('btn-3d');
+        const bt = document.getElementById('btn-3d-text');
+        if (b)  b.classList.remove('open');
+        if (bt) bt.textContent = lang === 'vi' ? 'Xem mô hình 3D' : 'View 3D Model';
+      };
+    }
+  } else {
+    modelAttr.innerHTML = '';
+    if (closeBtn) closeBtn.onclick = null;
+  }
+
+  /* ── WIRE SCRIPT BUTTON ── */
+  const btnScript = document.getElementById('btn-script');
+  if (btnScript && t.script) {
+    btnScript.addEventListener('click', () => {
+      if (typeof window.openScriptModal === 'function') {
+        window.openScriptModal(t);
+      }
+    });
+  }
+
+  /* ── CONTENT ── */
+  document.getElementById('desc-title').textContent = nameMain;
+
+  const quoteEl = document.getElementById('desc-quote');
+  if (t.quote) {
+    quoteEl.textContent = `"${t.quote}"`;
+    quoteEl.classList.remove('empty');
+  } else {
+    quoteEl.textContent = S('quoteEmpty');
+    quoteEl.classList.add('empty');
+  }
+
+  document.getElementById('desc-body').innerHTML =
+    `<p>${desc || ''}</p>`;
+
+  document.getElementById('info-era').innerHTML =
+    `<span class="era-dot" style="background:${eraC}"></span>${eraLbl}`;
+  document.getElementById('info-type').textContent = typeLbl;
+  document.getElementById('info-century').textContent = formatCentury(cent);
+  document.getElementById('info-year').textContent = t.year || '—';
+
+  const locParts = String(t.location || '').split(',');
+  const locName  = locParts[0].trim();
+  const locCity  = locParts.length > 1 ? locParts.slice(1).join(',').trim() : '';
+
+  document.getElementById('loc-name').textContent    = locName;
+  document.getElementById('loc-type-badge').textContent = lang === 'vi' ? 'Địa điểm' : 'Venue';
+  document.getElementById('loc-city').textContent    = locCity || t.location;
+  document.getElementById('loc-address').textContent = t.location;
+
+  const mapsUrl = `https://www.google.com/maps?q=${t.lat},${t.lng}`;
+  document.getElementById('link-maps').href = mapsUrl;
+  document.getElementById('btn-view-map').href = `VNMT.html`;
+
+  document.getElementById('coord-lat').textContent = t.lat?.toFixed(5) ?? '—';
+  document.getElementById('coord-lng').textContent = t.lng?.toFixed(5) ?? '—';
+
+  document.getElementById('content-section').style.display = 'grid';
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+applyLang();
+renderArtifact();
+</script>
+<!-- ── SCRIPT (INSCRIPTION) MODAL ── -->
+<div class="script-overlay" id="script-overlay" aria-hidden="true">
+  <div class="script-modal">
+
+    <!-- header -->
+    <div class="script-modal-header">
+      <div>
+        <div class="script-modal-eyebrow" id="sm-eyebrow">Văn bản khắc đá</div>
+        <h2 class="script-modal-title" id="sm-title"></h2>
+      </div>
+      <button class="script-modal-close" id="script-modal-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- tabs -->
+    <div class="script-tabs">
+      <button class="script-tab active" data-tab="han"    id="tab-han">Chữ Hán</button>
+      <button class="script-tab"        data-tab="hanvan" id="tab-hanvan">Hán văn</button>
+      <button class="script-tab"        data-tab="viet"   id="tab-viet">Tiếng Việt</button>
+    </div>
+
+    <!-- scrollable content -->
+    <div class="script-body" id="script-body"></div>
+
+    <!-- floating annotation popover (positioned by JS) -->
+    <div class="anno-popover" id="anno-popover" style="display:none"></div>
+
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   SCRIPT / INSCRIPTION MODAL
+═══════════════════════════════════════ */
+(function() {
+  const overlay   = document.getElementById('script-overlay');
+  const closeBtn  = document.getElementById('script-modal-close');
+  const smTitle   = document.getElementById('sm-title');
+  const smEyebrow = document.getElementById('sm-eyebrow');
+  const body      = document.getElementById('script-body');
+  const popover   = document.getElementById('anno-popover');
+
+  let currentArtifact = null;
+  let currentTab      = 'han';
+  let editMode        = false;
+
+  function openScriptModal(t) {
+    currentArtifact = t;
+    currentTab      = 'han';
+    editMode        = false;
+    smTitle.textContent   = (typeof lang !== 'undefined' && lang === 'vi') ? t.name : t.english;
+    smEyebrow.textContent = (typeof lang !== 'undefined' && lang === 'vi')
+      ? 'Văn bản khắc đá' : 'Stone Inscription';
+    overlay.classList.add('visible');
+    overlay.setAttribute('aria-hidden', 'false');
+    setActiveTab('han');
+    renderTabContent('han');
+  }
+
+  function closeScriptModal() {
+    overlay.classList.remove('visible');
+    overlay.setAttribute('aria-hidden', 'true');
+    hidePopover();
+    editMode = false;
+  }
+
+  closeBtn.addEventListener('click', closeScriptModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeScriptModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScriptModal(); });
+
+  function setActiveTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.script-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+  }
+
+  document.querySelectorAll('.script-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      editMode = false;
+      hidePopover();
+      setActiveTab(btn.dataset.tab);
+      renderTabContent(btn.dataset.tab);
+    });
+  });
+
+  /* Format: {word or phrase|annotation text}; footnotes: [n] */
+  function parseAnnotations(rawText) {
+    const footnotes = [];
+
+    let text = rawText.replace(/^\[(\d+)\]:\s*(.+)$/gm, (_, n, def) => {
+      footnotes[parseInt(n)] = def.trim();
+      return '';
+    }).trim();
+
+    text = text.replace(/\{([^|{}]+)\|([^{}]+)\}/g, (_, word, note) => {
+      const safe = note.replace(/"/g, '&quot;');
+      return `<span class="annotated" data-note="${safe}">${word}</span>`;
+    });
+
+    text = text.replace(/\[(\d+)\]/g, (_, n) =>
+      `<sup class="footnote-ref" data-fn="${n}" style="color:var(--red);cursor:pointer;font-size:0.7em">[${n}]</sup>`
+    );
+
+    const lines = text.split('\n');
+    const processed = lines.map(line => {
+      const tabMatch = line.match(/^(.+?)\t+\t+(.+)$/);
+      if (tabMatch) {
+        const leftCol = tabMatch[1].trim();
+        const rightCol = tabMatch[2].trim();
+        if (leftCol && rightCol) {
+          return `<div class="viet-col-pair"><span class="viet-col-left">${leftCol}</span><span class="viet-col-right">${rightCol}</span></div>`;
+        }
+      }
+      return line;
+    });
+    text = processed.join('\n');
+
+    text = text.replace(/\n/g, '<br>');
+
+    return { html: text, footnotes };
+  }
+
+  function renderTabContent(tab) {
+    hidePopover();
+    if (!currentArtifact) return;
+    const t = currentArtifact;
+    const s = t.script || {};
+    const isVI = typeof lang !== 'undefined' && lang === 'vi';
+
+    const storedViet = localStorage.getItem(`script_viet_${t.id}`);
+    const storedHan  = localStorage.getItem(`script_han_${t.id}`);
+    const storedHanvan = localStorage.getItem(`script_hanvan_${t.id}`);
+
+    if (tab === 'han') {
+      const content = storedHan || s.han || '';
+      if (!content.trim()) {
+        body.innerHTML = emptyNote(
+          isVI ? 'Chưa có nội dung Chữ Hán' : 'No Chinese script added yet',
+          isVI ? 'Thêm trường <code>script.han</code> vào national_treasures.js.'
+               : 'Add a <code>script.han</code> field in national_treasures.js.'
+        );
+      } else {
+        body.innerHTML = `
+          <div class="han-text-hint">
+            ${isVI ? '📜 Nguyên văn chữ Hán. Đọc từ phải sang trái, từ trên xuống dưới theo chiều dọc truyền thống.'
+                   : '📜 Original Chinese characters. Traditionally read right-to-left, top-to-bottom.'}
+          </div>
+          <div class="han-text">${renderSafeScriptMarkup(content)}</div>`;
+      }
+    }
+    else if (tab === 'hanvan') {
+      const content = storedHanvan || s.hanvan || '';
+      if (!content.trim()) {
+        body.innerHTML = emptyNote(
+          isVI ? 'Chưa có nội dung Hán văn' : 'No Sino-Vietnamese reading yet',
+          isVI ? 'Thêm trường <code>script.hanvan</code> vào national_treasures.js.'
+               : 'Add a <code>script.hanvan</code> field in national_treasures.js.'
+        );
+      } else {
+        body.innerHTML = `
+          <div class="han-text-hint">
+            ${isVI ? '📖 Âm đọc Hán-Việt của văn bản gốc.'
+                   : '📖 Sino-Vietnamese reading of the original text.'}
+          </div>
+          <div class="hanvan-text">${renderSafeScriptMarkup(content)}</div>`;
+      }
+    }
+    else if (tab === 'viet') {
+      const rawContent = storedViet || s.viet || '';
+      renderVietTab(rawContent, isVI);
+    }
+
+    attachAnnotationListeners();
+  }
+
+  function renderVietTab(rawContent, isVI) {
+    const { html, footnotes } = parseAnnotations(rawContent);
+
+    let fnHTML = '';
+    const fnEntries = footnotes.filter(Boolean);
+    if (fnEntries.length > 0) {
+      fnHTML = `<div class="footnotes-section">
+        <div class="footnotes-title">${isVI ? 'Chú thích' : 'Notes'}</div>
+        ${footnotes.map((def, i) => def ? `
+          <div class="footnote-item">
+            <span class="footnote-num">[${i}]</span>
+            <span>${renderSafeScriptMarkup(def)}</span>
+          </div>` : '').join('')}
+      </div>`;
+    }
+
+    const syntaxNote = isVI
+      ? `Dùng <code>{từ|chú thích}</code> để chú giải, <code>[n]</code> cho chú thích cuối.`
+      : `Use <code>{word|note}</code> for inline glosses, <code>[n]</code> for footnotes.`;
+
+    body.innerHTML = `
+      <div class="viet-toolbar">
+        <div class="viet-toolbar-note">${syntaxNote}</div>
+        <button class="btn-edit-script" id="btn-edit-viet">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          ${isVI ? 'Chỉnh sửa văn bản' : 'Edit text'}
+        </button>
+      </div>
+      ${rawContent.trim()
+        ? `<div class="viet-text" id="viet-render">${html}</div>${fnHTML}`
+        : emptyNote(
+            isVI ? 'Chưa có bản dịch tiếng Việt' : 'No Vietnamese translation yet',
+            isVI ? 'Nhấn "Chỉnh sửa văn bản" để thêm nội dung với chú thích.'
+                 : 'Click "Edit text" to add content with annotations.'
+          )
+      }`;
+
+    document.getElementById('btn-edit-viet')?.addEventListener('click', () => {
+      editMode = true;
+      const currentRaw = localStorage.getItem(`script_viet_${currentArtifact.id}`)
+                         || (currentArtifact.script?.viet || '');
+      body.innerHTML = `
+        <div class="viet-toolbar">
+          <div class="viet-toolbar-note">
+            ${isVI
+              ? `Dùng <code>{từ|chú thích}</code> để tạo chú giải. Dòng <code>[n]: nội dung</code> để định nghĩa chú thích cuối.`
+              : `Use <code>{word|note}</code> for glosses. Define footnotes with <code>[n]: text</code> on its own line.`}
+          </div>
+        </div>
+        <textarea class="script-editor" id="viet-editor" spellcheck="false">${escapeHTML(currentRaw)}</textarea>
+        <div class="editor-actions">
+          <button class="btn-cancel-edit" id="btn-cancel-viet">
+            ${isVI ? 'Hủy' : 'Cancel'}
+          </button>
+          <button class="btn-save-script" id="btn-save-viet">
+            ${isVI ? '💾 Lưu' : '💾 Save'}
+          </button>
+        </div>`;
+
+      document.getElementById('btn-save-viet').addEventListener('click', () => {
+        const newText = document.getElementById('viet-editor').value;
+        localStorage.setItem(`script_viet_${currentArtifact.id}`, newText);
+        editMode = false;
+        setActiveTab('viet');
+        renderTabContent('viet');
+      });
+      document.getElementById('btn-cancel-viet').addEventListener('click', () => {
+        editMode = false;
+        renderTabContent('viet');
+      });
+    });
+  }
+
+  function attachAnnotationListeners() {
+    document.querySelectorAll('.annotated').forEach(span => {
+      span.addEventListener('click', e => {
+        e.stopPropagation();
+        document.querySelectorAll('.annotated').forEach(s => s.classList.remove('active'));
+        span.classList.add('active');
+        showPopover(span, span.dataset.note);
+      });
+    });
+    document.querySelectorAll('.footnote-ref').forEach(ref => {
+      ref.addEventListener('click', e => {
+        e.stopPropagation();
+        showPopover(ref, `[${ref.dataset.fn}] ` +
+          (currentArtifact?.script?.viet?.match(
+            new RegExp(`\\[${ref.dataset.fn}\\]:\\s*(.+)`)
+          )?.[1] || '—'));
+      });
+    });
+    body.addEventListener('click', () => {
+      hidePopover();
+      document.querySelectorAll('.annotated').forEach(s => s.classList.remove('active'));
+    });
+  }
+
+  function showPopover(target, text) {
+    popover.textContent = text;
+    popover.style.display = 'block';
+    const modal  = document.querySelector('.script-modal');
+    const mRect  = modal.getBoundingClientRect();
+    const tRect  = target.getBoundingClientRect();
+    let top  = tRect.bottom - mRect.top + modal.scrollTop + 8;
+    let left = tRect.left   - mRect.left + 12;
+    const maxLeft = modal.offsetWidth - 340;
+    if (left > maxLeft) left = maxLeft;
+    if (left < 8) left = 8;
+    popover.style.top  = `${top}px`;
+    popover.style.left = `${left}px`;
+  }
+
+  function hidePopover() { popover.style.display = 'none'; }
+
+  function escapeHTML(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderSafeScriptMarkup(str) {
+    return escapeHTML(str).replace(/&lt;(\/?(?:strong|em|b|i|br))&gt;/gi, (_, tag) => `<${tag}>`);
+  }
+
+  function emptyNote(title, sub) {
+    return `<div class="empty-script-note"><strong>${title}</strong>${sub}</div>`;
+  }
+
+  window.openScriptModal = openScriptModal;
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

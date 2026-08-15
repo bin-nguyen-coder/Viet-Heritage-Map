@@ -130,6 +130,25 @@
     .view-btn:hover  { border-color:var(--gold); color:var(--gold); }
     .view-btn.active { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.12); }
 
+    /* ── MODE TOGGLE (UNESCO Heritage ↔ National Treasures) ── */
+    .mode-toggle {
+      background:rgba(10,9,0,0.88); border:1px solid var(--border);
+      border-radius:6px; backdrop-filter:blur(10px);
+      padding:6px; display:flex; gap:6px; align-self:flex-start;
+    }
+    .mode-btn {
+      background:transparent; border:1px solid var(--border); color:var(--muted);
+      padding:5px 16px; border-radius:4px; font-size:11px; font-weight:600;
+      letter-spacing:.06em; font-family:var(--font-body); cursor:pointer; transition:all .2s;
+    }
+    .mode-btn:hover  { border-color:var(--gold); color:var(--gold); }
+    .mode-btn[data-mode="unesco"]  .mode-btn.active { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.25); }
+    .mode-btn.active[data-mode="unesco"]   { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.18); }
+    .mode-btn.active[data-mode="treasure"] { border-color:#d4875e; color:#f0b48c; background:rgba(212,135,94,0.20); }
+
+    /* Legend distinction for national-treasure mode */
+    .legend-row.nt .legend-dot { border:1px solid rgba(255,255,255,.25); }
+
     .filter-bar {
       flex-shrink:0; padding:10px 12px;
       background:var(--surface); border-bottom:1px solid var(--border);
@@ -745,6 +764,54 @@
     .audio-analysis-error {
       text-align: center;
       padding: 12px 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       NATIONAL TREASURES LAYER  (separate marker-cluster mode)
+       Distinct from the UNESCO province map — clearly separated.
+    ═══════════════════════════════════════════════════════ */
+    .nt-marker {
+      display:flex; align-items:center; justify-content:center;
+      width:28px; height:28px;
+      cursor:pointer;
+    }
+    .nt-marker .nt-dot {
+      display:block; width:20px; height:20px; border-radius:50%;
+      border:2px solid rgba(255,255,255,.55);
+      box-shadow:0 1px 4px rgba(0,0,0,.5);
+    }
+
+    .nt-cluster-wrap {
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.55));
+    }
+    .nt-cluster-pie { display:block; }
+
+    .marker-cluster-nt {
+      background:rgba(212,135,94,0.85); color:#1a1207;
+      border-radius:50%; text-align:center;
+      font-family:'DM Sans',sans-serif; font-weight:700;
+      border:2px solid #f0b48c; box-shadow:0 1px 5px rgba(0,0,0,.5);
+    }
+
+    .nt-tooltip {
+      background:rgba(10,9,0,0.95); border:1px solid var(--border);
+      border-left:3px solid #d4875e; color:var(--text);
+      border-radius:4px; padding:8px 10px; box-shadow:0 4px 16px rgba(0,0,0,.5);
+    }
+    .nt-tooltip .tt-title { font-family:'Playfair Display',serif; font-size:13px; color:var(--white); }
+    .nt-tooltip .tt-meta { font-size:10.5px; color:var(--muted); margin-top:2px; }
+
+    /* National treasure card tint (sidebar, treasure mode) */
+    .a-card.nt-card { border-left-color:#d4875e; }
+    .a-card.nt-card .a-badge { color:#f0b48c; border-color:rgba(212,135,94,.4); }
+    .a-card.nt-card .a-num { color:#d4875e; }
+
+    /* National treasure modal */
+    .modal-nt-cat {
+      color:#a97fd0; border-color:rgba(169,127,208,.5);
+    }
+    .modal-nt-badge {
+      color:#f0b48c; border-color:rgba(212,135,94,.5);
     }
     .audio-analysis-error p {
       font-size: 12px;
