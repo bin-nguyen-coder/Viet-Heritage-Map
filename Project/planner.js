@@ -33,6 +33,7 @@
       mapOverlaySub: 'Trò chuyện với Tour AI để tạo lộ trình di sản',
       clearConfirm: 'Xóa toàn bộ hội thoại?',
       error: 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại.',
+      planCreated: '✅ **Plan đã tạo!** Lộ trình đã sẵn sàng — hãy đặt chỗ ngay.',
       eyebrow: 'Viet Heritage · Tour AI',
       titleA: 'Trợ lý Tour AI',
       titleB: 'đồng hành cùng bạn',
@@ -61,6 +62,7 @@
       mapOverlaySub: 'Chat with Tour AI to create a heritage route',
       clearConfirm: 'Clear entire conversation?',
       error: 'Sorry, something went wrong. Please try again.',
+      planCreated: '✅ **Plan created!** Your route is ready — book now.',
       eyebrow: 'Viet Heritage · Tour AI',
       titleA: 'Tour AI Assistant',
       titleB: 'here to help you',
@@ -92,6 +94,70 @@
 
   let conversation = [];
   let isBusy = false;
+
+  /* ── Phase 2: <FINAL_PLAN_JSON> parsing (self-contained here so the
+       hidden JSON block is always stripped from the visible chat bubble,
+       even if the renderer module has not loaded yet). ── */
+  function tryParseJson(raw) {
+    try {
+      const p = JSON.parse(raw);
+      return p && typeof p === 'object' ? p : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function parseFinalPlan(raw) {
+    if (typeof raw !== 'string') return { text: raw, plan: null };
+
+    // Primary: match the exact XML-like wrapper (case-insensitive).
+    const reTag = /<FINAL_PLAN_JSON>\s*([\s\S]*?)\s*<\/FINAL_PLAN_JSON>/i;
+    const m = raw.match(reTag);
+    let text = raw;
+    let plan = null;
+
+    if (m) {
+      text = raw.replace(reTag, '').replace(/\s+$/, '').trim();
+      const parsed = tryParseJson(m[1]);
+      if (parsed && Array.isArray(parsed.locations)) plan = parsed;
+    }
+
+    // Fallback: if no wrapper matched but there's a JSON object containing a
+    // "locations" array, extract that too so we stay resilient to formatting.
+    if (!plan) {
+      const reObj = /\{[\s\S]*?"locations"\s*:\s*\[[\s\S]*?\][\s\S]*?\}/;
+      const objMatch = raw.match(reObj);
+      if (objMatch) {
+        const parsed = tryParseJson(objMatch[0]);
+        if (parsed && Array.isArray(parsed.locations)) {
+          plan = parsed;
+          text = raw.replace(reObj, '').replace(/\s+$/, '').trim();
+        }
+      }
+    }
+
+    return { text: text || raw, plan: plan };
+  }
+
+  // Expose for the renderer module; harmless if the renderer also defines it.
+  if (typeof window.VHParseFinalPlan !== 'function') {
+    window.VHParseFinalPlan = parseFinalPlan;
+  }
+
+  /* ── Booking routing: keep users on our platform.
+       We take data from Booking.com but the CTA goes to tour_booking.html
+       (which embeds Booking.com in an iframe) rather than leaving the site. ── */
+  function tourBookingUrl(plan) {
+    const base = window.location.origin
+      + window.location.pathname.replace(/[^/]*$/, 'tour_booking.html');
+    return base + '?plan=' + encodeURIComponent(JSON.stringify(plan));
+  }
+
+  function buildBookingLinksText(plan) {
+    const url = tourBookingUrl(plan);
+    return '**Đặt chỗ & Di chuyển ngay trên trang của chúng tôi** (Booking.com tích hợp, không rời khỏi Viet Heritage):\n'
+      + '\n- [🏨 Đặt phòng & Di chuyển →](' + url + ')';
+  }
 
   /* ── Markdown rendering (safe: escapes HTML first) ── */
   function escapeHtml(s) {
@@ -258,6 +324,36 @@
   /* Demo fallback when no API key */
   function demoReply(userText) {
     const msg = userText.toLowerCase();
+    // Confirmation trigger (Phase 2): exercising the FINAL_PLAN_JSON flow
+    // without a live AI connection so the map + booking UI can be verified.
+    if (msg.includes('chốt plan') || msg.includes('chốt') || msg.includes('đồng ý') ||
+        msg.includes('đòng ý') || msg.includes('ok luôn') || msg === 'ok' || msg === 'ok, chốt') {
+      return 'Tuyệt vời! Hành trình của bạn đã sẵn sàng! 🎉\n\n' +
+        '## Chuyến đi 3 ngày Cố đô Huế & Hội An\n\n' +
+        '• **Ngày 1** — Huế: Đại Nội, Chùa Thiên Mụ, Nhã nhạc cung đình\n' +
+        '• **Ngày 2** — Hội An: Phố cổ, chợ đêm, ẩm thực Thu Bồn\n' +
+        '• **Ngày 3** — Thảnh thơi, Mỹ Sơn và chia tay miền di sản\n\n' +
+        'Em đã vẽ lộ trình của bạn lên bản đồ! Bấm *Đặt chỗ & Di chuyển ngay* để hoàn tất. Chúc bạn có chuyến đi đáng nhớ! ✨\n\n' +
+        '<FINAL_PLAN_JSON>\n' +
+        '{\n' +
+        '  "plan_confirmed": true,\n' +
+        '  "summary": "Chuyến đi 3 ngày Cố đô Huế & Hội An",\n' +
+        '  "locations": [\n' +
+        '    {"name": "Đại Nội Huế", "lat": 16.4686, "lng": 107.5776, "day": 1},\n' +
+        '    {"name": "Chùa Thiên Mụ", "lat": 16.4527, "lng": 107.5452, "day": 1},\n' +
+        '    {"name": "Phố cổ Hội An", "lat": 15.8801, "lng": 108.3380, "day": 2}\n' +
+        '  ],\n' +
+        '  "accommodation_links": [\n' +
+        '    {"city": "Huế", "checkin": "2026-09-01", "checkout": "2026-09-02"},\n' +
+        '    {"city": "Hội An", "checkin": "2026-09-02", "checkout": "2026-09-03"}\n' +
+        '  ],\n' +
+        '  "transport_segments": [\n' +
+        '    {"from": "Hà Nội", "to": "Huế", "type": "flight_or_train"},\n' +
+        '    {"from": "Huế", "to": "Hội An", "type": "bus_or_car"}\n' +
+        '  ]\n' +
+        '}\n' +
+        '</FINAL_PLAN_JSON>';
+    }
     if (msg.includes('bắc') || msg.includes('north')) {
       return 'Tuyệt vời! Tôi gợi ý lộ trình 3 ngày miền Bắc:\n\n• Ngày 1: Hà Nội — Văn Miếu, Hoàng thành Thăng Long\n• Ngày 2: Bắc Ninh — Quan họ, chùa Dâu\n• Ngày 3: Phú Thọ — Đền Hùng, hát Xoan\n\nBạn muốn tôi điều chỉnh theo ngân sách hoặc thời gian không?';
     }
@@ -299,13 +395,33 @@
         reply = demoReply(msg);
       }
 
+      // Phase 2: detect a hidden <FINAL_PLAN_JSON> block and strip it from
+      // the visible bubble, then hand the parsed plan to the map/booking UI.
+      const parsed = (typeof window.VHParseFinalPlan === 'function')
+        ? window.VHParseFinalPlan(reply)
+        : { text: reply, plan: null };
+
       conversation.push({ role: 'model', text: reply });
       thinkingEl.remove();
       const aiEl = addMsg('', 'ai');
-      streamText(aiEl, reply, () => {
+      streamText(aiEl, parsed.text, () => {
         isBusy = false;
         sendBtn.disabled = false;
         setThinking(false);
+        if (parsed.plan) {
+          // Hand the parsed plan to the map/booking renderer. Two paths keep
+          // this resilient: a stored reference (read on renderer init) and a
+          // dispatched event (delivered to any already-registered listener).
+          window.__lastPlan = parsed.plan;
+          window.dispatchEvent(new CustomEvent('tourplan:ready', { detail: parsed.plan }));
+          // Visible confirmation shot after the JSON is done, so the user sees
+          // that tourplan:ready fired and the plan was created.
+          addMsg(t('planCreated'), 'ai');
+          // Always show zero-backend Booking.com + Google links in the chat,
+          // so the user can purchase instantly even if the side card is absent.
+          const linksText = buildBookingLinksText(parsed.plan);
+          if (linksText) addMsg(linksText, 'ai');
+        }
       });
     } catch (e) {
       console.error('Chat error:', e);

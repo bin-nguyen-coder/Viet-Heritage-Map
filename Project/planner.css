@@ -557,6 +557,127 @@ nav {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
+/* ── Self-contained elegant route map (Phase 2) ──
+   No external tiles/CDN: rendered entirely as SVG, so it always displays.    */
+.route-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  z-index: 5;
+  display: block;
+}
+
+/* Vietnam boundary */
+.rm-land {
+  fill: rgba(201, 168, 76, 0.06);
+  stroke: rgba(201, 168, 76, 0.4);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.rm-land-shadow {
+  fill: none;
+  stroke: rgba(201, 168, 76, 0.16);
+  stroke-width: 4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Route path (glow + core) */
+.rm-route {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.rm-route-glow {
+  stroke: url(#routeGlow);
+  stroke-width: 9;
+  opacity: 0.5;
+  filter: url(#routeBlur);
+}
+.rm-route-core {
+  stroke: var(--gold);
+  stroke-width: 3;
+  animation: rmDraw 1.4s ease-out;
+}
+@keyframes rmDraw {
+  from { stroke-dashoffset: 300; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Numbered gold/red waypoint pins */
+.rm-pin {
+  cursor: pointer;
+}
+.rm-pin-shape {
+  fill: url(#pinFx) #c9a84c;
+  stroke: var(--white);
+  stroke-width: 1.2;
+}
+.rm-pin-num {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  fill: #1a1400;
+  pointer-events: none;
+}
+.rm-pin-glow {
+  fill: rgba(201, 168, 76, 0.35);
+  animation: rmPulse 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes rmPulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.25); }
+}
+
+/* Waypoint labels (day + name) */
+.rm-label {
+  font-family: var(--font-body);
+  fill: var(--text);
+  text-anchor: middle;
+  pointer-events: none;
+}
+.rm-label-day {
+  font-size: 10px;
+  font-weight: 700;
+  fill: var(--gold);
+  letter-spacing: 0.08em;
+}
+.rm-label-name {
+  font-size: 10.5px;
+  fill: var(--muted);
+}
+
+/* Hover tooltip */
+.rm-tooltip {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.rm-pin:hover ~ .rm-tooltip,
+.rm-tooltip:hover { opacity: 1; }
+.rm-tooltip-box {
+  fill: var(--card);
+  stroke: var(--gold);
+  stroke-width: 1;
+}
+.rm-tooltip-text {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  fill: var(--text);
+}
+.rm-tooltip-text strong { font-weight: 600; }
+
+/* Start / end accents */
+.rm-endpoint {
+  fill: none;
+  stroke: var(--red-bright);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
 .preview-head {
   padding: 18px;
   border-bottom: 1px solid var(--border);
@@ -586,40 +707,10 @@ nav {
   min-height: 300px;
 }
 
-.map-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.map-land {
-  fill: rgba(201, 168, 76, 0.06);
-  stroke: rgba(201, 168, 76, 0.35);
-  stroke-width: 1.5;
-}
-
-.map-route {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 1.5;
-  stroke-dasharray: 5 4;
-  opacity: 0.7;
-  animation: routeDash 20s linear infinite;
-}
-
-@keyframes routeDash { to { stroke-dashoffset: -90; } }
-
-.marker {
-  fill: var(--red-bright);
-  stroke: var(--white);
-  stroke-width: 1;
-  filter: drop-shadow(0 0 6px rgba(196, 43, 43, 0.6));
-}
-
 .map-overlay {
   position: absolute;
   inset: 0;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -690,6 +781,133 @@ nav {
   color: var(--gold-light);
   word-break: break-all;
   line-height: 1.5;
+}
+
+/* ── BOOKING READY CARD (Phase 2) ── */
+.booking-ready {
+  padding: 18px;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  flex-shrink: 0;
+  animation: msgIn .35s ease both;
+}
+
+.bk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: var(--gold-light);
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.bk-summary {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.bk-group-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 14px 0 8px;
+}
+
+.bk-links { display: flex; flex-direction: column; gap: 8px; }
+
+.bk-city {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.dl-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12.5px;
+  line-height: 1.4;
+  transition: all .2s;
+}
+
+.dl-btn:hover {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.08);
+  transform: translateY(-1px);
+}
+
+.dl-ic { font-size: 15px; flex-shrink: 0; }
+.dl-arrow { margin-left: auto; color: var(--gold); font-size: 13px; }
+
+.bk-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  width: 100%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: #1a1400;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  box-shadow: 0 4px 14px rgba(201, 168, 76, 0.3);
+  transition: all .2s;
+}
+
+.bk-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(201, 168, 76, 0.5);
+}
+
+/* ── TOAST (Phase 2) ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  background: var(--card);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s, transform .3s;
+  z-index: 1000;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 /* ── FOOTER (mirrors index.html) ── */

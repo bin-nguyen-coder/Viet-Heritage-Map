@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đặt chỗ Tour — VietHeritage Map</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0a0900; --surface:#110f04; --card:#181500; --border:#2c2507;
+      --gold:#c9a84c; --gold-light:#e8c96a; --red:#1c1c1c; --red-bright:#c42b2b;
+      --text:#e8dfc8; --muted:#8a7c5e; --white:#f5f0e6;
+      --font-body:'DM Sans',sans-serif; --font-heading:'Playfair Display',serif;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--bg); color:var(--text); font-family:var(--font-body);
+      overflow-x:hidden; min-height:100vh; display:flex; flex-direction:column;
+    }
+    a { text-decoration:none; color:inherit; }
+
+    /* NAV (mirrors site) */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:200; height:62px;
+      display:flex; align-items:center; justify-content:space-between; padding:0 48px;
+      background:rgba(10,9,0,.82); backdrop-filter:blur(14px);
+      border-bottom:1px solid rgba(201,168,76,.14);
+    }
+    .nav-logo { display:flex; align-items:center; gap:10px; color:var(--white); font-family:'Merriweather',serif; font-size:1.05rem; font-weight:700; }
+    .nav-logo svg { color:var(--gold); }
+    .nav-links { display:flex; gap:26px; list-style:none; position:absolute; left:50%; transform:translateX(-50%); }
+    .nav-links a { font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); transition:color .2s; }
+    .nav-links a:hover { color:var(--gold-light); }
+    .nav-links a.active { color:var(--gold); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .nav-map-btn { display:flex; align-items:center; gap:6px; background:var(--red); color:#fff; padding:8px 16px; border-radius:4px; font-size:11px; font-weight:600; letter-spacing:.06em; transition:background .2s; }
+    .nav-map-btn:hover { background:var(--red-bright); }
+    .nav-ai-btn { display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 100%); color:#1a1400; text-decoration:none; padding:8px 16px; border-radius:4px; font-size:11px; font-weight:700; letter-spacing:.06em; transition:all .2s; box-shadow:0 4px 14px rgba(201,168,76,.3); }
+    .nav-ai-btn:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(201,168,76,.5); }
+
+    /* HERO */
+    .hero { background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%); padding:120px 48px 48px; position:relative; overflow:hidden; border-bottom:1px solid var(--border); }
+    .hero::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--red-bright) 50%,var(--gold) 70%,transparent); }
+    .hero-eyebrow { font-size:10px; font-weight:500; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+    .hero-eyebrow::before { content:''; width:28px; height:1px; background:var(--gold); }
+    .hero h1 { font-family:'Merriweather',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:700; color:var(--white); line-height:1.2; margin-bottom:16px; }
+    .hero h1 em { font-style:italic; color:var(--gold); }
+    .hero p { font-size:14.5px; color:var(--muted); line-height:1.75; max-width:680px; }
+
+    /* MAIN */
+    .wrap { flex:1; max-width:1280px; margin:0 auto; padding:40px 24px 80px; width:100%; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:28px; margin-bottom:24px; }
+    .card + .card { margin-top:0; }
+    .card-title { font-family:'Merriweather',serif; font-size:1.4rem; color:var(--white); margin-bottom:12px; }
+    .card-title .t-ic { color:var(--gold); margin-right:8px; }
+
+    .bk-badge { display:inline-flex; align-items:center; gap:8px; font-family:'Merriweather',serif; font-size:15px; color:var(--gold-light); margin-bottom:12px; }
+    .bk-summary { font-size:13.5px; color:var(--text); line-height:1.7; margin-bottom:16px; }
+    .loc-list { list-style:none; margin-top:8px; }
+    .loc-list li { display:flex; align-items:flex-start; gap:10px; padding:7px 0; font-size:13px; color:var(--text); line-height:1.5; border-bottom:1px solid var(--border); }
+    .loc-list li:last-child { border-bottom:none; }
+    .loc-day { color:var(--gold); font-weight:700; flex-shrink:0; font-size:12px; letter-spacing:.04em; }
+
+    /* ACCOMMODATION IFRAME */
+    .accom-item { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:18px; }
+    .accom-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+    .accom-name { font-family:'Merriweather',serif; font-size:15px; color:var(--gold-light); }
+    .accom-dates { font-size:12px; color:var(--muted); }
+    .iframe-wrap { position:relative; overflow:hidden; border:1px solid var(--border); border-radius:8px; background:var(--bg); }
+    .iframe-wrap iframe { display:block; width:100%; height:700px; border:0; }
+    .iframe-wrap iframe.rm-trans { height:600px; }
+    .iframe-note { margin-top:10px; font-size:11.5px; color:var(--muted); line-height:1.6; }
+    .iframe-note a { color:var(--gold-light); text-decoration:underline; }
+    .iframe-note a:hover { color:var(--gold); }
+
+    /* TRANSPORT OPTIONS (bus / train / flight / car) */
+    .trans-options { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:14px; }
+    .trans-opt { display:flex; flex-direction:column; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 10px; text-align:center; text-decoration:none; transition:all .2s; }
+    .trans-opt:hover { border-color:var(--gold); background:rgba(201,168,76,.08); transform:translateY(-1px); }
+    .trans-opt .t-ic { font-size:20px; }
+    .trans-opt .t-name { font-size:12px; color:var(--text); font-weight:600; }
+    .trans-opt .t-prov { font-size:10.5px; color:var(--muted); }
+
+    .empty { font-size:13.5px; color:var(--muted); line-height:1.7; }
+    .back-link { display:inline-flex; align-items:center; gap:8px; margin-top:8px; color:var(--gold); font-size:13px; font-weight:500; transition:color .2s; }
+    .back-link:hover { color:var(--gold-light); }
+
+    /* FOOTER */
+    footer { border-top:1px solid var(--border); padding:20px 48px; display:flex; align-items:center; justify-content:space-between; font-size:10.5px; color:var(--muted); background:var(--surface); flex-shrink:0; }
+    footer em { color:var(--gold); font-style:normal; }
+
+    @media (max-width:1024px) {
+      nav { padding:0 24px; }
+      .nav-links { display:none; }
+      .hero { padding:100px 24px 36px; }
+      .wrap { padding:28px 16px 60px; }
+      footer { padding:20px 24px; flex-direction:column; align-items:flex-start; gap:6px; }
+    }
+    @media (max-width:640px) {
+      nav { padding:0 16px; }
+      .hero { padding:90px 16px 30px; }
+      .iframe-wrap iframe { height:520px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8" fill="currentColor" />
+      </svg>
+      <span>VietHeritage Map</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Trang chủ</a></li>
+      <li><a href="tour_booking.html" class="active">Đặt tour</a></li>
+      <li><a href="festivals.html">Lễ hội</a></li>
+      <li><a href="journey.html">Hành trình Bảo vật</a></li>
+      <li><a href="database.html">Kho lưu trữ</a></li>
+      <li><a href="planner.html">Tour AI</a></li>
+      <li><a href="about.html">Giới thiệu</a></li>
+      <li><a href="shop.html">Cửa hàng</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <a href="planner.html" class="nav-ai-btn"><span>✦</span><span>Tour AI</span></a>
+      <a href="VNMT.html" class="nav-map-btn"><span>⊞</span><span>Mở bản đồ</span></a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-eyebrow">Viet Heritage · Đặt chỗ</div>
+    <h1>Đặt phòng & <em>Di chuyển</em></h1>
+    <p>
+      Lộ trình của bạn đã sẵn sàng. Chọn chỗ ở qua Booking.com ngay trên trang này —
+      không rời khỏi Viet Heritage. Bạn có thể quay lại trợ lý Tour AI bất cứ lúc nào.
+    </p>
+  </header>
+
+  <!-- MAIN -->
+  <main class="wrap">
+
+    <!-- Itinerary summary -->
+    <section class="card" id="itin-card">
+      <h2 class="card-title"><span class="t-ic">✦</span>Hành trình của bạn</h2>
+      <div id="itin-body"><div class="empty">Đang tải hành trình...</div></div>
+    </section>
+
+    <!-- Accommodation (Booking.com embedded) -->
+    <section class="card">
+      <h2 class="card-title"><span class="t-ic">🏨</span>Nơi lưu trú — Booking.com</h2>
+      <div id="accom-body"><div class="empty">Đang tải chỗ ở...</div></div>
+    </section>
+
+    <!-- Transport -->
+    <section class="card">
+      <h2 class="card-title"><span class="t-ic">🚌</span>Di chuyển</h2>
+      <div id="trans-body"></div>
+    </section>
+
+    <a href="planner.html" class="back-link">← Quay lại trợ lý Tour AI</a>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Di sản văn hóa phi vật thể Việt Nam</span>
+    <span>Dữ liệu: <em>Booking.com</em> · Bản đồ: <em>OpenStreetMap</em></span>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ── Parse the plan passed from the Tour AI planner (encoded JSON) ── */
+      function readPlan() {
+        try {
+          var raw = new URLSearchParams(window.location.search).get('plan');
+          if (!raw) return null;
+          var p = JSON.parse(raw);
+          return p && typeof p === 'object' ? p : null;
+        } catch (e) {
+          console.warn('tour_booking: invalid plan param', e);
+          return null;
+        }
+      }
+
+      var AMP = String.fromCharCode(38);
+      var LT = String.fromCharCode(60);
+      var GT = String.fromCharCode(62);
+      var QUOT = String.fromCharCode(34);
+
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, AMP + 'amp;')
+          .replace(/</g, LT + 'lt;')
+          .replace(/>/g, GT + 'gt;')
+          .replace(/"/g, QUOT + 'quot;');
+      }
+
+      function bookingUrl(city, checkin, checkout) {
+        return 'https://www.booking.com/searchresults.vi.html?ss='
+          + encodeURIComponent(city)
+          + (checkin ? '&checkin=' + encodeURIComponent(checkin) : '')
+          + (checkout ? '&checkout=' + encodeURIComponent(checkout) : '');
+      }
+
+      function el(tag, cls, text) {
+        var node = document.createElement(tag);
+        if (cls) node.className = cls;
+        if (text != null) node.textContent = text;
+        return node;
+      }
+
+      function renderItinerary(plan) {
+        var body = document.getElementById('itin-body');
+        body.innerHTML = '';
+
+        var summary = plan.summary
+          ? el('div', 'bk-summary', plan.summary)
+          : null;
+        if (summary) body.appendChild(summary);
+
+        var locs = Array.isArray(plan.locations) ? plan.locations : [];
+        if (!locs.length) {
+          body.appendChild(el('div', 'empty', 'Chưa có điểm đến chi tiết.'));
+          return;
+        }
+        var ul = el('ul', 'loc-list');
+        locs.forEach(function (l, i) {
+          var li = el('li');
+          li.appendChild(el('span', 'loc-day', 'NGÀY ' + (l.day || (i + 1))));
+          li.appendChild(el('span', '', String(l.name || 'Điểm đến')));
+          ul.appendChild(li);
+        });
+        body.appendChild(ul);
+      }
+
+      function renderAccommodation(plan) {
+        var body = document.getElementById('accom-body');
+        body.innerHTML = '';
+        var acc = Array.isArray(plan.accommodation_links) ? plan.accommodation_links : [];
+
+        if (!acc.length) {
+          body.appendChild(el('div', 'empty', 'Chưa có đề xuất chỗ ở trong kế hoạch này.'));
+          return;
+        }
+
+        acc.forEach(function (a) {
+          var item = el('div', 'accom-item');
+
+          var head = el('div', 'accom-head');
+          head.appendChild(el('div', 'accom-name', a.city || 'Thành phố'));
+          head.appendChild(el('div', 'accom-dates',
+            (a.checkin ? a.checkin : '—') + ' → ' + (a.checkout ? a.checkout : '—')));
+          item.appendChild(head);
+
+          var url = bookingUrl(a.city, a.checkin, a.checkout);
+          var wrap = el('div', 'iframe-wrap');
+          var iframe = document.createElement('iframe');
+          iframe.src = url;
+          iframe.title = 'Booking.com - ' + a.city;
+          iframe.loading = 'lazy';
+          iframe.setAttribute('referrerpolicy', 'no-referrer');
+          wrap.appendChild(iframe);
+          item.appendChild(wrap);
+
+          var note = el('div', 'iframe-note');
+          note.innerHTML = 'Nếu bảng kết quả không hiển thị (Booking.com có thể chặn nhúng), '
+            + 'bạn vẫn có thể '
+            + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">mở danh sách chỗ ở ' + esc(a.city) + ' trên Booking.com ↗</a>.';
+          item.appendChild(note);
+
+          body.appendChild(item);
+        });
+      }
+
+      /* ── Transport provider URLs ──
+         flight_or_train → Google Flights (search for 'vé từ A đi B')
+         bus_or_car      → Google Maps directions (reliably embeddable)      */
+      function flightsUrl(from, to) {
+        return 'https://www.google.com/travel/flights?q='
+          + encodeURIComponent('vé từ ' + from + ' đi ' + to);
+      }
+
+      function mapsUrl(from, to, mode) {
+        // Keyless Google Maps directions embed (reliable in iframes).
+        // mode: 'd' = driving (car), otherwise public transit (bus/train).
+        var dirflg = mode === 'd' ? 'd' : 'r';
+        return 'https://maps.google.com/maps?saddr='
+          + encodeURIComponent(from) + '&daddr=' + encodeURIComponent(to)
+          + '&dirflg=' + dirflg + '&output=embed';
+      }
+
+      /* Google Flights blocks iframing (403). Show a graceful in-window notice
+         with a link instead of a broken iframe. */
+      function flightFallbackHtml(from, to) {
+        var url = flightsUrl(from, to);
+        return '<div style="font-family:DM Sans,sans-serif;color:#e8dfc8;background:#181500;'
+          + 'height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;'
+          + 'gap:12px;text-align:center;padding:24px;">'
+          + '<div style="font-size:26px;">✈️</div>'
+          + '<div style="font-size:14px;color:#e8c96a;font-weight:600;">Máy bay không thể hiển thị trong cửa sổ</div>'
+          + '<div style="font-size:12px;color:#8a7c5e;max-width:340px;line-height:1.6;">'
+          + 'Google Flights chặn nhúng trực tiếp (lỗi 403). Bạn vẫn có thể mở Google Flights để đặt vé.</div>'
+          + '<a href="' + url + '" target="_blank" rel="noopener noreferrer" '
+          + 'style="background:#c9a84c;color:#1a1400;text-decoration:none;padding:10px 18px;'
+          + 'border-radius:8px;font-size:13px;font-weight:700;">Mở Google Flights ↗</a>'
+          + '</div>';
+      }
+
+      /* ── Transport option cards (so users can see the different modes).
+           Clicking a card loads that provider INSIDE the leg's iframe window
+           (no new tab) — the user stays on our page. ── */
+      function transportOptions(from, to, iframe) {
+        var opts = [
+          { ic: '🚌', name: 'Xe khách', prov: 'Google Maps', url: mapsUrl(from, to, 'r') },
+          { ic: '🚆', name: 'Tàu hỏa', prov: 'Google Maps', url: mapsUrl(from, to, 'r') },
+          { ic: '✈️', name: 'Máy bay', prov: 'Google Flights', url: flightsUrl(from, to), flight: true },
+          { ic: '🚗', name: 'Xe riêng', prov: 'Google Maps', url: mapsUrl(from, to, 'd') }
+        ];
+        var grid = el('div', 'trans-options');
+        opts.forEach(function (o) {
+          var a = el('a', 'trans-opt');
+          a.href = o.url;
+          a.setAttribute('aria-label', 'Xem ' + o.name + ' ' + from + ' đi ' + to);
+          a.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            if (!iframe) return;
+            if (o.flight) {
+              // Google Flights blocks iframes (403) — show an in-window notice.
+              iframe.removeAttribute('src');
+              iframe.srcdoc = flightFallbackHtml(from, to);
+            } else {
+              iframe.src = o.url;
+            }
+          });
+          a.appendChild(el('span', 't-ic', o.ic));
+          a.appendChild(el('span', 't-name', o.name));
+          a.appendChild(el('span', 't-prov', o.prov));
+          grid.appendChild(a);
+        });
+        return grid;
+      }
+
+      function renderTransport(plan) {
+        var body = document.getElementById('trans-body');
+        body.innerHTML = '';
+        var segs = Array.isArray(plan.transport_segments) ? plan.transport_segments : [];
+
+        if (!segs.length) {
+          body.appendChild(el('div', 'empty', 'Chưa có đề xuất di chuyển trong kế hoạch này.'));
+          return;
+        }
+
+        segs.forEach(function (seg) {
+          var from = String(seg.from || '');
+          var to = String(seg.to || '');
+          var isFlight = seg.type === 'flight_or_train';
+          var provider = isFlight ? 'Google Flights' : 'Google Maps';
+          var icon = isFlight ? '✈️' : '🚌';
+          var url = isFlight ? flightsUrl(from, to) : mapsUrl(from, to);
+
+          var item = el('div', 'accom-item');
+
+          var head = el('div', 'accom-head');
+          head.appendChild(el('div', 'accom-name', icon + ' ' + from + ' → ' + to));
+          head.appendChild(el('div', 'accom-dates', 'Chọn phương tiện'));
+          item.appendChild(head);
+
+          var wrap = el('div', 'iframe-wrap');
+          var iframe = document.createElement('iframe');
+          iframe.className = 'rm-trans';
+          iframe.title = provider + ' - ' + from + ' đi ' + to;
+          iframe.loading = 'lazy';
+          iframe.setAttribute('referrerpolicy', 'no-referrer');
+          if (isFlight) {
+            // Google Flights blocks iframes (403) — default to the in-window notice.
+            iframe.srcdoc = flightFallbackHtml(from, to);
+          } else {
+            iframe.src = url;
+          }
+          wrap.appendChild(iframe);
+          item.appendChild(wrap);
+
+          // Option cards update this leg's iframe in place (no new tab).
+          item.insertBefore(transportOptions(from, to, iframe), wrap);
+
+          var note = el('div', 'iframe-note');
+          note.innerHTML = 'Nếu cửa sổ đặt vé không hiển thị, bạn vẫn có thể '
+            + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">mở ' + provider + ' để xem lịch trình ' + esc(from) + ' → ' + esc(to) + ' ↗</a>.';
+          item.appendChild(note);
+
+          body.appendChild(item);
+        });
+      }
+
+      function renderEmpty() {
+        document.getElementById('itin-body').innerHTML =
+          '<div class="empty">Không tìm thấy kế hoạch. Hãy quay lại trợ lý Tour AI, '
+          + 'chốt một lộ trình rồi bấm "Đặt chỗ & Di chuyển ngay".</div>';
+        document.getElementById('accom-body').innerHTML = '';
+        document.getElementById('trans-body').innerHTML = '';
+      }
+
+      var plan = readPlan();
+      if (plan) {
+        renderItinerary(plan);
+        renderAccommodation(plan);
+        renderTransport(plan);
+      } else {
+        renderEmpty();
+      }
+    })();
+  </script>
+</body>
+
+</html>
