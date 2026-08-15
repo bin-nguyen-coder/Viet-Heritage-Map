@@ -169,6 +169,32 @@
       background: var(--red-bright);
     }
 
+    .nav-ai-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+      color: #1a1400;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: all .2s;
+      box-shadow: 0 4px 14px rgba(201, 168, 76, 0.3);
+    }
+
+    .nav-ai-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(201, 168, 76, 0.5);
+    }
+
+    .nav-ai-btn .ai-spark {
+      font-size: 12px;
+    }
+
     /* ── HERO ── */
     .hero {
       min-height: 100vh;
@@ -671,6 +697,10 @@
         <button class="lang-btn" data-lang="vi">VI</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
+      <a href="planner.html" class="nav-ai-btn" id="nav-ai-btn">
+        <span class="ai-spark" aria-hidden="true">✦</span>
+        <span id="nav-ai-btn-text">Tour AI</span>
+      </a>
       <a href="VNMT.html" class="nav-map-btn">
         <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
       </a>
@@ -906,6 +936,7 @@
       setEl('nav-about', s.navAbout);
       setEl('nav-lunar', s.navLunar);
       setEl('nav-shop', s.navShop);
+      setEl('nav-ai-btn-text', s.navAiBtn);
       setEl('nav-map-btn-text', s.navMapBtn);
       setEl('hero-eyebrow', s.eyebrow);
       setEl('hero-h1a', s.h1a);

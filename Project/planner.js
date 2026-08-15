@@ -1,0 +1,414 @@
+/* ═══════════════════════════════════════════════════════════
+   TOUR PLANNER — Viet Heritage AI Tour Curator
+   Gemini integration via the FastAPI backend proxy (/api/v1/chat).
+   The API key lives server-side (backend/.env → GEMINI_API_KEY).
+   Falls back to a local demo mode when the backend is unreachable.
+   ═══════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  /* ── CONFIG ── */
+  // The Gemini call is proxied through the backend at POST /api/v1/chat,
+  // which holds GEMINI_API_KEY server-side (see backend/.env).
+  // When the backend is unreachable, the page falls back to a local demo.
+  const CHAT_ENDPOINT = '/api/v1/chat';
+
+  /* ── I18N ── */
+  const lang = () => localStorage.getItem('vnmt_lang') || 'vi';
+
+  const STR = {
+    vi: {
+      statusReady: 'Sẵn sàng',
+      statusThinking: 'Đang suy nghĩ...',
+      statusDemo: 'Chế độ demo (chưa kết nối AI)',
+      welcome: 'Xin chào! 👋 Tôi là Tour AI — trợ lý thân thiện của Viet Heritage, sẵn sàng đồng hành cùng bạn lên kế hoạch hành trình di sản văn hóa Việt Nam.\n\nHãy cho tôi biết về chuyến đi của bạn: ngân sách, thời gian, nhịp độ và vùng miền yêu thích. Tôi sẽ gợi ý lộ trình di sản phù hợp nhất cho bạn.',
+      thinking: 'AI đang suy nghĩ',
+      placeholder: 'Hỏi về ngân sách, thời gian, vùng miền...',
+      suggestions: ['Gợi ý tour 3 ngày miền Bắc', 'Ngân sách 5 triệu, 5 ngày', 'Tôi thích lễ hội và âm nhạc', 'Tour di sản miền Trung'],
+      shareTitle: 'Chia sẻ chuyến đi',
+      shareBtn: 'Chia sẻ chuyến đi',
+      shareCopied: 'Đã sao chép liên kết chia sẻ!',
+      shareEmpty: 'Hãy trò chuyện với AI để tạo lộ trình trước khi chia sẻ.',
+      mapOverlayTitle: 'Lộ trình của bạn sẽ hiển thị tại đây',
+      mapOverlaySub: 'Trò chuyện với Tour AI để tạo lộ trình di sản',
+      clearConfirm: 'Xóa toàn bộ hội thoại?',
+      error: 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại.',
+      eyebrow: 'Viet Heritage · Tour AI',
+      titleA: 'Trợ lý Tour AI',
+      titleB: 'đồng hành cùng bạn',
+      sub: 'Trò chuyện với trợ lý AI thân thiện để lên kế hoạch hành trình di sản Việt Nam phù hợp với ngân sách, thời gian và sở thích của bạn.',
+      chatTitle: 'Tour AI · Viet Heritage',
+      previewEyebrow: 'Bản đồ di sản',
+      previewTitle: 'Xem trước lộ trình',
+      clearTitle: 'Xóa hội thoại',
+      sendLabel: 'Gửi',
+      footCopy: '© 2026 Di sản văn hóa phi vật thể Việt Nam',
+      footData: 'Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em>',
+    },
+    en: {
+      statusReady: 'Ready',
+      statusThinking: 'Thinking...',
+      statusDemo: 'Demo mode (AI not connected)',
+      welcome: 'Hello! 👋 I am Tour AI — your friendly Viet Heritage assistant, here to help you plan Vietnamese cultural heritage journeys.\n\nTell me about your trip: budget, duration, pace, and preferred regions. I will suggest the most suitable heritage routes for you.',
+      thinking: 'AI is thinking',
+      placeholder: 'Ask about budget, duration, region...',
+      suggestions: ['Suggest a 3-day North tour', 'Budget 5M VND, 5 days', 'I like festivals and music', 'Central heritage tour'],
+      shareTitle: 'Share trip',
+      shareBtn: 'Share trip',
+      shareCopied: 'Share link copied!',
+      shareEmpty: 'Chat with the AI to build a route before sharing.',
+      mapOverlayTitle: 'Your route will appear here',
+      mapOverlaySub: 'Chat with Tour AI to create a heritage route',
+      clearConfirm: 'Clear entire conversation?',
+      error: 'Sorry, something went wrong. Please try again.',
+      eyebrow: 'Viet Heritage · Tour AI',
+      titleA: 'Tour AI Assistant',
+      titleB: 'here to help you',
+      sub: 'Chat with a friendly AI assistant to plan a Vietnamese heritage journey that fits your budget, duration, and interests.',
+      chatTitle: 'Tour AI · Viet Heritage',
+      previewEyebrow: 'Heritage map',
+      previewTitle: 'Route preview',
+      clearTitle: 'Clear conversation',
+      sendLabel: 'Send',
+      footCopy: '© 2026 Vietnam Intangible Cultural Heritage',
+      footData: 'Data: <em>UNESCO</em> · Map: <em>CartoDB / OpenStreetMap</em>',
+    },
+  };
+  const t = k => STR[lang()][k];
+
+  /* ── DOM refs ── */
+  const $ = id => document.getElementById(id);
+  const messagesEl = $('chat-messages');
+  const inputEl = $('chat-input');
+  const sendBtn = $('chat-send');
+  const clearBtn = $('chat-clear');
+  const statusEl = $('chat-status');
+  const statusText = $('chat-status-text');
+  const suggestionsEl = $('chat-suggestions');
+  const shareBtn = $('share-btn');
+  const shareResult = $('share-result');
+  const mapOverlayTitle = $('map-overlay-title');
+  const mapOverlaySub = $('map-overlay-sub');
+
+  let conversation = [];
+  let isBusy = false;
+
+  /* ── Markdown rendering (safe: escapes HTML first) ── */
+  function escapeHtml(s) {
+    return s
+      .replace(/&/g, '&' + 'amp;')
+      .replace(/</g, '&' + 'lt;')
+      .replace(/>/g, '&' + 'gt;')
+      .replace(/"/g, '&' + 'quot;');
+  }
+
+  function inlineMd(s) {
+    let h = escapeHtml(s);
+    h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+    h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    h = h.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+    h = h.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    return h;
+  }
+
+  function renderMarkdown(src) {
+    const lines = src.split('\n');
+    let out = '';
+    let inUl = false;
+    let inOl = false;
+    let inCode = false;
+
+    const closeLists = () => {
+      if (inUl) { out += '</ul>'; inUl = false; }
+      if (inOl) { out += '</ol>'; inOl = false; }
+    };
+
+    for (const raw of lines) {
+      if (/^```/.test(raw.trim())) {
+        if (inCode) { out += '</code></pre>'; inCode = false; }
+        else { closeLists(); out += '<pre><code>'; inCode = true; }
+        continue;
+      }
+      if (inCode) { out += escapeHtml(raw) + '\n'; continue; }
+
+      const t = raw.trim();
+      if (!t) { closeLists(); continue; }
+
+      let m = t.match(/^(#{1,4})\s+(.*)$/);
+      if (m) {
+        closeLists();
+        const lvl = m[1].length;
+        out += '<h' + (lvl + 1) + '>' + inlineMd(m[2]) + '</h' + (lvl + 1) + '>';
+        continue;
+      }
+
+      m = t.match(/^[-*•]\s+(.*)$/);
+      if (m) {
+        if (!inUl) { closeLists(); out += '<ul>'; inUl = true; }
+        out += '<li>' + inlineMd(m[1]) + '</li>';
+        continue;
+      }
+
+      m = t.match(/^\d+[.)]\s+(.*)$/);
+      if (m) {
+        if (!inOl) { closeLists(); out += '<ol>'; inOl = true; }
+        out += '<li>' + inlineMd(m[1]) + '</li>';
+        continue;
+      }
+
+      m = t.match(/^>\s?(.*)$/);
+      if (m) {
+        closeLists();
+        out += '<blockquote>' + inlineMd(m[1]) + '</blockquote>';
+        continue;
+      }
+
+      if (/^(-{3,}|\*{3,})$/.test(t)) { closeLists(); out += '<hr>'; continue; }
+
+      closeLists();
+      out += '<p>' + inlineMd(t) + '</p>';
+    }
+
+    closeLists();
+    if (inCode) out += '</code></pre>';
+    return out;
+  }
+
+  /* ── Message rendering ── */
+  function addMsg(text, role) {
+    const d = document.createElement('div');
+    d.className = 'msg ' + role;
+    if (role === 'ai') {
+      d.innerHTML = renderMarkdown(text);
+    } else {
+      d.textContent = text;
+    }
+    messagesEl.appendChild(d);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return d;
+  }
+
+  function addThinking() {
+    const d = document.createElement('div');
+    d.className = 'msg ai thinking';
+    d.innerHTML = '<span>' + t('thinking') + '</span><span class="thinking-dots"><span></span><span></span><span></span></span>';
+    messagesEl.appendChild(d);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return d;
+  }
+
+  /* Streaming effect: reveal text progressively */
+  function streamText(el, fullText, onDone) {
+    el.classList.add('streaming');
+    let i = 0;
+    const step = () => {
+      i += 2; // 2 chars per tick for a smooth, fast effect
+      el.innerHTML = renderMarkdown(fullText.slice(0, i));
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if (i < fullText.length) {
+        setTimeout(step, 16);
+      } else {
+        el.classList.remove('streaming');
+        if (onDone) onDone();
+      }
+    };
+    step();
+  }
+
+  /* ── Status ── */
+  function setThinking(on) {
+    statusEl.classList.toggle('thinking', on);
+    statusText.textContent = on ? t('statusThinking') : t('statusReady');
+  }
+
+  function setDemoMode(on) {
+    statusEl.classList.toggle('demo', on);
+    if (on) {
+      statusText.textContent = t('statusDemo');
+    } else {
+      statusText.textContent = t('statusReady');
+    }
+  }
+
+  /* ── Gemini API (via backend proxy) ── */
+  async function callGemini(userText) {
+    const messages = conversation.map(m => ({
+      role: m.role === 'user' ? 'user' : 'assistant',
+      text: m.text,
+    }));
+
+    const res = await fetch(CHAT_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error('Chat API error ' + res.status + ': ' + errText);
+    }
+
+    const data = await res.json();
+    const text = data.reply;
+    if (!text) throw new Error('Empty response from chat API');
+    return text;
+  }
+
+  /* Demo fallback when no API key */
+  function demoReply(userText) {
+    const msg = userText.toLowerCase();
+    if (msg.includes('bắc') || msg.includes('north')) {
+      return 'Tuyệt vời! Tôi gợi ý lộ trình 3 ngày miền Bắc:\n\n• Ngày 1: Hà Nội — Văn Miếu, Hoàng thành Thăng Long\n• Ngày 2: Bắc Ninh — Quan họ, chùa Dâu\n• Ngày 3: Phú Thọ — Đền Hùng, hát Xoan\n\nBạn muốn tôi điều chỉnh theo ngân sách hoặc thời gian không?';
+    }
+    if (msg.includes('trung') || msg.includes('central')) {
+      return 'Miền Trung là lựa chọn tuyệt vời cho di sản! Gợi ý:\n\n• Huế — Nhã nhạc cung đình, Đại Nội\n• Quảng Nam — Hội An, Mỹ Sơn\n• Quảng Bình — Phong Nha\n\nBạn thích nhịp độ thong thả hay nhanh?';
+    }
+    if (msg.includes('lễ hội') || msg.includes('festival') || msg.includes('âm nhạc') || msg.includes('music')) {
+      return 'Bạn yêu lễ hội và âm nhạc — thật tuyệt! 🎶\n\nGợi ý: Cồng Chiêng Tây Nguyên, Quan họ Bắc Ninh, Đờn ca tài tử Nam Bộ.\n\nBạn muốn đi vào tháng nào? Tôi sẽ chọn lễ hội phù hợp nhất.';
+    }
+    if (msg.includes('ngân sách') || msg.includes('budget') || msg.includes('triệu')) {
+      return 'Về ngân sách, tôi có thể tối ưu lộ trình cho bạn:\n\n• Tiết kiệm: di chuyển bằng xe khách, homestay\n• Trung bình: combo tour 3-5 ngày\n• Cao cấp: trải nghiệm riêng tư, hướng dẫn chuyên sâu\n\nBạn dự định đi bao nhiêu ngày?';
+    }
+    return 'Cảm ơn bạn! Để tôi gợi ý lộ trình phù hợp, bạn có thể cho tôi biết thêm:\n\n• Vùng miền yêu thích (Bắc/Trung/Nam/Tây Nguyên)\n• Số ngày và ngân sách\n• Sở thích (lễ hội, âm nhạc, ẩm thực, thủ công)\n\nTôi sẽ xây dựng hành trình di sản hoàn hảo cho bạn! ✨';
+  }
+
+  /* ── Chat flow ── */
+  async function sendMessage(text) {
+    const msg = text.trim();
+    if (!msg || isBusy) return;
+
+    addMsg(msg, 'user');
+    conversation.push({ role: 'user', text: msg });
+    inputEl.value = '';
+    isBusy = true;
+    sendBtn.disabled = true;
+    setThinking(true);
+
+    const thinkingEl = addThinking();
+
+    try {
+      let reply;
+      try {
+        reply = await callGemini(msg);
+      } catch (e) {
+        // Backend unreachable or no key — fall back to local demo.
+        console.warn('Chat API unavailable, using demo mode:', e);
+        setDemoMode(true);
+        await new Promise(r => setTimeout(r, 700));
+        reply = demoReply(msg);
+      }
+
+      conversation.push({ role: 'model', text: reply });
+      thinkingEl.remove();
+      const aiEl = addMsg('', 'ai');
+      streamText(aiEl, reply, () => {
+        isBusy = false;
+        sendBtn.disabled = false;
+        setThinking(false);
+      });
+    } catch (e) {
+      console.error('Chat error:', e);
+      thinkingEl.remove();
+      addMsg(t('error'), 'ai');
+      isBusy = false;
+      sendBtn.disabled = false;
+      setThinking(false);
+    }
+  }
+
+  /* ── Suggestion chips ── */
+  function renderSuggestions() {
+    suggestionsEl.innerHTML = '';
+    STR[lang()].suggestions.forEach(s => {
+      const chip = document.createElement('button');
+      chip.className = 'suggestion-chip';
+      chip.textContent = s;
+      chip.addEventListener('click', () => sendMessage(s));
+      suggestionsEl.appendChild(chip);
+    });
+  }
+
+  /* ── Share trip (mock link) ── */
+  function shareTrip() {
+    const hasRoute = conversation.some(m => m.role === 'model');
+    if (!hasRoute) {
+      shareResult.hidden = false;
+      shareResult.textContent = t('shareEmpty');
+      return;
+    }
+    const id = 'vh-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
+    const link = window.location.origin + window.location.pathname + '?trip=' + id;
+    shareResult.hidden = false;
+    shareResult.textContent = link;
+    // copy to clipboard
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(() => {
+        shareResult.textContent = t('shareCopied') + ' ' + link;
+      }).catch(() => {});
+    }
+  }
+
+  /* ── Language toggle (mirrors site convention) ── */
+  function initLangToggle() {
+    const btns = document.querySelectorAll('.lang-btn');
+    const apply = () => {
+      const l = lang();
+      document.documentElement.classList.toggle('lang-vi', l === 'vi');
+      btns.forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+      // update static texts
+      statusText.textContent = t('statusReady');
+      inputEl.placeholder = t('placeholder');
+      mapOverlayTitle.textContent = t('mapOverlayTitle');
+      mapOverlaySub.textContent = t('mapOverlaySub');
+      shareBtn.querySelector('#share-btn-text').textContent = t('shareBtn');
+      // page header
+      $('planner-eyebrow').textContent = t('eyebrow');
+      $('planner-title-a').textContent = t('titleA');
+      $('planner-title-b').textContent = t('titleB');
+      $('planner-sub').textContent = t('sub');
+      // chat header
+      $('chat-title').textContent = t('chatTitle');
+      clearBtn.title = t('clearTitle');
+      sendBtn.setAttribute('aria-label', t('sendLabel'));
+      // preview panel
+      $('preview-eyebrow').textContent = t('previewEyebrow');
+      $('preview-title').textContent = t('previewTitle');
+      // footer
+      $('foot-copy').textContent = t('footCopy');
+      $('foot-data').innerHTML = t('footData');
+      renderSuggestions();
+    };
+    btns.forEach(b => b.addEventListener('click', () => {
+      localStorage.setItem('vnmt_lang', b.dataset.lang);
+      apply();
+    }));
+    apply();
+  }
+
+  /* ── Init ── */
+  function init() {
+    initLangToggle();
+
+    // Greeting
+    addMsg(t('welcome'), 'ai');
+
+    // Events
+    sendBtn.addEventListener('click', () => sendMessage(inputEl.value));
+    inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(inputEl.value); });
+    clearBtn.addEventListener('click', () => {
+      if (confirm(t('clearConfirm'))) {
+        messagesEl.innerHTML = '';
+        conversation = [];
+        addMsg(t('welcome'), 'ai');
+      }
+    });
+    shareBtn.addEventListener('click', shareTrip);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

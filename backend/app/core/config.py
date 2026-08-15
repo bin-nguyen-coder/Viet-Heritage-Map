@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     RENDER_EXTERNAL_URL: str = ""
     IS_PRODUCTION: bool = False
 
+    # Gemini (AI Tour Curator)
+    # Set GEMINI_API_KEY in backend/.env (never commit real keys)
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-3.1-flash-lite"
+
     # Logging
     LOG_LEVEL: str = "INFO"
 

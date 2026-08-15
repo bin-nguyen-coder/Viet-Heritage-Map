@@ -1,24 +1,53 @@
 @echo off
+chcp 65001 >nul
 echo Starting VietHeritage Map locally...
-
-REM Start FastAPI backend
 echo.
-echo Starting backend on http://localhost:8000
+
+REM ── Check for backend .env (Gemini key for Tour AI) ──
+if not exist "backend\.env" (
+  echo [!] backend\.env not found. Creating from template...
+  copy "backend\.env.example" "backend\.env" >nul
+  echo [!] Add your Gemini API key ^(starts with AIza...^) to backend\.env
+  echo     → GEMINI_API_KEY="your_key_here"
+)
+
+REM ── Install Python deps if needed (first run) ──
+if not exist "backend\.deps_installed" (
+  echo [*] Installing backend dependencies...
+  cd backend
+  pip install -r requirements.txt
+  if %errorlevel%==0 (
+    echo installed > .deps_installed
+  ) else (
+    echo [!] Dependency install failed. Check that Python & pip are installed.
+  )
+  cd ..
+)
+
+REM ── Start FastAPI backend ──
+echo.
+echo [*] Starting backend on http://localhost:8000
 start "VietHeritage API" cmd /c "cd backend && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
 
-REM Wait for backend to start
+REM ── Wait for backend ──
 timeout /t 3 /nobreak >nul
 
-REM Open frontend via FastAPI static mount
-echo Opening frontend...
-start http://localhost:8000/index.html
+REM ── Open the Tour AI planner ──
+echo [*] Opening Tour AI planner...
+start http://localhost:8000/planner.html
 
 echo.
 echo ========================================
-echo Backend: http://localhost:8000
-echo API Docs: http://localhost:8000/docs
-echo Frontend: http://localhost:8000/index.html
+echo  Backend:   http://localhost:8000
+echo  Tour AI:   http://localhost:8000/planner.html
+echo  Homepage:  http://localhost:8000/index.html
+echo  API Docs:  http://localhost:8000/docs
 echo ========================================
+echo.
+echo  Gemini setup:
+echo   1. Get a free key: https://aistudio.google.com/app/apikey
+echo   2. Paste it in backend\.env → GEMINI_API_KEY="AIza..."
+echo   3. Restart this script
 echo.
 echo Press any key to stop all services...
 pause >nul

@@ -8,7 +8,7 @@ import logging
 
 from app.core.config import settings
 from app.core.database import init_db
-from app.api.v1 import sites, festivals, booking, trip
+from app.api.v1 import sites, festivals, booking, trip, chat
 
 # Configure logging
 logging.basicConfig(
@@ -64,6 +64,7 @@ app.include_router(sites.router, prefix=settings.API_V1_PREFIX)
 app.include_router(festivals.router, prefix=settings.API_V1_PREFIX)
 app.include_router(booking.router, prefix=settings.API_V1_PREFIX)
 app.include_router(trip.router, prefix=settings.API_V1_PREFIX)
+app.include_router(chat.router, prefix=settings.API_V1_PREFIX)
 
 # Serve Project frontend from / (MUST be AFTER all routes to avoid shadowing API endpoints)
 STATIC_DIR = Path(__file__).resolve().parent.parent.parent / "Project"

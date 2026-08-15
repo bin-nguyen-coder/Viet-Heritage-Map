@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tour AI — Viet Heritage Planning Assistant</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="planner.css" />
+</head>
+
+<body>
+
+  <!-- ── NAV (mirrors index.html) ── -->
+  <nav id="main-nav">
+    <a href="index.html" class="nav-logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8" fill="currentColor" />
+      </svg>
+      <span id="nav-logo-text">VietHeritage Map</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+      <li><a href="booking.html" id="nav-book-link" class="nav-book">Đặt tour</a></li>
+      <li><a href="festivals.html" id="nav-fest-link">Lễ hội</a></li>
+      <li><a href="journey.html" id="nav-journey-link">Hành trình Bảo vật</a></li>
+      <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
+      <li><a href="planner.html" class="active" id="nav-planner">Tour AI</a></li>
+      <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+      <li><a href="shop.html" id="nav-shop">Cửa hàng</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn" data-lang="vi">VI</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <a href="planner.html" class="nav-ai-btn" id="nav-ai-btn">
+        <span class="ai-spark" aria-hidden="true">✦</span>
+        <span id="nav-ai-btn-text">Tour AI</span>
+      </a>
+      <a href="VNMT.html" class="nav-map-btn">
+        <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── PAGE HEADER ── -->
+  <header class="planner-header">
+    <div class="planner-header-inner">
+      <div class="planner-eyebrow">
+        <span class="eyebrow-diamond"></span>
+        <span id="planner-eyebrow">Viet Heritage · Tour AI</span>
+      </div>
+      <h1 class="planner-title">
+        <span id="planner-title-a">Trợ lý Tour AI</span>
+        <em id="planner-title-b">đồng hành cùng bạn</em>
+      </h1>
+      <p class="planner-sub" id="planner-sub">
+        Trò chuyện với trợ lý AI thân thiện để lên kế hoạch hành trình di sản Việt Nam phù hợp với ngân sách, thời gian và sở thích của bạn.
+      </p>
+    </div>
+  </header>
+
+  <!-- ── SPLIT-SCREEN MAIN ── -->
+  <main class="planner-main">
+
+    <!-- LEFT: CHATBOT -->
+    <section class="chat-panel" aria-label="Tour AI chat">
+      <div class="chat-header">
+        <div class="chat-header-id">
+          <div class="chat-avatar" aria-hidden="true">✦</div>
+          <div>
+            <div class="chat-title" id="chat-title">Tour AI · Viet Heritage</div>
+            <div class="chat-status" id="chat-status">
+              <span class="status-dot"></span>
+              <span id="chat-status-text">Sẵn sàng</span>
+            </div>
+          </div>
+        </div>
+        <button class="chat-clear" id="chat-clear" title="Xóa hội thoại">↺</button>
+      </div>
+
+      <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+
+      <div class="chat-suggestions" id="chat-suggestions"></div>
+
+      <div class="chat-input-row">
+        <input
+          class="chat-input"
+          id="chat-input"
+          type="text"
+          placeholder="Hỏi về ngân sách, thời gian, vùng miền..."
+          autocomplete="off" />
+        <button class="chat-send" id="chat-send" aria-label="Gửi">➤</button>
+      </div>
+    </section>
+
+    <!-- RIGHT: MAP PREVIEW + SHARE -->
+    <aside class="preview-panel" aria-label="Heritage map preview">
+      <div class="preview-head">
+        <div class="preview-eyebrow" id="preview-eyebrow">Bản đồ di sản</div>
+        <div class="preview-title" id="preview-title">Xem trước lộ trình</div>
+      </div>
+
+      <div class="map-preview" id="map-preview">
+        <!-- Stylised heritage map placeholder -->
+        <svg class="map-svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="mapGlow" cx="50%" cy="45%" r="60%">
+              <stop offset="0%" stop-color="rgba(201,168,76,0.10)" />
+              <stop offset="100%" stop-color="rgba(201,168,76,0)" />
+            </radialGradient>
+          </defs>
+          <rect width="400" height="300" fill="url(#mapGlow)" />
+          <!-- stylised Vietnam silhouette -->
+          <path class="map-land"
+            d="M200 20 C 190 40, 178 60, 172 85 C 166 110, 160 130, 158 150 C 156 170, 150 185, 148 200 C 146 215, 150 230, 158 240 C 166 250, 180 255, 196 252 C 212 249, 224 240, 232 228 C 240 216, 244 200, 246 185 C 248 170, 250 155, 252 140 C 254 125, 256 110, 258 95 C 260 80, 258 65, 252 52 C 246 39, 236 28, 226 22 C 216 16, 206 15, 200 20 Z" />
+          <!-- heritage site markers -->
+          <g class="map-markers">
+            <circle cx="205" cy="70" r="4" class="marker" />
+            <circle cx="190" cy="120" r="4" class="marker" />
+            <circle cx="215" cy="160" r="4" class="marker" />
+            <circle cx="185" cy="200" r="4" class="marker" />
+            <circle cx="225" cy="230" r="4" class="marker" />
+          </g>
+          <!-- route line -->
+          <path class="map-route" d="M205 70 L190 120 L215 160 L185 200 L225 230" />
+        </svg>
+
+        <div class="map-overlay">
+          <div class="map-overlay-title" id="map-overlay-title">Lộ trình của bạn sẽ hiển thị tại đây</div>
+          <div class="map-overlay-sub" id="map-overlay-sub">Trò chuyện với Tour AI để tạo lộ trình di sản</div>
+        </div>
+      </div>
+
+      <div class="preview-actions">
+        <button class="share-btn" id="share-btn">
+          <span class="share-icon" aria-hidden="true">🔗</span>
+          <span id="share-btn-text">Chia sẻ chuyến đi</span>
+        </button>
+        <div class="share-result" id="share-result" hidden></div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ── FOOTER (mirrors index.html) ── -->
+  <footer id="about">
+    <span id="foot-copy">© 2026 Di sản văn hóa phi vật thể Việt Nam</span>
+    <span id="foot-data">Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em></span>
+  </footer>
+
+  <script src="planner-config.js"></script>
+  <script src="planner.js"></script>
+</body>
+
+</html>

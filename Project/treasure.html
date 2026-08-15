@@ -65,6 +65,9 @@
     }
     .lang-btn:hover  { color:var(--nav-gold); }
     .lang-btn.active { background:var(--nav-gold); color:#1a1400; }
+    .nav-ai-btn { display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--nav-gold) 0%,#e8c96a 100%); color:#1a1400; text-decoration:none; padding:8px 18px; border-radius:4px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; transition:all .2s; box-shadow:0 4px 14px rgba(201,168,76,0.3); }
+    .nav-ai-btn:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(201,168,76,0.5); }
+    .nav-ai-btn .ai-spark { font-size:12px; }
 
     /* ── HERO ── */
     .hero {
@@ -509,6 +512,10 @@
       <button class="lang-btn" data-lang="vi">VI</button>
       <button class="lang-btn" data-lang="en">EN</button>
     </div>
+    <a href="planner.html" class="nav-ai-btn">
+      <span class="ai-spark" aria-hidden="true">✦</span>
+      <span>Tour AI</span>
+    </a>
   </div>
 </nav>
 

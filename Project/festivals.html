@@ -31,6 +31,8 @@
     .lang-btn.active{background:var(--gold);color:#1a1400;}
     .nav-map-btn{display:flex;align-items:center;gap:6px;background:var(--red-bright);color:#fff;padding:8px 16px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.06em;transition:background .2s;}
     .nav-map-btn:hover{background:#e04444;}
+    .nav-ai-btn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 100%);color:#1a1400;text-decoration:none;padding:8px 16px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;transition:all .2s;box-shadow:0 4px 14px rgba(201,168,76,.3);}
+    .nav-ai-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.5);}
 
     /* HERO */
     .hero{background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);border-bottom:2px solid var(--gold);padding:56px 48px 48px;position:relative;overflow:hidden;}
@@ -88,9 +90,11 @@
   </ul>
   <div class="nav-right">
     <div class="lang-toggle">
-      <button class="lang-btn" data-lang="vi">VI</button>
-      <button class="lang-btn" data-lang="en">EN</button>
     </div>
+    <a href="planner.html" class="nav-ai-btn">
+      <span class="ai-spark" aria-hidden="true">✦</span>
+      <span>Tour AI</span>
+    </a>
     <a href="booking.html" class="nav-map-btn">Đặt tour</a>
   </div>
 </nav>
