@@ -10,7 +10,7 @@
       --bg:#0a0900; --surface:#110f04; --card:#181500; --border:#2c2507;
       --gold:#c9a84c; --gold-light:#e8c96a; --red:#1c1c1c; --red-bright:#c42b2b;
       --text:#e8dfc8; --muted:#8a7c5e; --white:#f5f0e6;
-      --font-body:'DM Sans',sans-serif; --font-heading:'Playfair Display',serif;
+      --font-body:'DM Sans',sans-serif; --font-heading:'Merriweather',serif;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth;}
@@ -19,7 +19,7 @@
 
     /* NAV */
     nav{position:sticky;top:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(10,9,0,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.14);}
-    .nav-logo{display:flex;align-items:center;gap:10px;color:var(--white);font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;}
+    .nav-logo{display:flex;align-items:center;gap:10px;color:var(--white);font-family:'Merriweather',serif;font-size:1.05rem;font-weight:700;}
     .nav-logo svg{color:var(--gold);}
     .nav-links{display:flex;gap:26px;list-style:none;position:absolute;left:50%;transform:translateX(-50%);}
     .nav-links a{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .2s;}
@@ -37,7 +37,7 @@
     .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 30%,#c42b2b 50%,var(--gold) 70%,transparent);}
     .hero-eyebrow{font-size:10px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
     .hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold);}
-    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#f5f0e6;line-height:1.1;margin-bottom:16px;}
+    .hero h1{font-family:'Merriweather',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#f5f0e6;line-height:1.2;margin-bottom:16px;}
     .hero h1 em{font-style:italic;color:var(--gold);}
     .hero p{font-size:14.5px;color:var(--muted);line-height:1.75;max-width:680px;}
 
@@ -53,7 +53,7 @@
     .month-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;transition:transform .2s,border-color .2s;}
     .month-card:hover{transform:translateY(-3px);border-color:var(--gold);}
     .month-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px;}
-    .month-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
+    .month-name{font-family:'Merriweather',serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
     .month-count{font-size:11px;color:var(--muted);}
     .fest-item{padding:12px 0;border-bottom:1px solid rgba(44,37,7,.5);}
     .fest-item:last-child{border-bottom:none;}
