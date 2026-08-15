@@ -1,9 +1,11 @@
-# LimitlessX: VietHeritage Map
-## Changing the world. One thing at a time
+# LimitlessX · VietHeritage Map
+## Connecting Heritage — Inspiring the Future
 
-LimitlessX: VietHeritage Map is an AI-powered cultural heritage platform that maps, explains, and brings to life Vietnam's tangible and intangible heritage. It combines an interactive heritage map, AI-guided artisan chat, ethnomusicological audio analysis, and voice interaction so that learners, researchers, and tourists can explore centuries of Vietnamese craft, music, and storytelling in one place—online or offline.
+**LimitlessX · VietHeritage** is an AI-powered digital museum archiving and reviving Vietnam's **16 UNESCO-inscribed intangible cultural heritages** and **39 national treasures** — where heritage meets technology.
 
-The project was built for the **Build@Hub Hackathon 2026** effort to preserve and democratize access to Vietnamese cultural treasures using modern, cost-efficient AI running primarily on local hardware.
+From the responsive harmonies of **Bắc Ninh Quan họ singing** to the rustic cadence of **Nghệ Tĩnh Hò work songs** and the resonance of **Central Highlands Gongs**, this journey connects communities across **5 core genres** (Instrumental, Singing, Belief, Festival, and Craft).
+
+The project was built for the **Build@Hub Hackathon 2026** effort to preserve and democratize access to Vietnamese cultural treasures using modern, cost-efficient AI.
 
 ---
 
@@ -18,7 +20,7 @@ The project was built for the **Build@Hub Hackathon 2026** effort to preserve an
 - [Environment Variables](#environment-variables)
 - [Running the Services](#running-the-services)
 - [API Reference](#api-reference)
-- [Frontend Usage](#frontend-usage)
+- [Frontend Pages](#frontend-pages)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
 - [License](#license)
@@ -27,37 +29,36 @@ The project was built for the **Build@Hub Hackathon 2026** effort to preserve an
 
 ## Key Features
 
-### 🗺️ Heritage Map & Sites
-- Interactive Leaflet-based map of heritage sites across Vietnam.
-- Filter sites by cultural layer (e.g., Bắc Bộ, Trung Bộ, Nam Bộ).
-- Rich site detail pages with artifacts, audio assets, and 3D model viewers.
-- Legacy static frontend served from `Project/` for unified local origin.
+### 🗺️ Interactive Heritage Map
+- Leaflet-based map with **MarkerCluster** for heritage sites across Vietnam.
+- Filter sites by **genre**, **UNESCO status**, or **region**.
+- Provincial statistics charts and switchable base tiles (**CartoDB / OpenStreetMap**).
+- Open GeoJSON geographical data (`vn_geo.json`) for province boundaries.
 
-### 🧓 AI Artisan Chat (RAG-Lite)
-- Chat with virtual artisan personas (e.g., ca trù, quan họ performers).
-- **Retrieval-Augmented Generation** with keyword + vector (pgvector) search.
-- Persona-aware few-shot prompting with strict anti-fabrication guardrails.
-- Local LLM (Ollama) first, OpenRouter free-tier cloud fallback.
-- Pre-recorded responses for high-confidence UNESCO-verified answers.
+### 📦 Heritage & Treasure Archive
+- Bilingual archive of **16 intangible cultural heritages** and **39 national treasures**.
+- Rich detail pages with images, audio, and 3D models.
+- Data sourced from **UNESCO representative archives** and **Prime Ministerial decisions**.
 
-### 🎵 Ethnomusicology Audio Analysis
-- ONNX-powered `EthnoMusicAnalyzer` classifies genre, instruments, and ornaments.
-- Pitch tracking with `librosa.pyin`; waveform output for visualization.
-- Voice grading: compare user recordings against reference samples.
+### 🎵 Audio & Vocal Recording
+- Built-in audio players for traditional music samples.
+- On-page voice recording with comparison analysis against reference samples using the **Web Audio API**.
 
-### 🎤 Voice Interaction
-- Voice chat: record audio → Whisper transcription → artisan chat.
-- Bilingual (Vietnamese / English) responses and feedback.
+### 🧊 3D Artifact Viewer
+- View 3D artifact models on-page (e.g., the **One Pillar Pagoda**) using a native viewer (**Three.js / Collada**).
 
-### 📦 Asset & Storage
-- MinIO object storage for audio, images, and 3D artifacts.
-- PostgreSQL with `pgvector` for embedding similarity (dev), SQLite in prod.
-- Seed & ingestion scripts for knowledge chunks, audio, and intangible data.
+### ✦ Tour AI & Route Planning
+- **Tour AI** chats to plan heritage itineraries by **budget**, **duration**, **region**, and **interests**.
+- Generates a plan with a **map route**, **accommodation links**, and **transport segments**.
+- **Trip booking** and **trip sharing** built in.
 
-### 🩺 Observability
-- Health checks for API, models, and cache.
-- Sentry integration (optional) for error tracking.
-- Structured logging and monitoring endpoints.
+### 🤖 Heritage Travel Assistant
+- A local chatbot suggesting sites and festivals by **region**, **month**, and **interests**.
+- **Backend API fallback** (Google Gemini proxy) when online — API key stays server-side.
+
+### 📅 Festival Calendar
+- Browse festivals grouped by **Gregorian month** with region filtering.
+- Lunar calendar integration for traditional festival dates.
 
 ---
 
@@ -65,26 +66,21 @@ The project was built for the **Build@Hub Hackathon 2026** effort to preserve an
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                      Frontend (React + Vite)                 │
-│  MapView · SiteDetail · ArtisanChat · AudioAnalyzer · 3D     │
+│              Frontend (Vanilla JS + HTML/CSS)                │
+│  Map · Archive · Festivals · Tour AI · Booking · 3D · Audio  │
 └─────────────────────────────┬────────────────────────────────┘
-                              │ REST / SSE
+                              │ REST
 ┌─────────────────────────────▼────────────────────────────────┐
-│                       Backend (FastAPI)                       │
-│  /api/v1/sites   /api/v1/artisan   /api/v1/audio   /api/v1/chat│
+│                     Backend (FastAPI)                         │
+│  /api/v1/sites  /api/v1/festivals  /api/v1/bookings           │
+│  /api/v1/trip/suggest  /api/v1/chat                           │
 └───────┬───────────────┬───────────────┬───────────────┬───────┘
         │               │               │               │
         ▼               ▼               ▼               ▼
 ┌─────────────┐ ┌──────────────┐ ┌────────────┐ ┌──────────────┐
-│ PostgreSQL  │ │ Ollama LLM   │ │ ONNX Model │ │ MinIO Store  │
-│ + pgvector  │ │ (phi3.5)     │ │ (Ethno)    │ │ (assets)     │
-└─────────────┘ └──────┬───────┘ └────────────┘ └──────────────┘
-                       │ fallback
-                       ▼
-                ┌──────────────┐
-                │ OpenRouter   │
-                │ (free tier)  │
-                └──────────────┘
+│ SQLite      │ │ Google Gemini│ │ GeoJSON    │ │ Static       │
+│ (aiosqlite) │ │ (server-side)│ │ (vn_geo)   │ │ Frontend     │
+└─────────────┘ └──────────────┘ └────────────┘ └──────────────┘
 ```
 
 ---
@@ -94,23 +90,22 @@ The project was built for the **Build@Hub Hackathon 2026** effort to preserve an
 **Backend**
 - **Language:** Python 3.11+
 - **Framework:** FastAPI, Uvicorn
-- **ORM / DB:** SQLAlchemy 2.0, PostgreSQL 16 + pgvector (dev), SQLite + aiosqlite (prod)
-- **AI / ML:** Ollama (phi3.5), ONNX Runtime, torchaudio, librosa, faster-whisper
-- **Storage:** MinIO
-- **Observability:** Sentry SDK, python-json-logger
-- **Tooling:** Ruff, mypy, pytest, pre-commit, Alembic
+- **ORM / DB:** SQLAlchemy 2.0 (async), SQLite + aiosqlite
+- **AI:** Google Gemini (server-side proxy, `gemini-3.1-flash-lite`)
+- **HTTP Client:** httpx
+- **Config:** pydantic-settings
 
 **Frontend**
-- **Framework:** React 18 + TypeScript 5
-- **Bundler:** Vite 5
-- **Map:** Leaflet + react-leaflet
-- **State / Data:** Zustand, TanStack React Query, Axios
-- **Styling:** Tailwind CSS 3
-- **3D:** model-viewer
-- **Icons:** lucide-react
+- **Framework:** Vanilla JavaScript, HTML5, CSS3
+- **Map:** Leaflet + MarkerCluster
+- **Tiles:** CartoDB / OpenStreetMap
+- **3D:** Three.js / Collada
+- **Audio:** Web Audio API
+- **i18n:** Bilingual (Vietnamese / English) with localStorage persistence
 
 **Infrastructure**
-- Docker Compose (Postgres, Ollama, MinIO) for local development
+- Docker (backend containerization)
+- Render (deployment)
 
 ---
 
@@ -118,39 +113,62 @@ The project was built for the **Build@Hub Hackathon 2026** effort to preserve an
 
 ```
 Viet-Heritage-Map/
-├── docker-compose.yml          # Postgres + Ollama + MinIO
+├── docker-compose.yml          # Backend service
 ├── run_local.bat               # One-click Windows local launch
 ├── backend/
 │   ├── app/
 │   │   ├── main.py             # FastAPI app entrypoint
-│   │   ├── api/v1/             # sites, artisan, audio, chat, monitoring
-│   │   ├── core/               # config, database, cache, monitoring
-│   │   ├── models/             # SQLAlchemy models (site, artisan, audio)
+│   │   ├── api/v1/             # sites, festivals, booking, trip, chat
+│   │   ├── core/               # config, database
+│   │   ├── data/               # festivals.json, treasures.json
+│   │   ├── models/             # SQLAlchemy models (site, booking)
 │   │   ├── schemas/            # Pydantic schemas
-│   │   └── services/           # rag_lite, audio_analysis, embedding, chat
-│   ├── models/                 # ONNX + PyTorch model artifacts
-│   ├── scripts/                # seed, ingest, train, init-db
-│   ├── tests/
+│   │   └── services/           # trip_planner
 │   ├── requirements.txt
 │   ├── Dockerfile / Dockerfile.prod
 │   └── render.yaml
-├── frontend/
-│   ├── src/                    # React app (pages, components, stores)
-│   ├── public/                 # audio + image assets
-│   ├── netlify.toml
-│   └── vite.config.ts
-└── Project/                    # Legacy static HTML frontend
+├── Project/                    # Static frontend (served by FastAPI)
+│   ├── index.html              # Home
+│   ├── VNMT.html               # Interactive heritage map
+│   ├── database.html           # Heritage & treasure archive
+│   ├── festivals.html          # Festival calendar
+│   ├── journey.html            # Heritage journey
+│   ├── planner.html            # Tour AI planner
+│   ├── booking.html            # Trip booking
+│   ├── tour_booking.html       # Tour booking wizard
+│   ├── about.html              # About the project
+│   ├── shop.html               # Shop
+│   ├── site.html               # Site detail
+│   ├── treasure.html           # Treasure detail
+│   ├── artifact.html           # 3D artifact viewer
+│   ├── lunar-calendar.html     # Lunar calendar
+│   ├── vn_geo.json             # Province GeoJSON data
+│   ├── PROVINCES.geojson       # Province boundaries
+│   ├── data.js                 # Heritage data
+│   ├── inheritable_data.js     # Shared data
+│   ├── location_en.js          # English location data
+│   ├── journey_sites.js        # Journey site data
+│   ├── national_treasures.js   # National treasures data
+│   ├── VNMT.js                 # Map logic
+│   ├── planner.js              # Tour AI planner logic
+│   ├── planner-plan.js         # Plan rendering
+│   ├── vnmt-itinerary.js       # Itinerary logic
+│   ├── chatbot.js              # Local chatbot
+│   ├── about.js                # About page content (bilingual)
+│   ├── audio/                  # Audio assets
+│   ├── images/                 # Image assets
+│   ├── chua_mot_cot/           # One Pillar Pagoda 3D model
+│   └── slider/                 # Slider assets
+└── docs/                       # Documentation
 ```
 
 ---
 
 ## Prerequisites
 
-- **Node.js** 18+ and npm
 - **Python** 3.11+
-- **Docker** & Docker Compose (for services)
 - **Git**
-- (Optional) GPU for faster local LLM inference
+- (Optional) **Docker** for containerized deployment
 
 ---
 
@@ -163,13 +181,7 @@ git clone https://github.com/bin-nguyen-coder/Viet-Heritage-Map.git
 cd Viet-Heritage-Map
 ```
 
-2. **Start infrastructure services**
-
-```bash
-docker compose up -d
-```
-
-3. **Backend setup**
+2. **Backend setup**
 
 ```bash
 cd backend
@@ -183,29 +195,16 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-4. **Frontend setup**
+3. **Run the backend** (serves both API and static frontend)
 
 ```bash
-cd ../frontend
-npm install
-```
-
-5. **Run the full stack**
-
-```bash
-# Terminal 1 - backend
-cd backend
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Terminal 2 - frontend
-cd frontend
-npm run dev
 ```
 
-6. Open the apps:
-- Frontend: `http://localhost:5173`
+4. **Open the app**
+
+- Frontend: `http://localhost:8000`
 - API docs: `http://localhost:8000/docs`
-- Legacy frontend: `http://localhost:8000/legacy`
 
 > 💡 On Windows you can also double-click `run_local.bat` for a guided launch.
 
@@ -213,59 +212,37 @@ npm run dev
 
 ## Environment Variables
 
-Create `backend/.env` from `backend/.env.example`. All necessary values are pre-filled for out-of-the-box functionality.
-
-> **Note:** The `OPENROUTER_API_KEY` in `.env.example` is a shared demo key. The chatbot works immediately without any additional setup. For production or heavy usage, [get your own free key](https://openrouter.ai) and replace the value.
+Create `backend/.env` from `backend/.env.example`.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `APP_NAME` | Public API name | `VietHeritage Map API` |
+| `APP_VERSION` | API version | `0.1.0` |
 | `DEBUG` | Enable docs/reload | `true` |
 | `API_V1_PREFIX` | API route prefix | `/api/v1` |
-| `DATABASE_URL` | Dev Postgres/SQLite connection | `sqlite+aiosqlite:///./vietheritage.db` |
-| `OPENROUTER_API_KEY` | Cloud LLM key (works out of box) | `sk-or-v1-...` (demo key) |
-| `OPENROUTER_MODEL` | Cloud chat model | `meta-llama/llama-3.2-3b-instruct:free` |
-| `MINIO_ENDPOINT` | MinIO host:port | `localhost:9000` |
-| `MINIO_ACCESS_KEY` | MinIO user | `vietheritage` |
-| `MINIO_SECRET_KEY` | MinIO password | `vietheritage_dev` |
-| `MINIO_BUCKET` | Asset bucket | `vietheritage-assets` |
-| `ETHNOMUSIC_MODEL_PATH` | ONNX model path | `./models/ethnomusic_net_int8.onnx` |
-| `WHISPER_MODEL_PATH` | Whisper model id | `openai/whisper-base` |
+| `DATABASE_URL` | SQLite connection | `sqlite+aiosqlite:///./vietheritage.db` |
+| `GEMINI_API_KEY` | Google Gemini API key (server-side) | *(empty — set in .env)* |
+| `GEMINI_MODEL` | Gemini chat model | `gemini-3.1-flash-lite` |
 | `CORS_ORIGINS` | Allowed origins | `[http://localhost:5173, ...]` |
 | `LOG_LEVEL` | Logging level | `INFO` |
+| `IS_PRODUCTION` | Production mode flag | `false` |
+
+> **Note:** The `GEMINI_API_KEY` is kept **server-side only** — it is never exposed to the browser. The local chatbot works without it; the Gemini proxy is used as an online fallback.
 
 ---
 
 ## Running the Services
 
-### Start infrastructure (Postgres, Ollama, MinIO)
-
-```bash
-docker compose up -d
-```
-
-### Pull the Ollama models
-
-```bash
-docker exec -it vietheritage-ollama ollama pull phi3.5:3.8b-mini-instruct-q4_k_m
-docker exec -it vietheritage-ollama ollama pull nomic-embed-text:latest
-```
-
-### Seed the database
+### Start the backend
 
 ```bash
 cd backend
-python scripts/seed_database.py
-python scripts/ingest_knowledge.py
-python scripts/seed_audio.py
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Train the genre classifier (optional)
+### Initialize the database
 
-```bash
-python scripts/train_genre_classifier.py
-python scripts/create_placeholders.py
-```
+The database is initialized automatically on startup (`init_db` in the FastAPI lifespan). The SQLite file (`vietheritage.db`) is created in the `backend/` directory.
 
 ---
 
@@ -278,79 +255,89 @@ Base URL: `http://localhost:8000/api/v1`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/sites` | List heritage sites (optional `?layer=` filter) |
-| `GET` | `/sites/{site_id}` | Get site details with audio & knowledge chunks |
+| `GET` | `/sites/{site_id}` | Get site details |
 
 ```bash
 curl "http://localhost:8000/api/v1/sites?layer=B%E1%BA%AFc%20B%E1%BB%99"
 curl "http://localhost:8000/api/v1/sites/abc-123"
 ```
 
-### Artisan Chat (RAG)
+### Festivals
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/artisan/ask` | Ask an artisan persona a question |
+| `GET` | `/festivals` | List festivals (optional `?month=` / `?region=` filter) |
+| `GET` | `/festivals/months` | Festivals grouped by Gregorian month |
 
-```json
-{
-  "persona_id": "e7ce269d-d116-5334-99b9-66062d5f55ed",
-  "question": "Tại sao hát Quan họ phải trao trầu?",
-  "lang": "vi"
-}
+```bash
+curl "http://localhost:8000/api/v1/festivals?month=3&region=north"
+curl "http://localhost:8000/api/v1/festivals/months"
 ```
 
-### Unified Chat
+### Bookings
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/chat` | Text chat with heritage knowledge |
-| `POST` | `/chat/voice` | Voice input → transcription → chat |
-| `POST` | `/chat/grade` | Grade user singing against reference |
+| `POST` | `/bookings` | Create a trip booking |
+| `GET` | `/bookings` | List all bookings |
+
+```bash
+curl -X POST http://localhost:8000/api/v1/bookings \
+  -H "Content-Type: application/json" \
+  -d '{"full_name":"Nguyen Van A","email":"a@example.com","travelers":2,"region":"north"}'
+```
+
+### Trip Suggestions
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/trip/suggest` | Suggest sites + festivals from date/region/interests |
+
+```bash
+curl -X POST http://localhost:8000/api/v1/trip/suggest \
+  -H "Content-Type: application/json" \
+  -d '{"start_date":"2026-09-01","region":"central","interests":["heritage","music"],"lang":"vi"}'
+```
+
+### AI Tour Curator Chat
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/chat` | Chat with the AI Tour Curator (Google Gemini proxy) |
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/chat \
   -H "Content-Type: application/json" \
-  -d '{"message":"Hãy kể về ca trù","lang":"vi"}'
+  -d '{"messages":[{"role":"user","text":"Gợi ý tour 3 ngày ở Huế"}]}'
 ```
 
-### Audio Analysis
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/audio/analyze` | Analyze traditional music (genre, instruments, techniques) |
-
-```bash
-curl -X POST http://localhost:8000/api/v1/audio/analyze \
-  -F "file=@recording.wav"
-```
-
-### Health & Monitoring
+### Health
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/health` | API health status |
-| `GET` | `/health/models` | Model availability check |
-| `GET` | `/health/cache` | Cache statistics |
 
 ---
 
-## Frontend Usage
+## Frontend Pages
 
-```bash
-cd frontend
-npm run dev      # development server (http://localhost:5173)
-npm run build    # production build
-npm run preview  # preview production build
-npm run lint     # ESLint check
-```
+| Page | File | Description |
+|------|------|-------------|
+| Home | `index.html` | Landing page |
+| Heritage Map | `VNMT.html` | Interactive Leaflet map with filters |
+| Archive | `database.html` | Bilingual heritage & treasure archive |
+| Festivals | `festivals.html` | Festival calendar by month |
+| Journey | `journey.html` | Heritage journey explorer |
+| Tour AI | `planner.html` | AI-powered itinerary planner |
+| Booking | `booking.html` / `tour_booking.html` | Trip booking wizard |
+| About | `about.html` | Project info, values, team, sources |
+| Shop | `shop.html` | Merchandise shop |
+| Site Detail | `site.html` | Individual heritage site page |
+| Treasure | `treasure.html` | National treasure detail |
+| Artifact 3D | `artifact.html` | 3D artifact viewer |
+| Lunar Calendar | `lunar-calendar.html` | Traditional lunar calendar |
 
-### Example: Viewing a site detail
-
-Navigate to `http://localhost:5173/site/{siteId}` to see a site's artifacts, 3D models, and audio samples. Use the map at `/` to discover sites and the analyzer at `/analyzer` to classify audio.
-
-### Example: Chatting with an artisan
-
-Visit `http://localhost:5173/artisan/{personaId}`. The persona will respond in the persona's voice and language, citing knowledge chunks when confident.
+All pages support **bilingual (Vietnamese / English)** toggling with persistence via `localStorage`.
 
 ---
 
@@ -359,22 +346,21 @@ Visit `http://localhost:5173/artisan/{personaId}`. The persona will respond in t
 The application is deployed as a single service on Render:
 
 - **Web** → [Render](add later) (`render.yaml`, `backend/Dockerfile.prod`)
-  - Full-stack deployment (FastAPI serves the React frontend build)
+  - Full-stack deployment (FastAPI serves the static frontend from `Project/`)
   - Production database: SQLite (`vietheritage.db`)
-  - Demo `OPENROUTER_API_KEY` pre-configured in `backend/render.yaml`
-  - No separate frontend deployment needed - API and static files served together
+  - `GEMINI_API_KEY` configured server-side in `backend/render.yaml`
+  - No separate frontend deployment needed — API and static files served together
 
 ---
 
 ## Contributing
 
 1. Fork the repository and create a feature branch (`git checkout -b feature/your-feature`).
-2. Install dev dependencies and hooks:
+2. Install dev dependencies:
 
 ```bash
 cd backend
 pip install -e ".[dev]"
-pre-commit install
 ```
 
 3. Keep code clean — the project uses `ruff` (lint + format) and `mypy` (types).
@@ -402,5 +388,5 @@ This project is licensed under the **MIT License** — see the repository for th
 ---
 
 <p align="center">
-  <em>LimitlessX · VietHeritage Map — Preserving Vietnamese heritage, one story at a time.</em>
+  <em>LimitlessX · VietHeritage — Preserving Vietnamese heritage, one story at a time.</em>
 </p>

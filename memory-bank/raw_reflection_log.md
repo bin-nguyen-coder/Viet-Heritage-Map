@@ -138,3 +138,50 @@ Improvements_Identified_For_Consolidation:
 - [x] Logged learning to memory-bank/raw_reflection_log.md
 - [ ] Present completion
 </task_progress>
+
+---
+
+Date: 2026_08_16
+TaskRef: "Update README.md from about.html/about.js in Viet-Heritage-Map"
+
+Learnings:
+- The README was significantly out of date: it described a React 18 + Vite + TypeScript
+  frontend, PostgreSQL + pgvector, MinIO, Ollama (phi3.5), ONNX audio analysis, and
+  faster-whisper — none of which exist in the current codebase.
+- The actual stack (verified from `backend/requirements.txt`, `backend/app/main.py`,
+  `backend/app/core/config.py`, and the API route files) is: FastAPI + SQLAlchemy 2.0
+  (async) + SQLite/aiosqlite + httpx + pydantic-settings backend, and a vanilla
+  JS/HTML/CSS frontend served statically by FastAPI from `Project/`.
+- The AI is a Google Gemini server-side proxy (`gemini-3.1-flash-lite`) via
+  `POST /api/v1/chat`; the API key stays server-side. There is no local LLM, no RAG,
+  no pgvector, no MinIO, no ONNX, no Whisper in the current codebase.
+- The about page content lives in `Project/about.js` as `window.ABOUT_CONTENT` (bilingual
+  vi/en). It describes the project as an AI-powered digital museum archiving 16 intangible
+  cultural heritages and 39 national treasures, with 5 core genres, 3 missions, 3 values,
+  6 features, 5 team members, and 4 data sources.
+- Actual API routes (from `backend/app/api/v1/`): `/sites`, `/festivals`, `/bookings`,
+  `/trip/suggest`, `/chat`, plus `/health`. The old README's `/artisan/ask`, `/audio/analyze`,
+  `/chat/voice`, `/chat/grade`, `/health/models`, `/health/cache` do not exist.
+- The frontend is served at the root `/` by FastAPI's StaticFiles mount (html=True), so
+  the app runs at `http://localhost:8000` with no separate frontend dev server.
+
+Difficulties:
+- The old README's repository layout referenced a `frontend/` directory that does not
+  exist; the actual frontend is `Project/`. Had to enumerate `Project/` files to build an
+  accurate layout tree.
+
+Successes:
+- Verified the real stack by reading `requirements.txt`, `config.py`, `main.py`, and all
+  five API route files before rewriting — no guessing.
+- Rewrote README to match the actual codebase: accurate features, architecture diagram,
+  tech stack, repo layout, env vars, API reference, and frontend page table.
+
+Improvements_Identified_For_Consolidation:
+- General pattern: before updating a README, verify the actual stack from source
+  (requirements.txt, main.py, config, route files) rather than trusting the existing README.
+- For this project: the canonical stack is FastAPI + SQLite/aiosqlite + vanilla JS frontend
+  served from `Project/`; AI = Google Gemini server-side proxy; API routes are
+  /sites, /festivals, /bookings, /trip/suggest, /chat, /health.
+- For this project: about-page content is in `Project/about.js` (window.ABOUT_CONTENT),
+  bilingual vi/en, describing 16 heritages + 39 treasures.
+</task_progress>
