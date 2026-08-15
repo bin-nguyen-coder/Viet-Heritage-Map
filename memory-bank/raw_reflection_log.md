@@ -93,7 +93,42 @@ Improvements_Identified_For_Consolidation:
 - For this project: backend must be launched with the Miniconda interpreter
   `D:\.Miniconda\python.exe -m uvicorn`, not bare `uvicorn`/`python`.
 - Use a dedicated variable `%PYTHON%` at the top of a .bat for one-point interpreter path changes.
----</migration>
+---
+
+Date: 2026_08_16
+TaskRef: "Fix 7 syntax problems in Project/planner-plan.js (Viet-Heritage-Map)"
+
+Learnings:
+- The 7 syntax problems were all in one corrupted block inside `renderPlan()`'s
+  `pts.forEach` callback in `Project/planner-plan.js`. A mangled edit had merged the
+  teardrop path's `d:` attribute into the `name` variable assignment, and dropped the
+  `const g = S('g', ...)` and `const teardrop = S('path', ...)` declarations.
+- The 7 problems were: (1) `d:` unexpected token `:` at line 263, (2) unclosed
+  parenthesis in the `name` assignment, (3) `g` undefined, (4) `teardrop` undefined,
+  (5) `idx` undefined, (6) `g` undefined (second use), (7) `idx` undefined (tooltip).
+- `node --check <file>` is the fastest way to surface the first syntax error, but it
+  stops at the first failure — the remaining undefined-variable problems only become
+  visible by reading the surrounding block and reconstructing the intended logic.
+- The intended structure: `name` falls back to `'Chặng ' + (i+1)`, `idx = i+1`, then a
+  `g` group containing a teardrop `path` (with the `d` attribute) and a numbered text.
+
+Difficulties:
+- `node --check` only reports the first error; had to read the whole mangled block to
+  recover the lost declarations and reconstruct the correct pin-rendering logic.
+
+Successes:
+- Reconstructed the corrupted block by matching the surrounding code's intent
+  (numbered pins with teardrop shapes, day labels, tooltips) and the CSS class names
+  (`rm-pin`, `rm-pin-shape`, `rm-pin-num`) referenced elsewhere.
+- Verified with `node --check` → exit 0.
+
+Improvements_Identified_For_Consolidation:
+- General pattern: when a JS file has a syntax error, run `node --check` to find the
+  first failure, then read the surrounding block to recover any lost declarations
+  (undefined variables) that the parser can't report in one pass.
+- For this project: `Project/planner-plan.js` renders the SVG route map; the pin block
+  uses `rm-pin` / `rm-pin-shape` / `rm-pin-num` classes and `idx`/`name`/`day` locals.
+---
 <task_progress>
 - [x] Read run_local.bat to understand its contents
 - [x] Diagnosed root cause: default Python313 broken, no python.exe on PATH

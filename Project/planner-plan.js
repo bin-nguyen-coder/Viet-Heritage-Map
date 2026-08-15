@@ -259,10 +259,15 @@
       const x = pt[0];
       const y = pt[1];
       const day = l.day || (i + 1);
-      const name = String(l.name || ('Chặng ' + (
+      const name = String(l.name || ('Chặng ' + (i + 1)));
+      const idx = i + 1;
+
+      const g = S('g', { class: 'rm-pin' });
+      const teardrop = S('path', {
         d: 'M ' + x + ' ' + (y - 14) +
            ' C ' + (x + 9) + ' ' + (y - 14) + ' ' + (x + 9) + ' ' + y + ' ' + x + ' ' + (y + 9) +
-           ' C ' + (x - 9) + ' ' + y + ' ' + (x - 9) + ' ' + (y - 14) + ' ' + x + ' ' + (y - 14) + ' Z'
+           ' C ' + (x - 9) + ' ' + y + ' ' + (x - 9) + ' ' + (y - 14) + ' ' + x + ' ' + (y - 14) + ' Z',
+        class: 'rm-pin-shape'
       });
       g.appendChild(teardrop);
 
