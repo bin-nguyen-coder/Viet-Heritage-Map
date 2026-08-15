@@ -12,7 +12,7 @@
       --muted:      #8a7c5e;
       --white:      #f5f0e6;
       --font-body: 'DM Sans',sans-serif;
-      --font-heading: 'Playfair Display',serif;
+      --font-heading: 'Merriweather',serif;
     }
 
     html.lang-vi { --font-body: 'Merriweather',serif; }
@@ -77,14 +77,14 @@
     }
     .header-eyebrow::before { content:''; display:block; width:24px; height:1px; background:var(--gold); }
     h1 {
-      font-family:'Playfair Display',serif; font-size:clamp(1.5rem,2.8vw,2.5rem);
-      font-weight:700; color:var(--white); line-height:1.1; letter-spacing:-0.02em;
+      font-family:'Merriweather',serif; font-size:clamp(1.5rem,2.8vw,2.5rem);
+      font-weight:700; color:var(--white); line-height:1.2; letter-spacing:-0.012em;
       white-space:nowrap;
     }
     h1 em { font-style:italic; color:var(--gold-light); }
     .header-stats { display:flex; gap:28px; flex-shrink:0; }
     .stat { text-align:right; }
-    .stat-n { font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--gold); font-weight:700; line-height:1; display:block; }
+    .stat-n { font-family:'Merriweather',serif; font-size:1.8rem; color:var(--gold); font-weight:700; line-height:1; display:block; }
     .stat-l { font-size:9.5px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); display:block; margin-top:2px; }
 
     /* ── LAYOUT ── */
@@ -184,8 +184,8 @@
     .a-card.active { background:var(--card); border-left-color:var(--gold); }
     .a-num { font-size:10px; color:var(--muted); font-weight:600; letter-spacing:.08em; min-width:24px; padding-top:2px; }
     .a-body { flex:1; min-width:0; }
-    .a-title { font-family:'Playfair Display',serif; font-size:14px; color:var(--white); margin-bottom:2px; line-height:1.25; }
-    .a-viet  { font-family:'Playfair Display',serif; font-style:italic; font-size:12px; color:var(--gold); margin-bottom:5px; }
+    .a-title { font-family:'Merriweather',serif; font-size:14px; color:var(--white); margin-bottom:2px; line-height:1.25; }
+    .a-viet  { font-family:'Merriweather',serif; font-style:italic; font-size:12px; color:var(--gold); margin-bottom:5px; }
     .a-desc  { font-size:12px; color:var(--muted); line-height:1.6; }
     .desc-pending { font-size:9.5px; color:var(--gold); opacity:0.6; font-style:italic; }
     .a-loc   { font-size:10.5px; color:var(--muted); margin-top:7px; display:flex; align-items:flex-start; gap:4px; line-height:1.4; }
@@ -203,7 +203,7 @@
       display:none;
     }
     .map-info.visible { display:block; }
-    .map-info-title { font-family:'Playfair Display',serif; font-size:14px; color:var(--white); margin-bottom:3px; }
+    .map-info-title { font-family:'Merriweather',serif; font-size:14px; color:var(--white); margin-bottom:3px; }
     .map-info-sub   { font-size:11px; color:var(--muted); }
     .map-info-count { font-size:11px; color:var(--gold); margin-top:5px; font-weight:500; }
 
@@ -273,7 +273,7 @@
       padding:8px 12px !important; opacity:1 !important;
     }
     .leaflet-tooltip-top.artifact-tooltip::before { border-top-color:#2c2507 !important; }
-    .tt-title { font-family:'Playfair Display',serif; font-size:13px; color:#f5f0e6; margin-bottom:3px; }
+    .tt-title { font-family:'Merriweather',serif; font-size:13px; color:#f5f0e6; margin-bottom:3px; }
     .tt-meta  { font-size:10px; color:#8a7c5e; display:flex; align-items:center; gap:5px; letter-spacing:.03em; }
     .tt-dot   { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 
@@ -327,7 +327,7 @@
       width:100%; height:100%; object-fit:cover; max-height:280px;
       display:block;
     }
-    .modal-title { font-family:'Playfair Display',serif; font-size:22px; color:var(--white); line-height:1.25; margin-bottom:6px; }
+    .modal-title { font-family:'Merriweather',serif; font-size:22px; color:var(--white); line-height:1.25; margin-bottom:6px; }
     .modal-subtitle {
       font-size:12px; color:var(--muted); font-style:italic;
       margin-bottom:14px;
@@ -390,7 +390,7 @@
     }
     .province-modal-close:hover { color:var(--gold); border-color:var(--gold); }
     .province-modal-title {
-      font-family:'Playfair Display',serif; font-size:16px; color:var(--white);
+      font-family:'Merriweather',serif; font-size:16px; color:var(--white);
       margin-bottom:3px; padding-right:20px;
     }
     .province-modal-sub {
@@ -448,7 +448,7 @@
     }
     .province-item-body { flex:1; min-width:0; }
     .province-item-title {
-      font-family:'Playfair Display',serif; font-size:12.5px;
+      font-family:'Merriweather',serif; font-size:12.5px;
       color:var(--white); line-height:1.3; margin-bottom:3px;
       overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     }
@@ -506,7 +506,7 @@
       border-radius: 8px;
     }
     .modal-audio-section h4 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Merriweather', serif;
       font-size: 13px;
       color: var(--gold-light);
       margin-bottom: 10px;
@@ -547,7 +547,7 @@
       border-radius: 10px;
     }
     .modal-practice-section h4 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Merriweather', serif;
       font-size: 14px;
       color: var(--gold-light);
       margin-bottom: 6px;
@@ -683,7 +683,7 @@
       margin-bottom: 12px;
     }
     .modal-audio-analysis-header h4 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Merriweather', serif;
       font-size: 13px;
       color: var(--gold-light);
       margin: 0;
@@ -734,7 +734,7 @@
       padding: 12px 0;
     }
     .vocal-score-value {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Merriweather', serif;
       font-size: 48px;
       font-weight: 700;
       color: var(--gold-light);
@@ -798,7 +798,7 @@
       border-left:3px solid #d4875e; color:var(--text);
       border-radius:4px; padding:8px 10px; box-shadow:0 4px 16px rgba(0,0,0,.5);
     }
-    .nt-tooltip .tt-title { font-family:'Playfair Display',serif; font-size:13px; color:var(--white); }
+    .nt-tooltip .tt-title { font-family:'Merriweather',serif; font-size:13px; color:var(--white); }
     .nt-tooltip .tt-meta { font-size:10.5px; color:var(--muted); margin-top:2px; }
 
     /* National treasure card tint (sidebar, treasure mode) */
