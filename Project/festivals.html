@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lịch Lễ Hội — VietHeritage Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0a0900; --surface:#110f04; --card:#181500; --border:#2c2507;
+      --gold:#c9a84c; --gold-light:#e8c96a; --red:#1c1c1c; --red-bright:#c42b2b;
+      --text:#e8dfc8; --muted:#8a7c5e; --white:#f5f0e6;
+      --font-body:'DM Sans',sans-serif; --font-heading:'Playfair Display',serif;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(10,9,0,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.14);}
+    .nav-logo{display:flex;align-items:center;gap:10px;color:var(--white);font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;}
+    .nav-logo svg{color:var(--gold);}
+    .nav-links{display:flex;gap:26px;list-style:none;position:absolute;left:50%;transform:translateX(-50%);}
+    .nav-links a{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .2s;}
+    .nav-links a:hover{color:var(--gold-light);}
+    .nav-links a.active{color:var(--gold);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .lang-toggle{display:flex;gap:3px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:3px;}
+    .lang-btn{background:transparent;border:none;color:var(--muted);padding:4px 12px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer;transition:all .2s;}
+    .lang-btn.active{background:var(--gold);color:#1a1400;}
+    .nav-map-btn{display:flex;align-items:center;gap:6px;background:var(--red-bright);color:#fff;padding:8px 16px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.06em;transition:background .2s;}
+    .nav-map-btn:hover{background:#e04444;}
+
+    /* HERO */
+    .hero{background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);border-bottom:2px solid var(--gold);padding:56px 48px 48px;position:relative;overflow:hidden;}
+    .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 30%,#c42b2b 50%,var(--gold) 70%,transparent);}
+    .hero-eyebrow{font-size:10px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+    .hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold);}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#f5f0e6;line-height:1.1;margin-bottom:16px;}
+    .hero h1 em{font-style:italic;color:var(--gold);}
+    .hero p{font-size:14.5px;color:var(--muted);line-height:1.75;max-width:680px;}
+
+    /* FILTER */
+    .filter-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:24px 48px;border-bottom:1px solid var(--border);}
+    .filter-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+    .chip{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;}
+    .chip:hover{color:var(--gold-light);border-color:var(--gold);}
+    .chip.active{background:var(--gold);color:#1a1400;border-color:var(--gold);}
+
+    /* CALENDAR */
+    .calendar{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:32px 48px 64px;}
+    .month-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;transition:transform .2s,border-color .2s;}
+    .month-card:hover{transform:translateY(-3px);border-color:var(--gold);}
+    .month-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px;}
+    .month-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
+    .month-count{font-size:11px;color:var(--muted);}
+    .fest-item{padding:12px 0;border-bottom:1px solid rgba(44,37,7,.5);}
+    .fest-item:last-child{border-bottom:none;}
+    .fest-name{font-size:14px;font-weight:600;color:var(--white);line-height:1.3;}
+    .fest-date{font-size:11px;color:var(--gold);margin:4px 0 6px;letter-spacing:.04em;}
+    .fest-loc{font-size:11px;color:var(--muted);margin-bottom:6px;}
+    .fest-desc{font-size:12px;color:var(--text);opacity:.8;line-height:1.6;}
+    .fest-tag{display:inline-block;font-size:10px;color:var(--gold-light);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:2px 8px;margin-top:6px;}
+
+    footer{padding:24px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;color:var(--muted);font-size:12px;flex-wrap:wrap;gap:8px;}
+
+    @media (max-width:900px){
+      nav{padding:0 20px;} .nav-links{display:none;}
+      .hero{padding:40px 20px;} .filter-bar{padding:20px;} .calendar{padding:24px 20px 48px;grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor"><polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/></svg>
+    <span>VietHeritage Map</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Trang chủ</a></li>
+    <li><a href="booking.html" class="book-link">Đặt tour</a></li>
+    <li><a href="festivals.html" class="active">Lễ hội</a></li>
+    <li><a href="journey.html">Hành trình Bảo vật</a></li>
+    <li><a href="database.html">Kho lưu trữ</a></li>
+    <li><a href="about.html">Giới thiệu</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="booking.html" class="nav-map-btn">Đặt tour</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow" id="eyebrow">Lịch lễ hội quanh năm</div>
+  <h1><span id="h1a">Lễ hội</span> <em id="h1b">Việt Nam</em></h1>
+  <p id="sub">Khám phá các lễ hội truyền thống gắn liền với di sản UNESCO — từ Tết Nguyên Đán đến lễ hội Cồng Chiêng Tây Nguyên, trải dài suốt 12 tháng trong năm.</p>
+</section>
+
+<div class="filter-bar">
+  <span class="filter-label" id="flabel">Lọc theo vùng:</span>
+  <button class="chip active" data-region="all" id="f-all">Tất cả</button>
+  <button class="chip" data-region="north" id="f-north">Miền Bắc</button>
+  <button class="chip" data-region="central" id="f-central">Miền Trung</button>
+  <button class="chip" data-region="south" id="f-south">Miền Nam</button>
+  <button class="chip" data-region="highlands" id="f-highlands">Tây Nguyên</button>
+  <button class="chip" data-region="nationwide" id="f-nationwide">Toàn quốc</button>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<footer>
+  <span id="f-copy">© 2026 VietHeritage Map</span>
+  <span id="f-credit">Lễ hội gắn với 16 di sản UNESCO Việt Nam</span>
+</footer>
+
+<script src="festivals.js"></script>
+<script>
+  let lang = localStorage.getItem('vnmt_lang') || 'vi';
+  let regionFilter = 'all';
+
+  const MONTHS_VI = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+  const MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const REGION_VI = {north:'Miền Bắc',central:'Miền Trung',south:'Miền Nam',highlands:'Tây Nguyên',nationwide:'Toàn quốc'};
+  const REGION_EN = {north:'North',central:'Central',south:'South',highlands:'Highlands',nationwide:'Nationwide'};
+
+  const STR = {
+    vi: {
+      eyebrow:'Lịch lễ hội quanh năm', h1a:'Lễ hội', h1b:'Việt Nam',
+      sub:'Khám phá các lễ hội truyền thống gắn liền với di sản UNESCO — từ Tết Nguyên Đán đến lễ hội Cồng Chiêng Tây Nguyên, trải dài suốt 12 tháng trong năm.',
+      flabel:'Lọc theo vùng:', all:'Tất cả', empty:'Không có lễ hội nào trong vùng này.',
+      copy:'© 2026 VietHeritage Map', credit:'Lễ hội gắn với 16 di sản UNESCO Việt Nam',
+      lunar:'Âm lịch', related:'Di sản liên quan'
+    },
+    en: {
+      eyebrow:'Festival calendar all year', h1a:'Festivals', h1b:'of Vietnam',
+      sub:'Discover traditional festivals tied to UNESCO heritage — from Lunar New Year to the Central Highlands Gong Festival, across all 12 months of the year.',
+      flabel:'Filter by region:', all:'All', empty:'No festivals in this region.',
+      copy:'© 2026 VietHeritage Map', credit:'Festivals tied to 16 UNESCO heritage entries',
+      lunar:'Lunar', related:'Related heritage'
+    }
+  };
+  function t(k){ return STR[lang][k]; }
+
+  function render(){
+    const cal = document.getElementById('calendar');
+    const months = lang === 'vi' ? MONTHS_VI : MONTHS_EN;
+    let html = '';
+    for (let m = 1; m <= 12; m++){
+      const fests = FESTIVALS.filter(f => f.month === m && (regionFilter === 'all' || f.region === regionFilter));
+      html += '<div class="month-card">';
+      html += '<div class="month-head"><span class="month-name">' + months[m-1] + '</span><span class="month-count">' + fests.length + ' ' + (lang==='vi'?'lễ hội':'festivals') + '</span></div>';
+      if (!fests.length) html += '<div class="fest-desc" style="opacity:.5">' + t('empty') + '</div>';
+      fests.forEach(f => {
+        const name = lang === 'vi' ? f.name_vi : f.name_en;
+        const desc = lang === 'vi' ? f.desc_vi : f.desc_en;
+        const region = lang === 'vi' ? REGION_VI[f.region] : REGION_EN[f.region];
+        let dateStr = '';
+        if (f.lunar_month) dateStr = t('lunar') + ' ' + f.lunar_month + '/' + f.lunar_day;
+        html += '<div class="fest-item">';
+        html += '<div class="fest-name">' + name + '</div>';
+        if (dateStr) html += '<div class="fest-date">' + dateStr + '</div>';
+        html += '<div class="fest-loc">' + region + ' · ' + f.location + '</div>';
+        html += '<div class="fest-desc">' + desc + '</div>';
+        html += '<span class="fest-tag">' + t('related') + ': ' + f.related_heritage + '</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+    cal.innerHTML = html;
+  }
+
+  function applyLang(){
+    document.documentElement.lang = lang;
+    document.title = lang==='vi' ? 'Lịch Lễ Hội — VietHeritage Map' : 'Festival Calendar — VietHeritage Map';
+    document.getElementById('eyebrow').textContent = t('eyebrow');
+    document.getElementById('h1a').textContent = t('h1a');
+    document.getElementById('h1b').textContent = t('h1b');
+    document.getElementById('sub').textContent = t('sub');
+    document.getElementById('flabel').textContent = t('flabel');
+    document.getElementById('f-all').textContent = t('all');
+    document.getElementById('f-copy').textContent = t('copy');
+    document.getElementById('f-credit').textContent = t('credit');
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    render();
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => { lang = btn.dataset.lang; localStorage.setItem('vnmt_lang', lang); applyLang(); });
+  });
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      regionFilter = chip.dataset.region;
+      document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+      render();
+    });
+  });
+
+  applyLang();
+</script>
+</body>
+</html>

@@ -6,15 +6,9 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 import logging
 
-try:
-    import sentry_sdk
-except ImportError:
-    sentry_sdk = None
-
 from app.core.config import settings
 from app.core.database import init_db
-from app.core.monitoring import init_sentry, ModelHealthChecker
-from app.api.v1 import sites, artisan, audio, monitoring, chat, recommend
+from app.api.v1 import sites, festivals, booking, trip
 
 # Configure logging
 logging.basicConfig(
@@ -26,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_sentry()
     logger.info("Starting VietHeritage API")
     await init_db()
     logger.info("Database initialized")
@@ -66,24 +59,11 @@ async def health_check():
     return {"status": "healthy", "version": settings.APP_VERSION}
 
 
-@app.get("/health/models")
-async def model_health_check():
-    return await ModelHealthChecker.check_all()
-
-
-@app.get("/health/cache")
-async def cache_stats():
-    from app.core.cache import cache
-    return cache.stats()
-
-
 # API Routes (MUST be before StaticFiles mount to avoid being shadowed)
 app.include_router(sites.router, prefix=settings.API_V1_PREFIX)
-app.include_router(artisan.router, prefix=settings.API_V1_PREFIX)
-app.include_router(audio.router, prefix=settings.API_V1_PREFIX)
-app.include_router(monitoring.router, prefix=settings.API_V1_PREFIX)
-app.include_router(chat.router, prefix=settings.API_V1_PREFIX)
-app.include_router(recommend.router, prefix=settings.API_V1_PREFIX)
+app.include_router(festivals.router, prefix=settings.API_V1_PREFIX)
+app.include_router(booking.router, prefix=settings.API_V1_PREFIX)
+app.include_router(trip.router, prefix=settings.API_V1_PREFIX)
 
 # Serve Project frontend from / (MUST be AFTER all routes to avoid shadowing API endpoints)
 STATIC_DIR = Path(__file__).resolve().parent.parent.parent / "Project"
@@ -118,8 +98,6 @@ async def value_error_handler(request: Request, exc: ValueError):
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.exception(f"Unhandled error on {request.url.path}: {exc}")
-    if settings.SENTRY_DSN and sentry_sdk:
-        sentry_sdk.capture_exception(exc)
     if settings.DEBUG:
         raise
     return JSONResponse(

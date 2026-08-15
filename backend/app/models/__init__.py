@@ -1,14 +1,10 @@
 from app.models.site import HeritageSite, ArtifactModel, HeritageType, UNESCOStatus
-from app.models.audio_asset import AudioAsset
-from app.models.artisan import ArtisanPersona, KnowledgeChunk, ArtisanResponse
+from app.models.booking import Booking
 
 __all__ = [
     "HeritageSite",
     "ArtifactModel",
     "HeritageType",
     "UNESCOStatus",
-    "AudioAsset",
-    "ArtisanPersona",
-    "KnowledgeChunk",
-    "ArtisanResponse",
+    "Booking",
 ]

@@ -65,12 +65,6 @@ class HeritageSite(Base):
     artifact_model: Mapped[Optional["ArtifactModel"]] = relationship(
         "ArtifactModel", back_populates="sites", lazy="selectin"
     )
-    audio_assets: Mapped[List["AudioAsset"]] = relationship(
-        "AudioAsset", back_populates="site", cascade="all, delete-orphan", lazy="selectin"
-    )
-    knowledge_chunks: Mapped[List["KnowledgeChunk"]] = relationship(
-        "KnowledgeChunk", back_populates="site", cascade="all, delete-orphan", lazy="selectin"
-    )
 
 
 class ArtifactModel(Base):

@@ -320,12 +320,16 @@ const FOOTER_CTA = {
 const NAV_LABELS = {
   vi: {
     home: 'Trang chủ',
+    book: 'Đặt tour',
+    fest: 'Lễ hội',
     map: 'Bản đồ di sản',
     db: 'Kho lưu trữ',
     about: 'Giới thiệu',
   },
   en: {
     home: 'Home',
+    book: 'Book a Trip',
+    fest: 'Festivals',
     map: 'Heritage Map',
     db: 'Archive',
     about: 'About',

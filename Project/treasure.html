@@ -498,6 +498,8 @@
   </a>
   <ul class="nav-links">
     <li><a href="index.html"    id="nav-home">Trang chủ</a></li>
+    <li><a href="booking.html"   id="nav-book">Đặt tour</a></li>
+    <li><a href="festivals.html" id="nav-fest">Lễ hội</a></li>
     <li><a href="VNMT.html"     id="nav-map">Bản đồ</a></li>
     <li><a href="journey.html"  id="nav-journey">Hành trình Bảo vật</a></li>
     <li><a href="database.html" id="nav-db">Kho lưu trữ</a></li>
@@ -709,7 +711,7 @@ let lang = localStorage.getItem('vnmt_lang') || 'vi';
 
 const STRINGS = {
   vi: {
-    navHome:'Trang chủ', navMap:'Bản đồ', navDb:'Kho lưu trữ',
+    navHome:'Trang chủ', navMap:'Bản đồ', navDb:'Kho lưu trữ', navBook:'Đặt tour', navFest:'Lễ hội',
     breadHome:'Trang chủ', breadDb:'Bảo Vật Quốc Gia',
     lblVisit:'Tham quan Bảo vật', lblVisitSub:'Khám phá địa điểm lưu giữ bảo vật này.',
     lblMapLink:'BẢN ĐỒ', lblOpenMaps:'Mở Google Maps',
@@ -721,7 +723,7 @@ const STRINGS = {
     quoteEmpty:'[ Chưa có mô tả chi tiết. Thêm trường quote vào national_treasures.js để hiển thị ở đây. ]',
   },
   en: {
-    navHome:'Home', navMap:'Map', navDb:'Database',
+    navHome:'Home', navMap:'Map', navDb:'Database', navBook:'Book a Trip', navFest:'Festivals',
     breadHome:'Home', breadDb:'National Treasures',
     lblVisit:'Visit This Treasure', lblVisitSub:'Explore the location where this national treasure is held.',
     lblMapLink:'MAP', lblOpenMaps:'Open in Google Maps',
@@ -738,7 +740,7 @@ const S = k => STRINGS[lang][k];
 function applyLang() {
   document.documentElement.lang = lang;
   const set = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
-  set('nav-home', S('navHome')); set('nav-map', S('navMap')); set('nav-db', S('navDb'));
+  set('nav-home', S('navHome')); set('nav-book', S('navBook')); set('nav-fest', S('navFest')); set('nav-map', S('navMap')); set('nav-db', S('navDb'));
   set('lbl-visit', S('lblVisit')); set('lbl-visit-sub', S('lblVisitSub'));
   set('lbl-map-link', S('lblMapLink')); set('lbl-open-maps', S('lblOpenMaps'));
   set('lbl-coords', S('lblCoords')); set('lbl-era', S('lblEra'));

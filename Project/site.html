@@ -122,6 +122,8 @@
   </a>
   <ul class="nav-links">
     <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+    <li><a href="booking.html" id="nav-book">Đặt tour</a></li>
+    <li><a href="festivals.html" id="nav-fest">Lễ hội</a></li>
     <li><a href="VNMT.html" id="nav-map">Bản đồ</a></li>
     <li><a href="journey.html" class="active" id="nav-journey">Hành trình Bảo vật</a></li>
     <li><a href="database.html" id="nav-db">Kho lưu trữ</a></li>
@@ -194,7 +196,7 @@
 <script>
 const STRINGS = {
   vi: {
-    navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navJourney: 'Hành trình Bảo vật',
+    navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navJourney: 'Hành trình Bảo vật', navBook: 'Đặt tour', navFest: 'Lễ hội',
     pageTitle: ' — VietHeritage Map',
     breadJourney: 'Hành trình Bảo vật',
     step: 'Chặng',
@@ -206,7 +208,7 @@ const STRINGS = {
     footerCredit: 'Dữ liệu: <em>357 Bảo vật Quốc gia</em>',
   },
   en: {
-    navHome: 'Home', navMap: 'Map', navDb: 'Database', navAbout: 'About', navJourney: 'Treasures Journey',
+    navHome: 'Home', navMap: 'Map', navDb: 'Database', navAbout: 'About', navJourney: 'Treasures Journey', navBook: 'Book a Trip', navFest: 'Festivals',
     pageTitle: ' — VietHeritage Map',
     breadJourney: 'Treasures Journey',
     step: 'Stop',
@@ -313,6 +315,8 @@ function applyLang() {
   document.documentElement.lang = lang;
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
   set('nav-home', t('navHome'));
+  set('nav-book', t('navBook'));
+  set('nav-fest', t('navFest'));
   set('nav-map', t('navMap'));
   set('nav-db', t('navDb'));
   set('nav-about', t('navAbout'));

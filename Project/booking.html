@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đặt Tour Di Sản — VietHeritage Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0a0900; --surface:#110f04; --card:#181500; --border:#2c2507;
+      --gold:#c9a84c; --gold-light:#e8c96a; --red-bright:#c42b2b;
+      --text:#e8dfc8; --muted:#8a7c5e; --white:#f5f0e6;
+      --font-body:'DM Sans',sans-serif; --font-heading:'Playfair Display',serif;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+
+    /* NAV */
+    nav{position:sticky;top:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(10,9,0,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.14);}
+    .nav-logo{display:flex;align-items:center;gap:10px;color:var(--white);font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;}
+    .nav-logo svg{color:var(--gold);}
+    .nav-links{display:flex;gap:26px;list-style:none;position:absolute;left:50%;transform:translateX(-50%);}
+    .nav-links a{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .2s;}
+    .nav-links a:hover{color:var(--gold-light);}
+    .nav-links a.active{color:var(--gold);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .lang-toggle{display:flex;gap:3px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:3px;}
+    .lang-btn{background:transparent;border:none;color:var(--muted);padding:4px 12px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer;transition:all .2s;}
+    .lang-btn.active{background:var(--gold);color:#1a1400;}
+    .nav-map-btn{display:flex;align-items:center;gap:6px;background:var(--red-bright);color:#fff;padding:8px 16px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.06em;transition:background .2s;}
+    .nav-map-btn:hover{background:#e04444;}
+
+    /* HERO */
+    .hero{background:linear-gradient(160deg,#1c1400 0%,#0a0900 70%);border-bottom:2px solid var(--gold);padding:56px 48px 48px;position:relative;overflow:hidden;}
+    .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 30%,#c42b2b 50%,var(--gold) 70%,transparent);}
+    .hero-eyebrow{font-size:10px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+    .hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold);}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#f5f0e6;line-height:1.1;margin-bottom:16px;}
+    .hero h1 em{font-style:italic;color:var(--gold);}
+    .hero p{font-size:14.5px;color:var(--muted);line-height:1.75;max-width:680px;}
+
+    /* WIZARD */
+    .wizard-wrap{max-width:960px;margin:0 auto;padding:40px 24px 80px;}
+    .steps{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
+    .step-dot{flex:1;min-width:120px;text-align:center;padding:12px 8px;border-radius:8px;border:1px solid var(--border);color:var(--muted);font-size:12px;letter-spacing:.06em;transition:all .2s;}
+    .step-dot.active{background:var(--gold);color:#1a1400;border-color:var(--gold);font-weight:600;}
+    .step-dot.done{background:rgba(201,168,76,.15);color:var(--gold-light);border-color:var(--gold);}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:32px;display:none;}
+    .panel.active{display:block;}
+    .panel h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:8px;}
+    .panel .hint{font-size:13px;color:var(--muted);margin-bottom:24px;}
+    .field{margin-bottom:20px;}
+    .field label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+    .field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:var(--font-body);outline:none;transition:border-color .2s;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+    .opt{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;text-align:center;transition:all .2s;}
+    .opt:hover{border-color:var(--gold);}
+    .opt.selected{background:var(--gold);color:#1a1400;border-color:var(--gold);font-weight:600;}
+    .opt .opt-ic{font-size:22px;display:block;margin-bottom:8px;}
+    .opt .opt-label{font-size:12px;}
+    .btn-row{display:flex;gap:12px;margin-top:28px;justify-content:space-between;}
+    .btn{background:var(--gold);color:#1a1400;border:none;border-radius:8px;padding:13px 26px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;letter-spacing:.03em;}
+    .btn:hover{background:var(--gold-light);}
+    .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+    .btn.ghost:hover{color:var(--gold-light);border-color:var(--gold);}
+
+    /* SUGGESTIONS */
+    .site-card{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;align-items:flex-start;}
+    .site-card input[type=checkbox]{margin-top:4px;width:18px;height:18px;accent-color:var(--gold);}
+    .site-card .s-name{font-size:15px;font-weight:600;color:var(--white);}
+    .site-card .s-meta{font-size:11px;color:var(--gold);margin:4px 0;}
+    .site-card .s-desc{font-size:12.5px;color:var(--text);opacity:.8;line-height:1.55;}
+    .fest-strip{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:16px;margin-bottom:20px;}
+    .fest-strip h3{font-family:'Playfair Display',serif;color:var(--gold);font-size:1rem;margin-bottom:10px;}
+
+    /* SUCCESS */
+    .success-box{text-align:center;padding:20px 0;}
+    .success-box .check{font-size:48px;color:var(--gold);margin-bottom:16px;}
+    .success-box h2{font-family:'Playfair Display',serif;color:var(--gold);margin-bottom:12px;}
+
+    /* CHATBOT */
+    .chat-fab{position:fixed;bottom:28px;right:28px;z-index:300;width:56px;height:56px;border-radius:50%;background:var(--red-bright);color:#fff;border:none;font-size:24px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;transition:transform .2s;}
+    .chat-fab:hover{transform:scale(1.08);}
+    .chat-panel{position:fixed;bottom:96px;right:28px;z-index:300;width:380px;max-width:90vw;height:520px;background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.65);transform:translateY(12px) scale(.97);opacity:0;pointer-events:none;transition:transform .25s,opacity .22s;overflow:hidden;}
+    .chat-panel.visible{transform:translateY(0) scale(1);opacity:1;pointer-events:all;}
+    .chat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--card);}
+    .chat-header .t{font-family:'Playfair Display',serif;font-size:14px;color:var(--white);}
+    .chat-header .s{font-size:10.5px;color:var(--muted);}
+    .chat-close{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;}
+    .chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;}
+    .msg{max-width:88%;padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.6;}
+    .msg.ai{align-self:flex-start;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);}
+    .msg.user{align-self:flex-end;background:var(--red-bright);color:#fff;}
+    .msg .sites{margin-top:8px;display:flex;flex-direction:column;gap:6px;}
+    .msg .site-pill{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--gold-light);cursor:pointer;}
+    .msg .site-pill:hover{border-color:var(--gold);}
+    .quick-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+    .quick{background:transparent;border:1px solid var(--border);color:var(--gold-light);border-radius:14px;padding:5px 12px;font-size:11.5px;cursor:pointer;}
+    .quick:hover{border-color:var(--gold);}
+    .chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:var(--card);}
+    .chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;}
+    .chat-input:focus{border-color:var(--gold);}
+    .chat-send{background:var(--red-bright);border:none;border-radius:6px;width:36px;height:36px;color:#fff;cursor:pointer;}
+
+    footer{padding:24px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;color:var(--muted);font-size:12px;flex-wrap:wrap;gap:8px;}
+
+    @media (max-width:900px){
+      nav{padding:0 20px;} .nav-links{display:none;}
+      .hero{padding:40px 20px;} .field-row{grid-template-columns:1fr;} .wizard-wrap{padding:24px 16px 64px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor"><polygon points="11,1 13,8 20,8 14.5,12.5 16.5,20 11,15.5 5.5,20 7.5,12.5 2,8 9,8"/></svg>
+    <span>VietHeritage Map</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Trang chủ</a></li>
+    <li><a href="booking.html" class="active">Đặt tour</a></li>
+    <li><a href="festivals.html">Lễ hội</a></li>
+    <li><a href="journey.html">Hành trình Bảo vật</a></li>
+    <li><a href="database.html">Kho lưu trữ</a></li>
+    <li><a href="about.html">Giới thiệu</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi">VI</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="festivals.html" class="nav-map-btn">Lễ hội</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow" id="eyebrow">Đặt tour khám phá di sản</div>
+  <h1><span id="h1a">Đặt tour</span> <em id="h1b">di sản Việt Nam</em></h1>
+  <p id="sub">Chọn ngày đi, vùng miền và sở thích của bạn — chúng tôi sẽ gợi ý hành trình di sản và lễ hội phù hợp nhất. Trò chuyện với trợ lý AI để được tư vấn nhanh.</p>
+</section>
+
+<div class="wizard-wrap">
+  <div class="steps" id="steps">
+    <div class="step-dot active" data-step="1" id="sd1">1. Ngày đi</div>
+    <div class="step-dot" data-step="2" id="sd2">2. Sở thích</div>
+    <div class="step-dot" data-step="3" id="sd3">3. Chọn điểm đến</div>
+    <div class="step-dot" data-step="4" id="sd4">4. Thông tin</div>
+  </div>
+
+  <!-- STEP 1: DATES -->
+  <div class="panel active" id="panel-1">
+    <h2 id="s1-title">Khi nào bạn muốn đi?</h2>
+    <p class="hint" id="s1-hint">Chọn ngày khởi hành và số lượng khách. Chúng tôi sẽ gợi ý lễ hội diễn ra trong thời gian đó.</p>
+    <div class="field-row">
+      <div class="field"><label id="l-start">Ngày khởi hành</label><input type="date" id="start-date" /></div>
+      <div class="field"><label id="l-end">Ngày kết thúc (tùy chọn)</label><input type="date" id="end-date" /></div>
+    </div>
+    <div class="field"><label id="l-travelers">Số khách</label><input type="number" id="travelers" min="1" max="50" value="2" /></div>
+    <div class="btn-row">
+      <span></span>
+      <button class="btn" id="to-step2">Tiếp theo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: REGION + INTERESTS -->
+  <div class="panel" id="panel-2">
+    <h2 id="s2-title">Bạn quan tâm điều gì?</h2>
+    <p class="hint" id="s2-hint">Chọn vùng miền và các khía cạnh văn hóa bạn muốn khám phá (có thể chọn nhiều).</p>
+    <div class="field"><label id="l-region">Vùng miền</label>
+      <div class="opt-grid" id="region-grid">
+        <div class="opt" data-val="north"><span class="opt-ic">🏔️</span><span class="opt-label" id="r-north">Miền Bắc</span></div>
+        <div class="opt" data-val="central"><span class="opt-ic">🏯</span><span class="opt-label" id="r-central">Miền Trung</span></div>
+        <div class="opt" data-val="south"><span class="opt-ic">🌾</span><span class="opt-label" id="r-south">Miền Nam</span></div>
+        <div class="opt" data-val="highlands"><span class="opt-ic">⛰️</span><span class="opt-label" id="r-highlands">Tây Nguyên</span></div>
+      </div>
+    </div>
+    <div class="field"><label id="l-interests">Sở thích</label>
+      <div class="opt-grid" id="interest-grid">
+        <div class="opt" data-val="music"><span class="opt-ic">🎵</span><span class="opt-label" id="i-music">Âm nhạc · Nhạc cụ</span></div>
+        <div class="opt" data-val="singing"><span class="opt-ic">🎤</span><span class="opt-label" id="i-singing">Hát · Dân ca</span></div>
+        <div class="opt" data-val="belief"><span class="opt-ic">🙏</span><span class="opt-label" id="i-belief">Tín ngưỡng · Lễ nghi</span></div>
+        <div class="opt" data-val="festival"><span class="opt-ic">🎉</span><span class="opt-label" id="i-festival">Lễ hội dân gian</span></div>
+        <div class="opt" data-val="craft"><span class="opt-ic">🏺</span><span class="opt-label" id="i-craft">Nghề thủ công</span></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" id="back-step1">← Quay lại</button>
+      <button class="btn" id="to-step3">Gợi ý hành trình →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: SUGGESTIONS -->
+  <div class="panel" id="panel-3">
+    <h2 id="s3-title">Hành trình gợi ý cho bạn</h2>
+    <p class="hint" id="s3-hint">Dựa trên ngày đi và sở thích, đây là các di sản và lễ hội phù hợp. Chọn những điểm bạn muốn đưa vào tour.</p>
+    <div id="fest-suggest"></div>
+    <div id="site-suggest"></div>
+    <div class="btn-row">
+      <button class="btn ghost" id="back-step2">← Quay lại</button>
+      <button class="btn" id="to-step4">Tiếp tục đặt →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: CONTACT -->
+  <div class="panel" id="panel-4">
+    <h2 id="s4-title">Thông tin đặt tour</h2>
+    <p class="hint" id="s4-hint">Điền thông tin liên hệ để hoàn tất đặt tour.</p>
+    <div class="field-row">
+      <div class="field"><label id="l-name">Họ tên</label><input type="text" id="full-name" placeholder="Nguyễn Văn A" /></div>
+      <div class="field"><label id="l-email">Email</label><input type="email" id="email" placeholder="ban@example.com" /></div>
+    </div>
+    <div class="field"><label id="l-phone">Số điện thoại (tùy chọn)</label><input type="tel" id="phone" placeholder="+84 ..." /></div>
+    <div class="field"><label id="l-notes">Ghi chú (tùy chọn)</label><textarea id="notes" rows="3"></textarea></div>
+    <div id="summary" style="font-size:12.5px;color:var(--muted);margin-bottom:16px;"></div>
+    <div class="btn-row">
+      <button class="btn ghost" id="back-step3">← Quay lại</button>
+      <button class="btn" id="submit-booking">Xác nhận đặt tour</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: SUCCESS -->
+  <div class="panel" id="panel-5">
+    <div class="success-box">
+      <div class="check">✓</div>
+      <h2 id="ok-title">Đặt tour thành công!</h2>
+      <p class="hint" id="ok-msg">Cảm ơn bạn đã đặt tour. Chúng tôi sẽ liên hệ qua email để xác nhận chi tiết.</p>
+      <button class="btn" id="book-again">Đặt tour khác</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span id="f-copy">© 2026 VietHeritage Map</span>
+  <span id="f-credit">Đặt tour khám phá 16 di sản UNESCO Việt Nam</span>
+</footer>
+
+<!-- CHATBOT -->
+<button class="chat-fab" id="chat-fab" title="Trợ lý AI">💬</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-header">
+    <div><div class="t" id="chat-title">Trợ lý du lịch di sản</div><div class="s" id="chat-status">Sẵn sàng · chạy cục bộ</div></div>
+    <button class="chat-close" id="chat-close">✕</button>
+  </div>
+  <div class="chat-msgs" id="chat-msgs"></div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" placeholder="Hỏi về điểm đến, lễ hội..." />
+    <button class="chat-send" id="chat-send">➤</button>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="festivals.js"></script>
+<script>
+  let lang = localStorage.getItem('vnmt_lang') || 'vi';
+  let selectedRegion = null;
+  let selectedInterests = [];
+  let suggestions = { sites: [], festivals: [] };
+
+  const STR = {
+    vi: {
+      eyebrow:'Đặt tour khám phá di sản', h1a:'Đặt tour', h1b:'di sản Việt Nam',
+      sub:'Chọn ngày đi, vùng miền và sở thích của bạn — chúng tôi sẽ gợi ý hành trình di sản và lễ hội phù hợp nhất. Trò chuyện với trợ lý AI để được tư vấn nhanh.',
+      s1:'Khi nào bạn muốn đi?', s1h:'Chọn ngày khởi hành và số lượng khách. Chúng tôi sẽ gợi ý lễ hội diễn ra trong thời gian đó.',
+      lStart:'Ngày khởi hành', lEnd:'Ngày kết thúc (tùy chọn)', lTravelers:'Số khách',
+      s2:'Bạn quan tâm điều gì?', s2h:'Chọn vùng miền và các khía cạnh văn hóa bạn muốn khám phá (có thể chọn nhiều).',
+      lRegion:'Vùng miền', lInterests:'Sở thích',
+      s3:'Hành trình gợi ý cho bạn', s3h:'Dựa trên ngày đi và sở thích, đây là các di sản và lễ hội phù hợp. Chọn những điểm bạn muốn đưa vào tour.',
+      s4:'Thông tin đặt tour', s4h:'Điền thông tin liên hệ để hoàn tất đặt tour.',
+      lName:'Họ tên', lEmail:'Email', lPhone:'Số điện thoại (tùy chọn)', lNotes:'Ghi chú (tùy chọn)',
+      ok:'Đặt tour thành công!', okMsg:'Cảm ơn bạn đã đặt tour. Chúng tôi sẽ liên hệ qua email để xác nhận chi tiết.',
+      next:'Tiếp theo →', back:'← Quay lại', suggest:'Gợi ý hành trình →', cont:'Tiếp tục đặt →', submit:'Xác nhận đặt tour', again:'Đặt tour khác',
+      step1:'1. Ngày đi', step2:'2. Sở thích', step3:'3. Chọn điểm đến', step4:'4. Thông tin',
+      fests:'Lễ hội diễn ra trong thời gian bạn đi', noFests:'Không có lễ hội lớn nào trong thời gian này.',
+      copy:'© 2026 VietHeritage Map', credit:'Đặt tour khám phá 16 di sản UNESCO Việt Nam',
+      chatTitle:'Trợ lý du lịch di sản', chatStatus:'Sẵn sàng · chạy cục bộ',
+      chatWelcome:'Xin chào! 👋 Tôi là trợ lý du lịch di sản. Hãy cho tôi biết bạn muốn đi khi nào, vùng nào và thích gì — tôi sẽ gợi ý điểm đến và lễ hội phù hợp.',
+      chatHint:'Bạn có thể thử: "Miền Bắc", "tháng 4", "âm nhạc", hoặc "gợi ý cho tôi".',
+      regionLabels:{north:'Miền Bắc',central:'Miền Trung',south:'Miền Nam',highlands:'Tây Nguyên'},
+      genreLabels:{instrumental:'Âm nhạc · Nhạc cụ',singings:'Hát · Dân ca',belief:'Tín ngưỡng · Lễ nghi',festival:'Lễ hội dân gian',craft:'Nghề thủ công'},
+      summary:'Tóm tắt', travelers:'khách', from:'Từ'
+    },
+    en: {
+      eyebrow:'Book a heritage journey', h1a:'Book your', h1b:'Vietnam heritage trip',
+      sub:'Choose your dates, region and interests — we will suggest the best heritage itinerary and festivals. Chat with the AI assistant for quick advice.',
+      s1:'When do you want to go?', s1h:'Pick a departure date and number of travelers. We will suggest festivals happening during that time.',
+      lStart:'Departure date', lEnd:'End date (optional)', lTravelers:'Travelers',
+      s2:'What interests you?', s2h:'Choose a region and the cultural aspects you want to explore (you can pick several).',
+      lRegion:'Region', lInterests:'Interests',
+      s3:'Your suggested itinerary', s3h:'Based on your dates and interests, here are matching heritage sites and festivals. Select the ones to include in your tour.',
+      s4:'Booking details', s4h:'Enter your contact details to complete the booking.',
+      lName:'Full name', lEmail:'Email', lPhone:'Phone (optional)', lNotes:'Notes (optional)',
+      ok:'Booking successful!', okMsg:'Thank you for booking. We will contact you by email to confirm the details.',
+      next:'Next →', back:'← Back', suggest:'Suggest itinerary →', cont:'Continue →', submit:'Confirm booking', again:'Book another trip',
+      step1:'1. Dates', step2:'2. Interests', step3:'3. Sites', step4:'4. Details',
+      fests:'Festivals during your trip', noFests:'No major festivals during this period.',
+      copy:'© 2026 VietHeritage Map', credit:'Book trips to 16 UNESCO heritage entries',
+      chatTitle:'Heritage travel assistant', chatStatus:'Ready · running locally',
+      chatWelcome:'Hello! 👋 I am your heritage travel assistant. Tell me when, where and what you like — I will suggest matching sites and festivals.',
+      chatHint:'Try: "North", "April", "music", or "suggest for me".',
+      regionLabels:{north:'North',central:'Central',south:'South',highlands:'Highlands'},
+      genreLabels:{instrumental:'Instrumental Music',singings:'Singing · Folk',belief:'Belief & Ritual',festival:'Folk Festival',craft:'Traditional Craft'},
+      summary:'Summary', travelers:'travelers', from:'From'
+    }
+  };
+  function t(k){ return STR[lang][k]; }
+
+  // Region mapping (province → broad region)
+  const NORTH = ['Hà Nội','Bắc Ninh','Phú Thọ','Cao Bằng','Hà Giang','Lạng Sơn','Tuyên Quang','Lào Cai','Yên Bái','Ninh Bình','Thái Bình','Nam Định','Hưng Yên','Hải Dương','Bắc Giang','Vĩnh Phúc','Hòa Bình','Quảng Ninh'];
+  const CENTRAL = ['Thừa Thiên Huế','Đà Nẵng','Quảng Ngãi','Nghệ An','Hà Tĩnh','Khánh Hòa','Ninh Thuận','Bình Thuận','Quảng Nam','Quảng Bình','Quảng Trị','Phú Yên','Bình Định'];
+  const SOUTH = ['Cần Thơ','Hậu Giang','Sóc Trăng','Bạc Liêu','Cà Mau','An Giang','TP. Hồ Chí Minh','Đồng Tháp','Tiền Giang','Bến Tre','Vĩnh Long','Trà Vinh','Kiên Giang','Đồng Nai','Bình Dương','Tây Ninh','Long An'];
+  const HIGHLANDS = ['Đắk Lắk','Gia Lai','Kon Tum','Lâm Đồng','Sơn La','Lai Châu','Điện Biên'];
+  function provinceRegion(provinces){
+    for (const p of (provinces||[])) {
+      if (NORTH.includes(p)) return 'north';
+      if (CENTRAL.includes(p)) return 'central';
+      if (SOUTH.includes(p)) return 'south';
+      if (HIGHLANDS.includes(p)) return 'highlands';
+    }
+    return 'central';
+  }
+  const INTEREST_GENRES = {music:'instrumental', singing:'singings', belief:'belief', festival:'festival', craft:'craft'};
+
+  function suggestSites(startDate, region, interests){
+    const treasures = (typeof TREASURES !== 'undefined') ? TREASURES : [];
+    const scored = [];
+    treasures.forEach(tr => {
+      let score = 0;
+      const trRegion = provinceRegion(tr.provinces);
+      if (region && trRegion === region) score += 3;
+      interests.forEach(i => { if (tr.genre === INTEREST_GENRES[i]) score += 2; });
+      if (tr.status === 'inscribed') score += 0.5;
+      if (score > 0) scored.push({tr, score});
+    });
+    scored.sort((a,b) => b.score - a.score);
+    const sites = scored.slice(0,5).map(s => ({
+      id: s.tr.id, name: s.tr.name, english: s.tr.english, location: s.tr.location,
+      region: provinceRegion(s.tr.provinces), genre: s.tr.genre, status: s.tr.status,
+      badge: s.tr.badge, desc_vi: s.tr.desc_vi, desc: s.tr.desc, lat: s.tr.lat, lng: s.tr.lng, score: s.score
+    }));
+
+    let tripMonth = null;
+    if (startDate) { const m = parseInt(startDate.split('-')[1], 10); if (m) tripMonth = m; }
+    const festivals = [];
+    (typeof FESTIVALS !== 'undefined' ? FESTIVALS : []).forEach(f => {
+      if ((tripMonth && f.month === tripMonth) || (region && f.region === region)) {
+        if (!festivals.find(x => x.id === f.id)) festivals.push(f);
+      }
+    });
+    return { sites, festivals: festivals.slice(0,4) };
+  }
+
+  async function fetchSuggestions(startDate, region, interests){
+    // Backend-first: call /api/v1/trip/suggest, fall back to local scoring.
+    try {
+      const res = await fetch('/api/v1/trip/suggest', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ start_date: startDate || null, region: region || null, interests: interests || [], lang })
+      });
+      if (res.ok){
+        const data = await res.json();
+        if (data && Array.isArray(data.sites) && data.sites.length) return data;
+      }
+    } catch(e) { /* backend offline — use local scoring */ }
+    return suggestSites(startDate, region, interests);
+  }
+
+  // ── WIZARD NAVIGATION ──
+  function showPanel(n){
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + n);
+    if (panel) panel.classList.add('active');
+    document.querySelectorAll('.step-dot').forEach(d => {
+      const s = parseInt(d.dataset.step, 10);
+      d.classList.toggle('active', s === n);
+      d.classList.toggle('done', s < n);
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.querySelectorAll('#region-grid .opt').forEach(o => {
+    o.addEventListener('click', () => {
+      document.querySelectorAll('#region-grid .opt').forEach(x => x.classList.remove('selected'));
+      o.classList.add('selected');
+      selectedRegion = o.dataset.val;
+    });
+  });
+  document.querySelectorAll('#interest-grid .opt').forEach(o => {
+    o.addEventListener('click', () => {
+      o.classList.toggle('selected');
+      const v = o.dataset.val;
+      selectedInterests = o.classList.contains('selected')
+        ? selectedInterests.concat([v])
+        : selectedInterests.filter(x => x !== v);
+    });
+  });
+
+  async function renderSuggestions(){
+    const startDate = document.getElementById('start-date').value;
+    const siteEl = document.getElementById('site-suggest');
+    const festEl = document.getElementById('fest-suggest');
+    siteEl.innerHTML = '<div class="s-desc">' + (lang==='vi'?'Đang tìm kiếm…':'Searching…') + '</div>';
+    festEl.innerHTML = '';
+    suggestions = await fetchSuggestions(startDate, selectedRegion, selectedInterests);
+
+    let fhtml = '';
+    if (suggestions.festivals && suggestions.festivals.length){
+      fhtml += '<div class="fest-strip"><h3>' + t('fests') + '</h3>';
+      suggestions.festivals.forEach(f => {
+        const name = lang === 'vi' ? f.name_vi : f.name_en;
+        fhtml += '<div class="s-name" style="font-size:13px;margin-bottom:4px;">🎉 ' + name + ' <span class="s-meta">(' + f.location + ')</span></div>';
+      });
+      fhtml += '</div>';
+    } else {
+      fhtml += '<div class="fest-strip"><h3>' + t('fests') + '</h3><div class="s-desc">' + t('noFests') + '</div></div>';
+    }
+    festEl.innerHTML = fhtml;
+
+    let shtml = '';
+    (suggestions.sites || []).forEach(s => {
+      const name = lang === 'vi' ? s.name : s.english;
+      const desc = lang === 'vi' ? s.desc_vi : s.desc;
+      const genre = t('genreLabels')[s.genre] || s.genre;
+      const region = t('regionLabels')[s.region] || s.region;
+      shtml += '<div class="site-card">';
+      shtml += '<input type="checkbox" class="site-check" data-id="' + s.id + '" checked />';
+      shtml += '<div><div class="s-name">' + name + '</div>';
+      shtml += '<div class="s-meta">' + region + ' · ' + genre + ' · ' + (s.badge || '') + '</div>';
+      shtml += '<div class="s-desc">' + (desc || '') + '</div></div></div>';
+    });
+    if (!(suggestions.sites && suggestions.sites.length)) shtml = '<div class="s-desc">' + t('noFests') + '</div>';
+    siteEl.innerHTML = shtml;
+  }
+
+  function selectedSites(){
+    const ids = Array.from(document.querySelectorAll('.site-check:checked')).map(c => c.dataset.id);
+    return suggestions.sites.filter(s => ids.includes(String(s.id)));
+  }
+
+  function renderSummary(){
+    const start = document.getElementById('start-date').value || '—';
+    const end = document.getElementById('end-date').value;
+    const travelers = document.getElementById('travelers').value || '1';
+    const region = selectedRegion ? (t('regionLabels')[selectedRegion] || selectedRegion) : '—';
+    const sites = selectedSites().map(s => lang === 'vi' ? s.name : s.english);
+    document.getElementById('summary').innerHTML =
+      '<strong>' + t('summary') + ':</strong> ' + t('from') + ' ' + start +
+      (end ? ' → ' + end : '') + ' · ' + travelers + ' ' + t('travelers') + ' · ' + region +
+      (sites.length ? ' · ' + sites.join(', ') : '');
+  }
+
+  document.getElementById('to-step2').addEventListener('click', () => showPanel(2));
+  document.getElementById('back-step1').addEventListener('click', () => showPanel(1));
+  document.getElementById('to-step3').addEventListener('click', async () => { await renderSuggestions(); showPanel(3); });
+  document.getElementById('back-step2').addEventListener('click', () => showPanel(2));
+  document.getElementById('to-step4').addEventListener('click', () => { renderSummary(); showPanel(4); });
+  document.getElementById('back-step3').addEventListener('click', () => showPanel(3));
+
+  document.getElementById('submit-booking').addEventListener('click', async () => {
+    const full_name = document.getElementById('full-name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    if (!full_name || !email) { alert(lang==='vi' ? 'Vui lòng nhập họ tên và email.' : 'Please enter your name and email.'); return; }
+
+    const payload = {
+      full_name, email,
+      phone: document.getElementById('phone').value.trim(),
+      travelers: parseInt(document.getElementById('travelers').value || '1', 10),
+      start_date: document.getElementById('start-date').value,
+      end_date: document.getElementById('end-date').value || null,
+      region: selectedRegion,
+      interests: selectedInterests,
+      selected_sites: selectedSites().map(s => ({id:s.id, name:s.name, location:s.location})),
+      notes: document.getElementById('notes').value.trim(),
+    };
+
+    let saved = false;
+    try {
+      const res = await fetch('/api/v1/bookings', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+      if (res.ok) saved = true;
+    } catch(e) { /* backend offline */ }
+
+    if (!saved){
+      const existing = JSON.parse(localStorage.getItem('vh_bookings') || '[]');
+      existing.push(Object.assign({id: Date.now(), status:'confirmed'}, payload));
+      localStorage.setItem('vh_bookings', JSON.stringify(existing));
+    }
+    showPanel(5);
+  });
+
+  document.getElementById('book-again').addEventListener('click', () => {
+    document.getElementById('full-name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('notes').value = '';
+    document.querySelectorAll('#region-grid .opt, #interest-grid .opt').forEach(x => x.classList.remove('selected'));
+    selectedRegion = null; selectedInterests = [];
+    showPanel(1);
+  });
+
+  // ── CHATBOT (local site-suggesting assistant) ──
+  const chatMsgs = document.getElementById('chat-msgs');
+  const chatInput = document.getElementById('chat-input');
+  let chatRegion = null, chatMonth = null;
+
+  function addMsg(html, role){
+    const d = document.createElement('div');
+    d.className = 'msg ' + role;
+    d.innerHTML = html;
+    chatMsgs.appendChild(d);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    return d;
+  }
+
+  function botSitesHtml(sites){
+    if (!sites || !sites.length) return '';
+    let h = '<div class="sites">';
+    sites.forEach(s => {
+      const name = lang === 'vi' ? s.name : (s.english || s.name);
+      h += '<div class="site-pill">📍 ' + name + ' — ' + s.location + '</div>';
+    });
+    h += '</div>';
+    return h;
+  }
+
+  async function botRespond(text){
+    const msg = text.toLowerCase();
+    const regionMap = { 'miền bắc':'north','north':'north','miền trung':'central','central':'central','miền nam':'south','south':'south','tây nguyên':'highlands','highlands':'highlands' };
+    for (const [kw, r] of Object.entries(regionMap)) { if (msg.includes(kw)) chatRegion = r; }
+    const monthMatch = msg.match(/tháng\s*(\d{1,2})/) || msg.match(/(january|february|march|april|may|june|july|august|september|october|november|december)/);
+    if (monthMatch){
+      const en = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+      if (monthMatch[1] && !isNaN(parseInt(monthMatch[1],10))) chatMonth = parseInt(monthMatch[1],10);
+      else if (monthMatch[1]) chatMonth = en.indexOf(monthMatch[1]) + 1;
+    }
+    const interests = [];
+    const interestMap = { 'âm nhạc':'music','nhạc':'music','music':'music','hát':'singing','dân ca':'singing','singing':'singing','tín ngưỡng':'belief','belief':'belief','lễ hội':'festival','festival':'festival','thủ công':'craft','craft':'craft','gốm':'craft' };
+    for (const [kw, i] of Object.entries(interestMap)) { if (msg.includes(kw)) interests.push(i); }
+
+    const startDate = chatMonth ? ('2026-' + String(chatMonth).padStart(2,'0') + '-15') : null;
+    const res = await fetchSuggestions(startDate, chatRegion, interests);
+
+    let reply = '';
+    if (res.sites.length){
+      reply = (lang==='vi' ? 'Dựa trên lựa chọn của bạn, tôi gợi ý những điểm đến sau:' : 'Based on your choices, I suggest these sites:');
+      reply += botSitesHtml(res.sites);
+      if (res.festivals.length){
+        reply += (lang==='vi' ? '<br>🎉 Lễ hội phù hợp: ' : '<br>🎉 Matching festivals: ');
+        reply += res.festivals.map(f => lang==='vi' ? f.name_vi : f.name_en).join(', ');
+      }
+      reply += '<br><div class="quick-row"><button class="quick" data-q="book">' + (lang==='vi'?'Đặt tour này':'Book this trip') + '</button></div>';
+    } else {
+      reply = (lang==='vi' ? 'Hãy cho tôi biết thêm: bạn muốn đi vùng nào (Miền Bắc/Trung/Nam/Tây Nguyên) và thích gì (âm nhạc, hát, tín ngưỡng, lễ hội, thủ công)?' : 'Tell me more: which region (North/Central/South/Highlands) and what you like (music, singing, belief, festival, craft)?');
+    }
+    addMsg(reply, 'ai');
+  }
+
+  function sendChat(){
+    const text = chatInput.value.trim();
+    if (!text) return;
+    addMsg(text, 'user');
+    chatInput.value = '';
+    botRespond(text);
+  }
+
+  document.getElementById('chat-send').addEventListener('click', sendChat);
+  chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+
+  document.getElementById('chat-fab').addEventListener('click', () => {
+    const p = document.getElementById('chat-panel');
+    p.classList.toggle('visible');
+    if (p.classList.contains('visible') && !chatMsgs.children.length){
+      addMsg(t('chatWelcome'), 'ai');
+      addMsg(t('chatHint'), 'ai');
+    }
+  });
+  document.getElementById('chat-close').addEventListener('click', () => {
+    document.getElementById('chat-panel').classList.remove('visible');
+  });
+  chatMsgs.addEventListener('click', e => {
+    const q = e.target.closest('.quick');
+    if (q && q.dataset.q === 'book'){ showPanel(1); document.getElementById('chat-panel').classList.remove('visible'); }
+  });
+
+  // ── LANGUAGE + INIT ──
+  function applyLang(){
+    document.documentElement.lang = lang;
+    document.title = lang==='vi' ? 'Đặt Tour Di Sản — VietHeritage Map' : 'Book a Heritage Trip — VietHeritage Map';
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('eyebrow', t('eyebrow')); set('h1a', t('h1a')); set('h1b', t('h1b')); set('sub', t('sub'));
+    set('s1-title', t('s1')); set('s1-hint', t('s1h'));
+    set('l-start', t('lStart')); set('l-end', t('lEnd')); set('l-travelers', t('lTravelers'));
+    set('s2-title', t('s2')); set('s2-hint', t('s2h')); set('l-region', t('lRegion')); set('l-interests', t('lInterests'));
+    set('s3-title', t('s3')); set('s3-hint', t('s3h'));
+    set('s4-title', t('s4')); set('s4-hint', t('s4h'));
+    set('l-name', t('lName')); set('l-email', t('lEmail')); set('l-phone', t('lPhone')); set('l-notes', t('lNotes'));
+    set('ok-title', t('ok')); set('ok-msg', t('okMsg'));
+    set('sd1', t('step1')); set('sd2', t('step2')); set('sd3', t('step3')); set('sd4', t('step4'));
+    set('f-copy', t('copy')); set('f-credit', t('credit'));
+    set('chat-title', t('chatTitle')); set('chat-status', t('chatStatus'));
+    document.getElementById('to-step2').textContent = t('next');
+    document.getElementById('back-step1').textContent = t('back');
+    document.getElementById('to-step3').textContent = t('suggest');
+    document.getElementById('back-step2').textContent = t('back');
+    document.getElementById('to-step4').textContent = t('cont');
+    document.getElementById('back-step3').textContent = t('back');
+    document.getElementById('submit-booking').textContent = t('submit');
+    document.getElementById('book-again').textContent = t('again');
+    document.getElementById('r-north').textContent = t('regionLabels').north;
+    document.getElementById('r-central').textContent = t('regionLabels').central;
+    document.getElementById('r-south').textContent = t('regionLabels').south;
+    document.getElementById('r-highlands').textContent = t('regionLabels').highlands;
+    document.getElementById('i-music').textContent = t('genreLabels').instrumental;
+    document.getElementById('i-singing').textContent = t('genreLabels').singings;
+    document.getElementById('i-belief').textContent = t('genreLabels').belief;
+    document.getElementById('i-festival').textContent = t('genreLabels').festival;
+    document.getElementById('i-craft').textContent = t('genreLabels').craft;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => { lang = btn.dataset.lang; localStorage.setItem('vnmt_lang', lang); applyLang(); });
+  });
+
+  applyLang();
+</script>
+</body>
+</html>
+
+
+
+
+
+
