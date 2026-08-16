@@ -39,7 +39,8 @@ class Settings(BaseSettings):
     # Gemini (AI Tour Curator)
     # Set GEMINI_API_KEY in backend/.env (never commit real keys)
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-3.1-flash-lite"
+    GEMINI_MODEL: str = "gemini-3.5-flash"
+    GEMINI_MAX_OUTPUT_TOKENS: int = 8192
 
     # Logging
     LOG_LEVEL: str = "INFO"

@@ -185,3 +185,52 @@ Improvements_Identified_For_Consolidation:
 - For this project: about-page content is in `Project/about.js` (window.ABOUT_CONTENT),
   bilingual vi/en, describing 16 heritages + 39 treasures.
 </task_progress>
+
+---
+
+Date: 2026_08_16
+TaskRef: "Harden Gemini chat reliability in Viet-Heritage-Map (structured output)"
+
+Learnings:
+- The Gemini chat proxy (`backend/app/api/v1/chat.py`) originally asked the model to embed a
+  hidden `<FINAL_PLAN_JSON>` block inside free-form markdown, with `maxOutputTokens: 1024` and
+  `temperature: 0.8`. This caused truncation mid-JSON, malformed links, and false tool
+  integration — the model name (`gemini-3.5-flash`) was NOT the problem; it is a valid current
+  model ID (confirmed via Context7 docs).
+- The robust fix is Gemini's native structured output: set `generationConfig.responseMimeType:
+  "application/json"` + `responseSchema` so the API GUARANTEES schema-valid JSON. This removes
+  the entire class of malformed-JSON failures at the source instead of patching the parser.
+- Restructured the contract to a JSON envelope `{ "reply": <markdown>, "plan": <object|null> }`.
+  `plan` is a first-class field, null until the user confirms — the frontend no longer parses
+  JSON out of prose.
+- Must check `candidates[0].finishReason` (MAX_TOKENS / SAFETY / RECITATION /
+  PROHIBITED_CONTENT) and fail loudly rather than forwarding partial text.
+- Add retry with exponential backoff (3 attempts, 1s/2s/4s) on 429/5xx, and
+  `safetySettings` with `BLOCK_ONLY_HIGH` to reduce spurious blocking on benign travel content.
+- Lower `temperature` to 0.3 for deterministic structured output; raise `maxOutputTokens` to
+  8192 (tunable via new `GEMINI_MAX_OUTPUT_TOKENS` setting).
+- Frontend `Project/planner.js`: `callGemini` now returns `{ reply, plan }` and retries
+  transient failures; `sendMessage` reads `result.plan` directly. Demo fallback still emits the
+  legacy `<FINAL_PLAN_JSON>` block, so it is parsed via the existing `VHParseFinalPlan` to keep
+  the map/booking UI working identically offline.
+- `Project/planner-plan.js` needed NO changes — it already consumes the `plan` object shape
+  robustly (numeric/string/missing coords, name lookup, graceful skip).
+
+Difficulties:
+- PowerShell shell rejects `&&` ("Das Token '&&' ist in dieser Version kein gültiges
+  Anweisungstrennzeichen"); use `;` separators. `node --check` prints nothing on success, so
+  verify with `$LASTEXITCODE -eq 0` to confirm.
+
+Successes:
+- Verified backend imports: `from app.core.config import settings` → `CONFIG OK gemini-3.5-flash
+  8192`; `import app.api.v1.chat` → `CHAT MODULE OK`.
+- Verified frontend syntax: `node --check Project/planner.js` → exit 0.
+
+Improvements_Identified_For_Consolidation:
+- General pattern: for LLM APIs that must return structured data, use the provider's native
+  structured-output (responseSchema/responseMimeType) rather than asking for JSON inside prose.
+- General pattern: always inspect finishReason/stop-reason and retry transient statuses with
+  backoff; keep temperature low for deterministic structured tasks.
+- For this project: `/api/v1/chat` returns `{ reply, plan }`; `plan` is null until confirmed.
+  Model = `gemini-3.5-flash`, `GEMINI_MAX_OUTPUT_TOKENS=8192` in `backend/.env`.
+</task_progress>

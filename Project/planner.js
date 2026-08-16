@@ -297,28 +297,53 @@
     }
   }
 
-  /* ── Gemini API (via backend proxy) ── */
+  /* ── Gemini API (via backend proxy) ──
+     Returns { reply, plan } where plan is null until the user confirms.
+     Retries transient failures (network / 5xx) before giving up. */
   async function callGemini(userText) {
     const messages = conversation.map(m => ({
       role: m.role === 'user' ? 'user' : 'assistant',
       text: m.text,
     }));
 
-    const res = await fetch(CHAT_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages }),
-    });
+    const MAX_ATTEMPTS = 3;
+    let lastErr = null;
+    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch(CHAT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages }),
+        });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error('Chat API error ' + res.status + ': ' + errText);
+        if (res.status === 429 || res.status >= 500) {
+          // Transient — retry with backoff.
+          lastErr = new Error('Chat API error ' + res.status);
+          if (attempt < MAX_ATTEMPTS - 1) {
+            await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+            continue;
+          }
+          throw lastErr;
+        }
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error('Chat API error ' + res.status + ': ' + errText);
+        }
+
+        const data = await res.json();
+        const reply = data.reply;
+        if (!reply) throw new Error('Empty response from chat API');
+        return { reply: reply, plan: data.plan || null };
+      } catch (e) {
+        lastErr = e;
+        if (attempt < MAX_ATTEMPTS - 1) {
+          await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+          continue;
+        }
+      }
     }
-
-    const data = await res.json();
-    const text = data.reply;
-    if (!text) throw new Error('Empty response from chat API');
-    return text;
+    throw lastErr || new Error('Chat API unavailable');
   }
 
   /* Demo fallback when no API key */
@@ -384,42 +409,56 @@
     const thinkingEl = addThinking();
 
     try {
-      let reply;
+      let result;
       try {
-        reply = await callGemini(msg);
+        result = await callGemini(msg);
       } catch (e) {
         // Backend unreachable or no key — fall back to local demo.
         console.warn('Chat API unavailable, using demo mode:', e);
         setDemoMode(true);
         await new Promise(r => setTimeout(r, 700));
-        reply = demoReply(msg);
+        const demoText = demoReply(msg);
+        // Demo mode still emits the legacy <FINAL_PLAN_JSON> block; parse it
+        // so the map/booking UI works identically to the live path.
+        const parsed = (typeof window.VHParseFinalPlan === 'function')
+          ? window.VHParseFinalPlan(demoText)
+          : { text: demoText, plan: null };
+        result = { reply: parsed.text, plan: parsed.plan };
       }
 
-      // Phase 2: detect a hidden <FINAL_PLAN_JSON> block and strip it from
-      // the visible bubble, then hand the parsed plan to the map/booking UI.
-      const parsed = (typeof window.VHParseFinalPlan === 'function')
-        ? window.VHParseFinalPlan(reply)
-        : { text: reply, plan: null };
+      // The live API returns a structured envelope: reply is the markdown
+      // bubble text, plan is a first-class field (null until confirmed).
+      const replyText = result.reply;
+      const plan = result.plan || null;
 
-      conversation.push({ role: 'model', text: reply });
+      conversation.push({ role: 'model', text: replyText });
       thinkingEl.remove();
       const aiEl = addMsg('', 'ai');
-      streamText(aiEl, parsed.text, () => {
+      streamText(aiEl, replyText, () => {
         isBusy = false;
         sendBtn.disabled = false;
         setThinking(false);
-        if (parsed.plan) {
-          // Hand the parsed plan to the map/booking renderer. Two paths keep
-          // this resilient: a stored reference (read on renderer init) and a
+        // Only treat the plan as final when the user actually confirmed it AND
+        // it carries real route data. The backend returns a plan object (with
+        // plan_confirmed=false and empty arrays) on every non-confirmation
+        // reply, so we must not show the "plan created" message or a booking
+        // link until the user genuinely chốt the plan.
+        const isConfirmed = plan
+          && plan.plan_confirmed === true
+          && Array.isArray(plan.locations)
+          && plan.locations.length > 0;
+        if (isConfirmed) {
+          // Hand the plan to the map/booking renderer. Two paths keep this
+          // resilient: a stored reference (read on renderer init) and a
           // dispatched event (delivered to any already-registered listener).
-          window.__lastPlan = parsed.plan;
-          window.dispatchEvent(new CustomEvent('tourplan:ready', { detail: parsed.plan }));
-          // Visible confirmation shot after the JSON is done, so the user sees
+          window.__lastPlan = plan;
+          window.dispatchEvent(new CustomEvent('tourplan:ready', { detail: plan }));
+          // Visible confirmation shot after the plan is done, so the user sees
           // that tourplan:ready fired and the plan was created.
           addMsg(t('planCreated'), 'ai');
           // Always show zero-backend Booking.com + Google links in the chat,
           // so the user can purchase instantly even if the side card is absent.
-          const linksText = buildBookingLinksText(parsed.plan);
+          const linksText = buildBookingLinksText(plan);
           if (linksText) addMsg(linksText, 'ai');
         }
       });
