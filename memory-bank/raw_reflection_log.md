@@ -23,9 +23,31 @@ Successes:
 - Diagnosed then startup failure `sqlite3.OperationalError: unable to open database file` in app/core/database.py init_db: the container runs as non-root appuser but /app (WORKDIR) is owned by root, so the SQLite file `/app/vietheritage.db` could not be created. Fixed by adding `RUN chown -R appuser:appuser /app` to the Dockerfile.
 - NOTED: config.py `database_url` property returns hardcoded SQLite `DATABASE_URL_PROD` when IS_PRODUCTION=true, ignoring the env `DATABASE_URL` (which Render populates with Postgres). The provisioned Render Postgres DB is therefore unused; app uses ephemeral SQLite. Chose the minimal SQLite fix per user's "do not change more than necessary" constraint; switching to Postgres would require adding asyncpg + config normalization (a larger change).
 
+ Improvements_Identified_For_Consolidation:
+ - General pattern: When a project lacks a committed lockfile and the Dockerfile references a source-less project via `uv sync --frozen`, prefer installing from an explicit `requirements.txt` into a venv.
+ - General pattern: When the runtime uses a plain venv (no project), invoke the venv's executable directly (`/app/.venv/bin/<bin>`) rather than `uv run <bin>`.
+ - Viet-Heritage-Map specifics: render.yaml + Dockerfile at repo root is the deployment entry; backend/Dockerfile.prod & backend/render.yaml were broken duplicates.
+ - Viet-Heritage-Map: local tooling gap (no uv, no docker on dev machine) — changes must be verifiable by the Render cloud build.
+ ---
+Date: 2026-08-16
+TaskRef: "Add VR360 popup button to all headers"
+
+Learnings:
+- All 14 HTML pages in Project/ share a common `.nav-right` container in their `<nav>` header, except VNMT.html which uses a `<header>` with `.lang-toggle` instead of `<nav>`.
+- A single shared JS file (`vr360-popup.js`) can inject both the button and the modal into every page — no per-page HTML edits needed beyond one `<script>` tag before `</body>`.
+- The booking.com iframe pattern in tour_booking.html uses an iframe with `referrerpolicy="no-referrer"` and a fallback link note; the VR360 popup follows the same pattern.
+- PowerShell on this machine does not accept `&&` as a command separator (uses `;`), and `grep`/`findstr` are unreliable — use `node -e` for file manipulation.
+
+Difficulties:
+- The `write_to_file` tool output was accidentally appended to the saved file content (the `</write_to_file>` and `<task_progress>` XML leaked into the file), causing TS syntax errors. Fixed by removing the trailing lines.
+- Shell escaping of quotes in `node -e` inline commands broke; resolved by writing a temporary `.js` script file, running it, then deleting it.
+
+Successes:
+- The shared-component approach (CSS + button + modal all injected by one JS file) required only a single `<script>` tag per page — minimal, surgical changes.
+- Verified all 14 HTML files have the script tag and the JS passes `node --check`.
+
 Improvements_Identified_For_Consolidation:
-- General pattern: When a project lacks a committed lockfile and the Dockerfile references a source-less project via `uv sync --frozen`, prefer installing from an explicit `requirements.txt` into a venv.
-- General pattern: When the runtime uses a plain venv (no project), invoke the venv's executable directly (`/app/.venv/bin/<bin>`) rather than `uv run <bin>`.
-- Viet-Heritage-Map specifics: render.yaml + Dockerfile at repo root is the deployment entry; backend/Dockerfile.prod & backend/render.yaml were broken duplicates.
-- Viet-Heritage-Map: local tooling gap (no uv, no docker on dev machine) — changes must be verifiable by the Render cloud build.
----
+- General pattern: For cross-page UI components, prefer a single shared JS file that injects styles + DOM, added via one `<script>` tag per page, over editing each page's markup.
+- General pattern: When a page uses a different header structure (e.g., `<header>` vs `<nav>`), the shared JS should query multiple selectors (`.nav-right` OR `header .lang-toggle`) to find the insertion point.
+- Viet-Heritage-Map: Use `node -e` or temporary `.js` scripts for batch file edits; avoid `grep`/`findstr`/`&&` in PowerShell.
+ ---
