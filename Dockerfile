@@ -15,9 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 # Copy dependency files
-COPY backend/pyproject.toml ./
-COPY backend/uv.lock* ./
-RUN uv sync --frozen --no-dev
+COPY backend/requirements.txt ./
+# Create venv + install runtime deps (project package is copied separately)
+RUN uv venv --python 3.11 && uv pip install -r requirements.txt
 
 # Production runtime
 FROM python:3.11-slim AS runtime
@@ -37,7 +37,6 @@ COPY --from=builder /build/.venv /app/.venv
 
 # Copy backend application code
 COPY --chown=appuser:appuser backend/app /app/app
-COPY --chown=appuser:appuser backend/models /app/models
 COPY --chown=appuser:appuser backend/.env.example /app/.env.example
 
 # Copy Project frontend (served by FastAPI StaticFiles)
@@ -60,4 +59,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Run the application
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/app/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
