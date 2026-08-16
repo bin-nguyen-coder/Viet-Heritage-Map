@@ -25,6 +25,9 @@ COPY --chown=appuser:appuser backend/.env.example /app/.env.example
 # Copy Project frontend (served by FastAPI StaticFiles)
 COPY --chown=appuser:appuser Project /app/Project
 
+# Allow appuser to create the SQLite database file in the working directory
+RUN chown -R appuser:appuser /app
+
 # Switch to non-root user
 USER appuser
 
