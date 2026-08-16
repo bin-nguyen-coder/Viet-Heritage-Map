@@ -19,6 +19,7 @@ Difficulties:
 
 Successes:
 - Minimal, surgical fixes to two files (Dockerfile, backend/render.yaml) resolved all build blockers.
+- Diagnosed the runtime failure `exec /app/.venv/bin/uvicorn: no such file or directory` as the classic multi-stage venv relocation problem: the venv was created in /build then copied to /app, leaving entrypoint shebangs pointing to the non-existent /build/.venv/bin/python. Fixed by switching to a single-stage pip install into system Python (uvicorn lands in /usr/local/bin, no relocation needed).
 
 Improvements_Identified_For_Consolidation:
 - General pattern: When a project lacks a committed lockfile and the Dockerfile references a source-less project via `uv sync --frozen`, prefer installing from an explicit `requirements.txt` into a venv.
