@@ -328,18 +328,22 @@ const SHOP_FOOTER_CTA = {
 const SHOP_NAV_LABELS = {
   vi: {
     home: 'Trang chủ',
-    map: 'Bản đồ di sản',
+    book: 'Đặt tour',
+    fest: 'Lễ hội',
     journey: 'Hành trình Bảo vật',
     db: 'Kho lưu trữ',
     about: 'Giới thiệu',
+    lunar: 'Lịch Âm',
     shop: 'Cửa hàng',
   },
   en: {
     home: 'Home',
-    map: 'Heritage Map',
+    book: 'Book a Trip',
+    fest: 'Festivals',
     journey: 'Treasure Journey',
     db: 'Archive',
     about: 'About',
+    lunar: 'Lunar Calendar',
     shop: 'Shop',
   }
 };

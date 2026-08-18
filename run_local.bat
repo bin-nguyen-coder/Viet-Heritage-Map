@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-set "PYTHON=D:\.Miniconda\python.exe"
+set "PYTHON=D:\conda\python.exe"
 echo Starting VietHeritage Map locally...
 echo.
 
@@ -31,9 +31,9 @@ if not exist "backend\.deps_installed" (
 )
 
 REM ── Start FastAPI backend ──
-echo.
+echo.     
 echo [*] Starting backend on http://localhost:8000
-start "VietHeritage API" cmd /c "cd backend && D:\.Miniconda\python.exe -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+start "VietHeritage API" cmd /c "cd backend && %PYTHON% -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
 
 REM ── Wait for backend ──
 timeout /t 3 /nobreak >nul

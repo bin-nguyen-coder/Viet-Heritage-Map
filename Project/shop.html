@@ -59,6 +59,14 @@
     }
     .nav-ai-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.5);}
     .nav-ai-btn .ai-spark{font-size:12px;}
+    .nav-map-btn{
+      display:inline-flex;align-items:center;gap:7px;
+      background:var(--red);color:var(--nav-text);text-decoration:none;
+      padding:8px 18px;border-radius:4px;
+      font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+      transition:background .2s;
+    }
+    .nav-map-btn:hover{background:var(--red-bright);}
     .nav-cart{
       display:inline-flex;align-items:center;gap:7px;
       background:var(--red);color:var(--nav-text);text-decoration:none;
@@ -268,10 +276,12 @@
 
   <ul class="nav-links">
     <li><a href="index.html" id="nav-home">Trang chủ</a></li>
-    <li><a href="VNMT.html" id="nav-map-link">Bản đồ di sản</a></li>
+    <li><a href="booking.html" id="nav-book-link">Đặt tour</a></li>
+    <li><a href="festivals.html" id="nav-fest-link">Lễ hội</a></li>
     <li><a href="journey.html" id="nav-journey-link">Hành trình Bảo vật</a></li>
     <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
     <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+    <li><a href="lunar-calendar.html" id="nav-lunar">Lịch Âm</a></li>
     <li><a href="shop.html" class="active" id="nav-shop">Cửa hàng</a></li>
   </ul>
 
@@ -283,6 +293,9 @@
     <a href="planner.html" class="nav-ai-btn">
       <span class="ai-spark" aria-hidden="true">✦</span>
       <span>Tour AI</span>
+    </a>
+    <a href="VNMT.html" class="nav-map-btn">
+      <span>⊞</span><span>Mở bản đồ</span>
     </a>
     <a href="#" class="nav-cart" id="nav-cart-btn" aria-label="Cart">
       <span class="cart-label" id="nav-cart-label">Giỏ hàng</span>
@@ -545,10 +558,12 @@ function applyLang() {
   const nav = window.SHOP_CONTENT?.nav;
   if (nav) {
     setText('nav-home', nav[lang].home);
-    setText('nav-map-link', nav[lang].map);
+    setText('nav-book-link', nav[lang].book);
+    setText('nav-fest-link', nav[lang].fest);
     setText('nav-journey-link', nav[lang].journey);
     setText('nav-db-link', nav[lang].db);
     setText('nav-about', nav[lang].about);
+    setText('nav-lunar', nav[lang].lunar);
     setText('nav-shop', nav[lang].shop);
     setText('nav-cart-label', lang === 'vi' ? 'Giỏ hàng' : 'Cart');
   }

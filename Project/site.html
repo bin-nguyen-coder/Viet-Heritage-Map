@@ -45,6 +45,11 @@
     .lang-btn { background:transparent; border:none; color:var(--nav-muted); padding:4px 12px; border-radius:16px; font-size:11px; font-weight:500; font-family:'Merriweather',serif; cursor:pointer; transition:all .2s; }
     .lang-btn:hover { color:var(--nav-gold); }
     .lang-btn.active { background:var(--nav-gold); color:#1a1400; }
+    .nav-ai-btn { display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--nav-gold) 0%,#e8c96a 100%); color:#1a1400; text-decoration:none; padding:8px 18px; border-radius:4px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; transition:all .2s; box-shadow:0 4px 14px rgba(201,168,76,0.3); }
+    .nav-ai-btn:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(201,168,76,0.5); }
+    .nav-ai-btn .ai-spark { font-size:12px; }
+    .nav-map-btn { display:inline-flex; align-items:center; gap:7px; background:var(--red); color:var(--nav-text); text-decoration:none; padding:8px 18px; border-radius:4px; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; transition:background .2s; }
+    .nav-map-btn:hover { background:#8b2222; }
 
     /* ── HERO ── */
     .hero { position:relative; height:340px; overflow:hidden; border-bottom:2px solid var(--nav-gold); }
@@ -124,10 +129,10 @@
     <li><a href="index.html" id="nav-home">Trang chủ</a></li>
     <li><a href="booking.html" id="nav-book">Đặt tour</a></li>
     <li><a href="festivals.html" id="nav-fest">Lễ hội</a></li>
-    <li><a href="VNMT.html" id="nav-map">Bản đồ</a></li>
     <li><a href="journey.html" class="active" id="nav-journey">Hành trình Bảo vật</a></li>
     <li><a href="database.html" id="nav-db">Kho lưu trữ</a></li>
     <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+    <li><a href="lunar-calendar.html" id="nav-lunar">Lịch Âm</a></li>
     <li><a href="shop.html" id="nav-shop">Cửa hàng</a></li>
   </ul>
   <div class="nav-right">
@@ -135,6 +140,13 @@
       <button class="lang-btn" data-lang="vi">VI</button>
       <button class="lang-btn" data-lang="en">EN</button>
     </div>
+    <a href="planner.html" class="nav-ai-btn">
+      <span class="ai-spark" aria-hidden="true">✦</span>
+      <span>Tour AI</span>
+    </a>
+    <a href="VNMT.html" class="nav-map-btn">
+      <span>⊞</span><span>Mở bản đồ</span>
+    </a>
   </div>
 </nav>
 
@@ -318,10 +330,10 @@ function applyLang() {
   set('nav-home', t('navHome'));
   set('nav-book', t('navBook'));
   set('nav-fest', t('navFest'));
-  set('nav-map', t('navMap'));
   set('nav-db', t('navDb'));
   set('nav-about', t('navAbout'));
   set('nav-journey', t('navJourney'));
+  set('nav-lunar', t('navLunar'));
   set('nav-shop', t('navShop'));
   set('lbl-timeline', t('lblTimeline'));
   set('lbl-artifacts', t('lblArtifacts'));
