@@ -52,6 +52,23 @@ Improvements_Identified_For_Consolidation:
 - Viet-Heritage-Map: Use `node -e` or temporary `.js` scripts for batch file edits; avoid `grep`/`findstr`/`&&` in PowerShell.
 ---
 Date: 2026-08-20
+TaskRef: "Locate file for editing visual of GIỚI THIỆU navbar"
+
+Learnings:
+- The "GIỚI THIỆU" page is `Project/about.html`. Its navbar visual (CSS) lives in the inline `<style>` block at lines 33–68 under `/* ── NAV ── */`, with nav color variables (`--nav-bg`, `--nav-gold`, `--nav-muted`, `--nav-text`) declared in `:root` at lines 20–24.
+- Navbar text labels (e.g., "Giới thiệu") are NOT hardcoded in HTML — they are rendered by `applyLang()` in `about.js` via `ABOUT_CONTENT.nav[lang]`. Changing nav label text requires editing `Project/about.js`, not `about.html`.
+- Confirmed line 42 sets `.nav-links a { font-size:8px }` in about.html (highlighted as the cause of tiny nav link text from the earlier font-size reduction task).
+
+Difficulties:
+- Users often assume all navbar content (text + visual) is edited in one HTML file; text is actually JS-driven.
+
+Successes:
+- Quickly pinpointed exact line ranges for nav CSS vs. nav HTML vs. JS-rendered text in about.html.
+
+Improvements_Identified_For_Consolidation:
+- Viet-Heritage-Map: For any page, navbar visual = inline `<style>` `/* ── NAV ── */` + `:root` nav variables; navbar text = JS (`ABOUT_CONTENT.nav`, `*_content.js` / page JS `getContent`/`applyLang`). Do not search HTML for visible nav link text.
+---
+Date: 2026-08-20
 TaskRef: "Reduce nav font-size to 8px and button padding to 5px 10px across all Project pages"
 
 Learnings:
@@ -72,6 +89,52 @@ Successes:
 
 Improvements_Identified_For_Consolidation:
 - General pattern: When batch-modifying inline CSS across many HTML files, use a regex-based script with CSS-block scoping (`selector { ... }`) to target specific properties without affecting other rules. The pattern `/(selector\s*\{[^}]*?)property:oldvalue/` with a capture group and replacement function is reliable for single-line and multi-line CSS.
-- Viet-Heritage-Map: nav CSS is duplicated across all 12 HTML files + planner.css (13 copies of nearly-identical rules). A future improvement would be extracting shared nav CSS into a single stylesheet to avoid this duplication.
-- Viet-Heritage-Map: The VR 360 button (`.vr360-btn`) is injected via JS, not in HTML/CSS files — when styling it, check `vr360-popup.js` for dynamically-injected CSS rules.
+ - Viet-Heritage-Map: nav CSS is duplicated across all 12 HTML files + planner.css (13 copies of nearly-identical rules). A future improvement would be extracting shared nav CSS into a single stylesheet to avoid this duplication.
+ - Viet-Heritage-Map: The VR 360 button (`.vr360-btn`) is injected via JS, not in HTML/CSS files — when styling it, check `vr360-popup.js` for dynamically-injected CSS rules.
 ---
+Date: 2026-08-20
+TaskRef: "Synchronize Navbar across all non-map pages using Project/about.html as SSOT"
+
+Learnings:
+- The `Project/about.html` `<nav>` markup is the canonical SSOT: `<nav id="main-nav">` > `.nav-logo` + `.nav-links` (8 items, `flex:1; justify-content:center`, gap:32px) + `.nav-right` (`.lang-toggle` + `.nav-ai-btn` gold + `.nav-map-btn` burgundy `#7a1f1f`).
+- Each non-map page carries its own inline nav CSS (`<style>` `/* ── NAV ── */`) OR an external sheet (planner.html → planner.css). There is no shared nav stylesheet.
+- Root cause of "CỬA HÀNG overlaps VI|EN" overlap: `.nav-links` used `position:absolute; left:50%; transform:translateX(-50%)` on pages. Fix: `flex:1; justify-content:center`.
+- Root cause of "MỞ BẢN ĐỒ" appearing black: `--red: #1c1c1c` token on index.html, festivals.html, tour_booking.html, planner.css. SSOT value is `#7a1f1f`.
+- Button shape drift: booking.html & festivals.html used `border-radius:20px` (pill) on `.nav-map-btn`/`.nav-ai-btn`; SSOT uses `border-radius:4px`. Simplified via `display:inline-flex`/`gap:7px`.
+- Some pages had a redundant "Tour AI" `<li>` in the center menu (tour_booking.html, planner.html) in addition to the gold `.nav-ai-btn`; both removed to match SSOT.
+- tour_booking.html lacked the entire `.lang-toggle`/`.lang-btn` block; it was added to match SSOT.
+- shop.html has a page-specific `.nav-cart` button whose DOM+JS is re-quired for the cart (`$('cart-cart-btn')`, `renderCartCount`); it was deliberately kept — not part of SSOT sync.
+- logo text ("VietHeritage Map" → "Bảo Vật Việt") is hardcoded inside the `.nav-logo` span in HTML (not JS-driven) — unlike nav link labels which are JS-driven.
+
+Difficulties:
+- Large inline scripts make `python -c` batch scans time out (30s); use `search_files` with targeted regex instead for verification.
+- Formatting differs (compact one-line CSS vs multi-line), so each file needed a distinct SEARCH/REPLACE block.
+
+Successes:
+- Used targeted `replace_in_file` per page (figures file edits) — surgical, no cross-file scripted rewrites that could corrupt page-specific sections.
+- Verified: 0 occurrences of `--red: #1c1c1c`; 0 `.nav-links ... position:absolute`; 0 `<li><a...>Tour AI</a></li>` dupes; 0 "VietHeritage Map" logo spans remain in any HTML file.
+
+Improvements_Identified_For_Consolidation:
+- General pattern: When normalizing repeated navbar markup across many pages, treat the SSOT as a feature: fixed DOM structure + classes + tokens (colors, gap, radius). Replace per-page, don't sprinkle overrides.
+- General pattern: Prefer `flex:1; justify-content:center` over `position:absolute; translate(-50%)` for centered nav link lists inside a 3-column flex header to avoid overlap with `.LOGO` and `.nav-right` controls.
+  - Viet-Heritage-Map: planner.css + 12 inline `<style>` blocks duplicate nav CSS; a shared `nav.css` would serve as the real SSOT for behavior as well as markup.
+---
+Date: 2026-08-21
+TaskRef: "Lock Navbar Brand Name to 'VietHeritage Map'"
+
+Learnings:
+- The navbar brand/logo text is hardcoded in each page's HTML inside the `.nav-logo` span (either `<span id="nav-logo-text">` or a plain `<span>` in treasure.html). It is NOT JS-driven on most pages.
+- Only about.html's inline `applyLang()` explicitly sets the logo text, and it already hardcodes `'VietHeritage Map'` for BOTH languages (`lang === 'vi' ? 'VietHeritage Map' : 'VietHeritage Map'`), so no JS bypass was needed there.
+- No JS file contains "Bảo Vật Việt", confirming no i18n dictionary translates the navbar brand.
+- Remaining "Bảo Vật Việt" occurrences (about.html hero title + features heading, treasure.html `document.title`) are page content/browser title, NOT the navbar brand — out of scope for this task.
+
+Difficulties:
+- treasure.html uses a plain `<span>` (no id) for the logo, so it required a different SEARCH pattern than the other pages.
+
+Successes:
+- Replaced the navbar brand text in all 13 HTML files (index, about, artifact, database, festivals, journey, lunar-calendar, booking, planner, shop, site, tour_booking, treasure).
+- Verified via search_files: 0 navbar-brand "Bảo Vật Việt" instances remain; 0 JS files contain "Bảo Vật Việt".
+
+Improvements_Identified_For_Consolidation:
+- Viet-Heritage-Map: The navbar brand text is duplicated across 13 HTML files. A shared include/partial or JS-injected brand would prevent future drift. When changing the brand, search for both `nav-logo-text">` and plain `<span>Bảo Vật Việt</span>` patterns.
+- General pattern: When a task says "never translate X", verify both the HTML hardcoded value AND any JS `applyLang()`/dictionary that might overwrite it. Here only about.html touched the logo, and it was already locked to the desired value.

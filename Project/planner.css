@@ -10,7 +10,7 @@
   --border: #2c2507;
   --gold: #c9a84c;
   --gold-light: #e8c96a;
-  --red: #1c1c1c;
+  --red: #7a1f1f;
   --red-bright: #c42b2b;
   --text: #e8dfc8;
   --muted: #8a7c5e;
@@ -69,11 +69,10 @@ nav {
 
 .nav-links {
   display: flex;
-  gap: 36px;
+  gap: 32px;
   list-style: none;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  flex: 1;
+  justify-content: center;
 }
 
 .nav-links a {
