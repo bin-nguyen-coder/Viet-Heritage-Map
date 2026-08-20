@@ -12,7 +12,7 @@
   style.textContent =
     '.vr360-btn{display:inline-flex;align-items:center;gap:6px;' +
     'background:rgba(201,168,76,.12);color:#c9a84c;border:1.5px solid rgba(201,168,76,.45);' +
-    'padding:7px 14px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.06em;' +
+    'padding:5px 10px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.06em;' +
     'cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap;}' +
     '.vr360-btn:hover{background:rgba(201,168,76,.22);border-color:#c9a84c;transform:translateY(-1px);}' +
     '.vr360-btn svg{flex-shrink:0;}' +

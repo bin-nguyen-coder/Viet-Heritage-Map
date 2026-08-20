@@ -23,12 +23,12 @@ Successes:
 - Diagnosed then startup failure `sqlite3.OperationalError: unable to open database file` in app/core/database.py init_db: the container runs as non-root appuser but /app (WORKDIR) is owned by root, so the SQLite file `/app/vietheritage.db` could not be created. Fixed by adding `RUN chown -R appuser:appuser /app` to the Dockerfile.
 - NOTED: config.py `database_url` property returns hardcoded SQLite `DATABASE_URL_PROD` when IS_PRODUCTION=true, ignoring the env `DATABASE_URL` (which Render populates with Postgres). The provisioned Render Postgres DB is therefore unused; app uses ephemeral SQLite. Chose the minimal SQLite fix per user's "do not change more than necessary" constraint; switching to Postgres would require adding asyncpg + config normalization (a larger change).
 
- Improvements_Identified_For_Consolidation:
- - General pattern: When a project lacks a committed lockfile and the Dockerfile references a source-less project via `uv sync --frozen`, prefer installing from an explicit `requirements.txt` into a venv.
- - General pattern: When the runtime uses a plain venv (no project), invoke the venv's executable directly (`/app/.venv/bin/<bin>`) rather than `uv run <bin>`.
- - Viet-Heritage-Map specifics: render.yaml + Dockerfile at repo root is the deployment entry; backend/Dockerfile.prod & backend/render.yaml were broken duplicates.
- - Viet-Heritage-Map: local tooling gap (no uv, no docker on dev machine) — changes must be verifiable by the Render cloud build.
- ---
+Improvements_Identified_For_Consolidation:
+- General pattern: When a project lacks a committed lockfile and the Dockerfile references a source-less project via `uv sync --frozen`, prefer installing from an explicit `requirements.txt` into a venv.
+- General pattern: When the runtime uses a plain venv (no project), invoke the venv's executable directly (`/app/.venv/bin/<bin>`) rather than `uv run <bin>`.
+- Viet-Heritage-Map specifics: render.yaml + Dockerfile at repo root is the deployment entry; backend/Dockerfile.prod & backend/render.yaml were broken duplicates.
+- Viet-Heritage-Map: local tooling gap (no uv, no docker on dev machine) — changes must be verifiable by the Render cloud build.
+---
 Date: 2026-08-16
 TaskRef: "Add VR360 popup button to all headers"
 
@@ -50,4 +50,28 @@ Improvements_Identified_For_Consolidation:
 - General pattern: For cross-page UI components, prefer a single shared JS file that injects styles + DOM, added via one `<script>` tag per page, over editing each page's markup.
 - General pattern: When a page uses a different header structure (e.g., `<header>` vs `<nav>`), the shared JS should query multiple selectors (`.nav-right` OR `header .lang-toggle`) to find the insertion point.
 - Viet-Heritage-Map: Use `node -e` or temporary `.js` scripts for batch file edits; avoid `grep`/`findstr`/`&&` in PowerShell.
- ---
+---
+Date: 2026-08-20
+TaskRef: "Reduce nav font-size to 8px and button padding to 5px 10px across all Project pages"
+
+Learnings:
+- All 12 HTML files in Project/ (except VNMT.html) plus planner.css share nearly identical inline CSS nav styles: `.nav-links a` (font-size:11px), `.lang-btn` (padding:4px 12px), `.nav-ai-btn` (padding:8px 16px|18px), `.nav-map-btn` (padding:8px 16px|18px). shop.html additionally defines `.nav-cart` (padding:8px 18px).
+- tour_booking.html is the only page without `.lang-btn`/`lang-toggle` in its nav CSS.
+- The VR 360 button is not in any page's HTML or CSS — it's dynamically injected by `vr360-popup.js` via a `.vr360-btn` CSS rule with `padding:7px 14px`.
+- Padding variations exist: some files use `8px 16px` (booking.html, festivals.html, tour_booking.html), others use `8px 18px` (index.html, about.html, journey.html, database.html, lunar-calendar.html, shop.html, site.html, artifact.html, treasure.html, planner.css).
+- Formatting varies: some files use inline CSS (one-line rules), others use multi-line expanded rules, some use `.nav-links a{` (no space) and others `.nav-links a {` (with space).
+
+Difficulties:
+- No `python`/`python3` available on Windows; used `node -e` instead for batch CSS modification.
+- PowerShell doesn't accept `&&` as a separator; avoided by using single-command scripts.
+- The regex approach needed to be carefully scoped: `[^}]*?` ensures matching stays within the correct CSS block (e.g., `.lang-btn` vs `.lang-btn:hover`), and `\.selector\s*\{` prevents matching sub-selectors like `.nav-ai-btn:hover`.
+
+Successes:
+- A single Node.js script using regex with CSS-block-scoped patterns made all 69 changes across 14 files in one pass: 13 font-size changes (`.nav-links a` 11px→8px), 37 padding changes (`.lang-btn`/`.nav-ai-btn`/`.nav-map-btn`/`.nav-cart`→5px 10px), 1 vr360-btn change.
+- Verified with search_files: 0 remaining old values, 15+ correct new `font-size:8px` matches in `.nav-links a` blocks, 42+ correct `padding:5px 10px` matches across all selectors.
+
+Improvements_Identified_For_Consolidation:
+- General pattern: When batch-modifying inline CSS across many HTML files, use a regex-based script with CSS-block scoping (`selector { ... }`) to target specific properties without affecting other rules. The pattern `/(selector\s*\{[^}]*?)property:oldvalue/` with a capture group and replacement function is reliable for single-line and multi-line CSS.
+- Viet-Heritage-Map: nav CSS is duplicated across all 12 HTML files + planner.css (13 copies of nearly-identical rules). A future improvement would be extracting shared nav CSS into a single stylesheet to avoid this duplication.
+- Viet-Heritage-Map: The VR 360 button (`.vr360-btn`) is injected via JS, not in HTML/CSS files — when styling it, check `vr360-popup.js` for dynamically-injected CSS rules.
+---
