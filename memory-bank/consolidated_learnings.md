@@ -14,6 +14,8 @@
 
 **Language toggle:** `localStorage.getItem('vnmt_lang')` default `'vi'`; toggle `html.lang-vi` class to switch Merriweather font.
 
+**Navbar typography (SSOT = about.html):** `.nav-links a { font-size:8px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; }`; `.lang-btn`/`.nav-ai-btn`/`.nav-map-btn` all `font-size:11px`; `.nav-ai-btn .ai-spark { font-size:12px }`. `nav` background is solid `var(--bg)` (no backdrop-filter); `.nav-links a:hover` uses `--gold` (#c9a84c). **Critical:** every page must include `html.lang-vi { --font-body:'Merriweather',serif; }` right after `:root` — without it, Vietnamese nav text silently falls back to DM Sans (sans-serif) instead of Merriweather (serif). booking.html & festivals.html were missing this rule and were fixed 2026-08-21.
+
 **i18n pattern (index.html):** `UI` object with `vi`/`en`, `setEl(id, val, html)` helper, `applyLang()` sets `document.documentElement.lang` + toggles `lang-vi`. To add a nav button: add HTML element with id, add `navXxx` key to both language objects, add `setEl('nav-xxx-text', s.navXxx)` in applyLang. Nav i18n keys follow the pattern `nav-<id>` element id ↔ `nav<Key>` in UI object (e.g., `nav-lunar` ↔ `navLunar`).
 
 **i18n pattern (planner.js):** own `STR` object with `vi`/`en` + `t(k)` helper. To make a page fully bilingual, wire ALL static texts (page header, chat header, preview panel, footer) into the `apply()` function of `initLangToggle()`.

@@ -137,4 +137,25 @@ Successes:
 
 Improvements_Identified_For_Consolidation:
 - Viet-Heritage-Map: The navbar brand text is duplicated across 13 HTML files. A shared include/partial or JS-injected brand would prevent future drift. When changing the brand, search for both `nav-logo-text">` and plain `<span>Bảo Vật Việt</span>` patterns.
-- General pattern: When a task says "never translate X", verify both the HTML hardcoded value AND any JS `applyLang()`/dictionary that might overwrite it. Here only about.html touched the logo, and it was already locked to the desired value.
+ - General pattern: When a task says "never translate X", verify both the HTML hardcoded value AND any JS `applyLang()`/dictionary that might overwrite it. Here only about.html touched the logo, and it was already locked to the desired value.
+---
+Date: 2026-08-21
+TaskRef: "Sync navbar typography (font-family/font-size) across booking.html & festivals.html from about.html SSOT"
+
+Learnings:
+- The critical typography rule for Vietnamese nav text is `html.lang-vi { --font-body: 'Merriweather', serif; }` in `:root`-adjacent CSS. about.html has it; booking.html and festivals.html were MISSING it, so their nav links/buttons fell back to DM Sans (sans-serif) instead of Merriweather (serif) — the exact "font fallback" failure mode the task warned about.
+- The Google Fonts `<link>` (Merriweather + Playfair Display + DM Sans) was already identical in all 3 files — no head changes were needed.
+- Navbar typography values that must match SSOT: `.nav-links a { font-size:8px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; }`, `.lang-btn`/`.nav-ai-btn`/`.nav-map-btn` all `font-size:11px`, `.nav-ai-btn .ai-spark { font-size:12px }`.
+- Secondary navbar visual drift found & fixed: `nav` background used `rgba(10,9,0,.82)` + `backdrop-filter:blur(14px)` instead of SSOT solid `var(--bg)`; `.nav-links a:hover` used `--gold-light` (#e8c96a) instead of SSOT `--gold` (#c9a84c).
+- Active states were already correct: booking.html active on "Đặt tour", festivals.html active on "Lễ hội" — preserved untouched.
+
+Difficulties:
+- The `html.lang-vi` rule is easy to miss because it sits right after `:root` and before the reset, and it only matters when `lang === 'vi'` (the default). A visual diff of the navbar alone wouldn't reveal it.
+
+Successes:
+- Minimal surgical edits: 3 SEARCH/REPLACE blocks per file (add `html.lang-vi` rule, fix `nav` background, fix hover color) — no page-specific content touched.
+- Verified via search_files: `html.lang-vi` present in booking.html & festivals.html; `.nav-links a` typography identical to SSOT; active states intact.
+
+Improvements_Identified_For_Consolidation:
+- General pattern: When syncing navbar typography across pages, check for a language-scoped font override (`html.lang-vi { --font-body: ... }`) — the Vietnamese font is often a serif (Merriweather) while the default body font is sans-serif (DM Sans). Missing this rule causes silent font fallback.
+- Viet-Heritage-Map: booking.html & festivals.html now match about.html for nav typography (font-family via `html.lang-vi`, font-size 8px links / 11px buttons, letter-spacing, uppercase, hover color, nav background).
