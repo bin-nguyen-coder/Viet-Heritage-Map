@@ -694,6 +694,7 @@
       </div>
       <a href="planner.html" class="nav-ai-btn" id="nav-ai-btn">
         <span class="ai-spark" aria-hidden="true">✦</span>
+        <!-- ✏️ Sửa chữ trên nút vàng tại dòng này -->
         <span id="nav-ai-btn-text">Tour AI</span>
       </a>
       <a href="VNMT.html" class="nav-map-btn">
@@ -931,7 +932,7 @@
       setEl('nav-about', s.navAbout);
       setEl('nav-lunar', s.navLunar);
       setEl('nav-shop', s.navShop);
-      setEl('nav-ai-btn-text', s.navAiBtn);
+      if (s.navAiBtn) setEl('nav-ai-btn-text', s.navAiBtn);
       setEl('nav-map-btn-text', s.navMapBtn);
       setEl('hero-eyebrow', s.eyebrow);
       setEl('hero-h1a', s.h1a);
