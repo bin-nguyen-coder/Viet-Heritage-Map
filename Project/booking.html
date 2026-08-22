@@ -127,14 +127,14 @@
     <span id="nav-logo-text">VietHeritage Map</span>
   </a>
   <ul class="nav-links">
-    <li><a href="index.html">Trang chủ</a></li>
-    <li><a href="booking.html" class="active">Đặt tour</a></li>
-    <li><a href="festivals.html">Lễ hội</a></li>
-    <li><a href="journey.html">Hành trình Bảo vật</a></li>
-    <li><a href="database.html">Kho lưu trữ</a></li>
-    <li><a href="about.html">Giới thiệu</a></li>
-    <li><a href="lunar-calendar.html">Lịch Âm</a></li>
-    <li><a href="shop.html">Cửa hàng</a></li>
+    <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+    <li><a href="booking.html" class="active" id="nav-book-link">Đặt tour</a></li>
+    <li><a href="festivals.html" id="nav-fest-link">Lễ hội</a></li>
+    <li><a href="journey.html" id="nav-journey-link">Hành trình Bảo vật</a></li>
+    <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
+    <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+    <li><a href="lunar-calendar.html" id="nav-lunar">Lịch Âm</a></li>
+    <li><a href="shop.html" id="nav-shop">Cửa hàng</a></li>
   </ul>
   <div class="nav-right">
     <div class="lang-toggle">
@@ -143,10 +143,10 @@
     </div>
     <a href="planner.html" class="nav-ai-btn">
       <span class="ai-spark" aria-hidden="true">✦</span>
-      <span>Tour AI</span>
+      <span id="nav-ai-btn-text">Tour AI</span>
     </a>
     <a href="VNMT.html" class="nav-map-btn">
-      <span>⊞</span><span>Mở bản đồ</span>
+      <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
     </a>
   </div>
 </nav>
@@ -276,6 +276,9 @@
 
   const STR = {
     vi: {
+      navHome:'Trang chủ', navBook:'Đặt tour', navFest:'Lễ hội', navJourney:'Hành trình Bảo vật',
+      navDb:'Kho lưu trữ', navAbout:'Giới thiệu', navLunar:'Lịch Âm', navShop:'Cửa hàng',
+      navAiBtn:'Tour AI', navMapBtn:'Mở bản đồ',
       eyebrow:'Đặt tour khám phá di sản', h1a:'Đặt tour', h1b:'di sản Việt Nam',
       sub:'Chọn ngày đi, vùng miền và sở thích của bạn — chúng tôi sẽ gợi ý hành trình di sản và lễ hội phù hợp nhất. Trò chuyện với trợ lý AI để được tư vấn nhanh.',
       s1:'Khi nào bạn muốn đi?', s1h:'Chọn ngày khởi hành và số lượng khách. Chúng tôi sẽ gợi ý lễ hội diễn ra trong thời gian đó.',
@@ -298,6 +301,9 @@
       summary:'Tóm tắt', travelers:'khách', from:'Từ'
     },
     en: {
+      navHome:'Home', navBook:'Book a trip', navFest:'Festivals', navJourney:'Treasure Journey',
+      navDb:'Archive', navAbout:'About', navLunar:'Lunar Calendar', navShop:'Shop',
+      navAiBtn:'Tour AI', navMapBtn:'Open map',
       eyebrow:'Book a heritage journey', h1a:'Book your', h1b:'Vietnam heritage trip',
       sub:'Choose your dates, region and interests — we will suggest the best heritage itinerary and festivals. Chat with the AI assistant for quick advice.',
       s1:'When do you want to go?', s1h:'Pick a departure date and number of travelers. We will suggest festivals happening during that time.',
@@ -606,6 +612,10 @@
     document.documentElement.lang = lang;
     document.title = lang==='vi' ? 'Đặt Tour Di Sản — VietHeritage Map' : 'Book a Heritage Trip — VietHeritage Map';
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('nav-home', t('navHome')); set('nav-book-link', t('navBook')); set('nav-fest-link', t('navFest'));
+    set('nav-journey-link', t('navJourney')); set('nav-db-link', t('navDb')); set('nav-about', t('navAbout'));
+    set('nav-lunar', t('navLunar')); set('nav-shop', t('navShop'));
+    set('nav-ai-btn-text', t('navAiBtn')); set('nav-map-btn-text', t('navMapBtn'));
     set('eyebrow', t('eyebrow')); set('h1a', t('h1a')); set('h1b', t('h1b')); set('sub', t('sub'));
     set('s1-title', t('s1')); set('s1-hint', t('s1h'));
     set('l-start', t('lStart')); set('l-end', t('lEnd')); set('l-travelers', t('lTravelers'));

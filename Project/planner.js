@@ -18,6 +18,9 @@
 
   const STR = {
     vi: {
+      navHome: 'Trang chủ', navBook: 'Đặt tour', navFest: 'Lễ hội', navJourney: 'Hành trình Bảo vật',
+      navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navLunar: 'Lịch Âm', navShop: 'Cửa hàng',
+      navAiBtn: 'Tour AI', navMapBtn: 'Mở bản đồ',
       statusReady: 'Sẵn sàng',
       statusThinking: 'Đang suy nghĩ...',
       statusDemo: 'Chế độ demo (chưa kết nối AI)',
@@ -47,6 +50,9 @@
       footData: 'Dữ liệu: <em>UNESCO</em> · Bản đồ: <em>CartoDB / OpenStreetMap</em>',
     },
     en: {
+      navHome: 'Home', navBook: 'Book a trip', navFest: 'Festivals', navJourney: 'Treasure Journey',
+      navDb: 'Archive', navAbout: 'About', navLunar: 'Lunar Calendar', navShop: 'Shop',
+      navAiBtn: 'Tour AI', navMapBtn: 'Open map',
       statusReady: 'Ready',
       statusThinking: 'Thinking...',
       statusDemo: 'Demo mode (AI not connected)',
@@ -511,6 +517,17 @@
       const l = lang();
       document.documentElement.classList.toggle('lang-vi', l === 'vi');
       btns.forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+      // update nav links
+      $('nav-home').textContent = t('navHome');
+      $('nav-book-link').textContent = t('navBook');
+      $('nav-fest-link').textContent = t('navFest');
+      $('nav-journey-link').textContent = t('navJourney');
+      $('nav-db-link').textContent = t('navDb');
+      $('nav-about').textContent = t('navAbout');
+      $('nav-lunar').textContent = t('navLunar');
+      $('nav-shop').textContent = t('navShop');
+      $('nav-ai-btn-text').textContent = t('navAiBtn');
+      $('nav-map-btn-text').textContent = t('navMapBtn');
       // update static texts
       statusText.textContent = t('statusReady');
       inputEl.placeholder = t('placeholder');

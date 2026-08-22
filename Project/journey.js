@@ -8,6 +8,7 @@
 const STRINGS = {
   vi: {
     navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navJourney: 'Hành trình Bảo vật', navBook: 'Đặt tour', navFest: 'Lễ hội',
+    navLunar: 'Lịch Âm', navShop: 'Cửa hàng', navAiBtn: 'Tour AI',
     pageTitle: 'Hành trình Bảo vật — VietHeritage Map',
     eyebrow: 'Bảo Vật Quốc Gia Việt Nam',
     title1: 'Hành trình',
@@ -29,6 +30,7 @@ const STRINGS = {
   },
   en: {
     navHome: 'Home', navMap: 'Map', navDb: 'Database', navAbout: 'About', navJourney: 'Treasures Journey', navBook: 'Book a Trip', navFest: 'Festivals',
+    navLunar: 'Lunar Calendar', navShop: 'Shop', navAiBtn: 'Tour AI',
     pageTitle: 'Treasures Journey — VietHeritage Map',
     eyebrow: 'National Treasures of Vietnam',
     title1: 'Treasures',
@@ -232,6 +234,9 @@ function applyLang() {
   set('nav-db', t('navDb'));
   set('nav-about', t('navAbout'));
   set('nav-journey', t('navJourney'));
+  set('nav-lunar', t('navLunar'));
+  set('nav-shop', t('navShop'));
+  set('nav-ai-btn-text', t('navAiBtn'));
   set('eyebrow', t('eyebrow'));
   set('title1', t('title1'));
   set('title-em', t('titleEm'));

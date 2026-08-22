@@ -22,7 +22,7 @@
       --nav-muted:#8a7c5e;
       --nav-text: #e8dfc8;
       --nav-brd:  rgba(201,168,76,0.14);
-      --font-body: 'DM Sans', sans-serif;
+      --font-body: 'Merriweather', sans-serif;
       --font-heading: 'Merriweather', serif;
     }
     html.lang-vi { --font-body: 'Merriweather', serif; }
@@ -246,10 +246,10 @@
     </div>
     <a href="planner.html" class="nav-ai-btn">
       <span class="ai-spark" aria-hidden="true">✦</span>
-      <span>Tour AI</span>
+      <span id="nav-ai-btn-text">Tour AI</span>
     </a>
     <a href="VNMT.html" class="nav-map-btn">
-      <span>⊞</span><span>Mở bản đồ</span>
+      <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
     </a>
   </div>
 </nav>
@@ -459,7 +459,10 @@ function applyLang() {
     setText('nav-fest-link', nav[lang].fest);
     setText('nav-db-link', nav[lang].db);
     setText('nav-about', nav[lang].about);
+    setText('nav-journey-link', nav[lang].journey);
+    setText('nav-lunar', nav[lang].lunar);
     setText('nav-shop', nav[lang].shop);
+    setText('nav-ai-btn-text', nav[lang].aiBtn);
     setText('nav-map-btn-text', nav[lang].mapBtn);
     setText('nav-logo-text', lang === 'vi' ? 'VietHeritage Map' : 'VietHeritage Map');
   }

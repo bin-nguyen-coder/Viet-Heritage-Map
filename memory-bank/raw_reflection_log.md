@@ -159,3 +159,26 @@ Successes:
 Improvements_Identified_For_Consolidation:
 - General pattern: When syncing navbar typography across pages, check for a language-scoped font override (`html.lang-vi { --font-body: ... }`) — the Vietnamese font is often a serif (Merriweather) while the default body font is sans-serif (DM Sans). Missing this rule causes silent font fallback.
 - Viet-Heritage-Map: booking.html & festivals.html now match about.html for nav typography (font-family via `html.lang-vi`, font-size 8px links / 11px buttons, letter-spacing, uppercase, hover color, nav background).
+---
+Date: 2026-08-22
+TaskRef: "Fix EN/VI language toggle not updating navbar on subpages"
+
+Learnings:
+- The site-wide i18n mechanism: every page reads `localStorage.getItem('vnmt_lang') || 'vi'` and has `.lang-btn[data-lang]` buttons; each page's `applyLang()` must explicitly set textContent of each NAV element by id. There is NO shared i18n module — each page duplicates its own STR dictionary.
+- Root cause of "switched to EN but page still shows Vietnamese": subpage `applyLang()` functions only updated the main content but NOT the navbar links; some pages' NAV `<a>` elements lacked `id` attributes entirely so JS could never target them.
+- Pages fixed by adding missing NAV ids + applyLang updates: booking.html, festivals.html (no ids at all), tour_booking.html (had NO i18n mechanism whatsoever — full rewrite with STR vi/en + applyLang + re-render dynamic content on lang change), journey.js (missing navLunar/navShop/navAiBtn keys), about.js/about.html (NAV_LABELS missing journey/lunar/aiBtn keys; nav-map-btn-text span had no id), treasure.html & artifact.html & database.html (STR dicts missing navJourney/navAbout/navLunar keys and set() calls).
+- planner.js already had initLangToggle() updating static texts but was missing NAV link updates — added navHome..navMapBtn keys + $('nav-*') setters.
+- tour_booking.html pattern for re-rendering JS-generated content on language switch: keep `plan` in scope, call renderItinerary/renderAccommodation/renderTransport again inside applyLang().
+- VNMT.html has no .nav-links at all (map page uses different header structure) — no fix needed.
+
+Difficulties:
+- NAV element ids are inconsistent across pages: index/planner/booking/festivals/tour_booking use `nav-book-link`/`nav-fest-link`/`nav-journey-link`/`nav-db-link`; journey/treasure/artifact/database/site use `nav-book`/`nav-fest`/`nav-journey`/`nav-db`. Each page's applyLang must match ITS OWN ids.
+
+Successes:
+- All fixes verified by search_files cross-referencing: every id referenced in applyLang now exists in that page's HTML; node --check passed for all edited JS files.
+- tour_booking.html rewritten with complete bilingual STR dictionary including fmt() template interpolation ({city}, {from}, {to}, {provider}) for dynamic strings.
+
+Improvements_Identified_For_Consolidation:
+- Viet-Heritage-Map: When adding a new NAV item or changing NAV labels, you MUST update: (1) the HTML `<a id="...">` in EVERY page, (2) the STR/UI dictionary in EVERY page's JS, (3) the applyLang()/initLangToggle() setter list in EVERY page. Missing any one causes mixed-language UI.
+- General pattern: For multi-page static sites without a shared i18n module, create a checklist of all pages × all translatable elements when fixing language bugs; verify with regex searches like `id="nav-` vs `set\('nav-`.
+---
