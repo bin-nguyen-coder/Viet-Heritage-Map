@@ -725,6 +725,7 @@ let lang = localStorage.getItem('vnmt_lang') || 'vi';
 const STRINGS = {
   vi: {
     navHome:'Trang chủ', navMap:'Bản đồ', navDb:'Kho lưu trữ', navBook:'Đặt tour', navFest:'Lễ hội',
+    navJourney:'Hành trình Bảo vật', navAbout:'Giới thiệu', navLunar:'Lịch Âm', navShop:'Cửa hàng',
     breadHome:'Trang chủ', breadDb:'Bảo Vật Quốc Gia',
     lblVisit:'Tham quan Bảo vật', lblVisitSub:'Khám phá địa điểm lưu giữ bảo vật này.',
     lblMapLink:'BẢN ĐỒ', lblOpenMaps:'Mở Google Maps',
@@ -737,6 +738,7 @@ const STRINGS = {
   },
   en: {
     navHome:'Home', navMap:'Map', navDb:'Database', navBook:'Book a Trip', navFest:'Festivals',
+    navJourney:'Treasure Journey', navAbout:'About', navLunar:'Lunar Calendar', navShop:'Shop',
     breadHome:'Home', breadDb:'National Treasures',
     lblVisit:'Visit This Treasure', lblVisitSub:'Explore the location where this national treasure is held.',
     lblMapLink:'MAP', lblOpenMaps:'Open in Google Maps',
@@ -754,6 +756,7 @@ function applyLang() {
   document.documentElement.lang = lang;
   const set = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
   set('nav-home', S('navHome')); set('nav-book', S('navBook')); set('nav-fest', S('navFest')); set('nav-db', S('navDb'));
+  set('nav-journey', S('navJourney')); set('nav-about', S('navAbout')); set('nav-lunar', S('navLunar')); set('nav-shop', S('navShop'));
   set('lbl-visit', S('lblVisit')); set('lbl-visit-sub', S('lblVisitSub'));
   set('lbl-map-link', S('lblMapLink')); set('lbl-open-maps', S('lblOpenMaps'));
   set('lbl-coords', S('lblCoords')); set('lbl-era', S('lblEra'));

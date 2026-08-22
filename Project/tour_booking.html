@@ -13,8 +13,9 @@
       --bg:#0a0900; --surface:#110f04; --card:#181500; --border:#2c2507;
       --gold:#c9a84c; --gold-light:#e8c96a; --red:#7a1f1f; --red-bright:#c42b2b;
       --text:#e8dfc8; --muted:#8a7c5e; --white:#f5f0e6;
-      --font-body:'DM Sans',sans-serif; --font-heading:'Playfair Display',serif;
+      --font-body:'Merriweather',sans-serif; --font-heading:'Playfair Display',serif;
     }
+    html.lang-vi { --font-body:'Merriweather',serif; }
     * { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior:smooth; }
     body {
@@ -123,13 +124,13 @@
     </a>
 
     <ul class="nav-links">
-      <li><a href="index.html">Trang chủ</a></li>
-      <li><a href="tour_booking.html" class="active">Đặt tour</a></li>
-      <li><a href="festivals.html">Lễ hội</a></li>
-      <li><a href="journey.html">Hành trình Bảo vật</a></li>
-      <li><a href="database.html">Kho lưu trữ</a></li>
-      <li><a href="about.html">Giới thiệu</a></li>
-      <li><a href="shop.html">Cửa hàng</a></li>
+      <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+      <li><a href="tour_booking.html" class="active" id="nav-book-link">Đặt tour</a></li>
+      <li><a href="festivals.html" id="nav-fest-link">Lễ hội</a></li>
+      <li><a href="journey.html" id="nav-journey-link">Hành trình Bảo vật</a></li>
+      <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
+      <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+      <li><a href="shop.html" id="nav-shop">Cửa hàng</a></li>
     </ul>
 
     <div class="nav-right">
@@ -137,16 +138,16 @@
         <button class="lang-btn" data-lang="vi">VI</button>
         <button class="lang-btn" data-lang="en">EN</button>
       </div>
-      <a href="planner.html" class="nav-ai-btn"><span class="ai-spark" aria-hidden="true">✦</span><span>Tour AI</span></a>
-      <a href="VNMT.html" class="nav-map-btn"><span>⊞</span><span>Mở bản đồ</span></a>
+      <a href="planner.html" class="nav-ai-btn"><span class="ai-spark" aria-hidden="true">✦</span><span id="nav-ai-btn-text">Tour AI</span></a>
+      <a href="VNMT.html" class="nav-map-btn"><span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span></a>
     </div>
   </nav>
 
   <!-- HERO -->
   <header class="hero">
-    <div class="hero-eyebrow">Viet Heritage · Đặt chỗ</div>
-    <h1>Đặt phòng & <em>Di chuyển</em></h1>
-    <p>
+    <div class="hero-eyebrow" id="hero-eyebrow">Viet Heritage · Đặt chỗ</div>
+    <h1><span id="h1a">Đặt phòng &</span> <em id="h1b">Di chuyển</em></h1>
+    <p id="sub">
       Lộ trình của bạn đã sẵn sàng. Chọn chỗ ở qua Booking.com ngay trên trang này —
       không rời khỏi Viet Heritage. Bạn có thể quay lại trợ lý Tour AI bất cứ lúc nào.
     </p>
@@ -157,34 +158,104 @@
 
     <!-- Itinerary summary -->
     <section class="card" id="itin-card">
-      <h2 class="card-title"><span class="t-ic">✦</span>Hành trình của bạn</h2>
-      <div id="itin-body"><div class="empty">Đang tải hành trình...</div></div>
+      <h2 class="card-title"><span class="t-ic">✦</span><span id="itin-title">Hành trình của bạn</span></h2>
+      <div id="itin-body"><div class="empty" id="itin-loading">Đang tải hành trình...</div></div>
     </section>
 
     <!-- Accommodation (Booking.com embedded) -->
     <section class="card">
-      <h2 class="card-title"><span class="t-ic">🏨</span>Nơi lưu trú — Booking.com</h2>
-      <div id="accom-body"><div class="empty">Đang tải chỗ ở...</div></div>
+      <h2 class="card-title"><span class="t-ic">🏨</span><span id="accom-title">Nơi lưu trú — Booking.com</span></h2>
+      <div id="accom-body"><div class="empty" id="accom-loading">Đang tải chỗ ở...</div></div>
     </section>
 
     <!-- Transport -->
     <section class="card">
-      <h2 class="card-title"><span class="t-ic">🚌</span>Di chuyển</h2>
+      <h2 class="card-title"><span class="t-ic">🚌</span><span id="trans-title">Di chuyển</span></h2>
       <div id="trans-body"></div>
     </section>
 
-    <a href="planner.html" class="back-link">← Quay lại trợ lý Tour AI</a>
+    <a href="planner.html" class="back-link" id="back-link">← Quay lại trợ lý Tour AI</a>
   </main>
 
   <!-- FOOTER -->
   <footer>
-    <span>© 2026 Di sản văn hóa phi vật thể Việt Nam</span>
-    <span>Dữ liệu: <em>Booking.com</em> · Bản đồ: <em>OpenStreetMap</em></span>
+    <span id="foot-copy">© 2026 Di sản văn hóa phi vật thể Việt Nam</span>
+    <span id="foot-data">Dữ liệu: <em>Booking.com</em> · Bản đồ: <em>OpenStreetMap</em></span>
   </footer>
 
   <script>
     (function () {
       'use strict';
+
+      /* ── I18N ── */
+      var lang = localStorage.getItem('vnmt_lang') || 'vi';
+
+      var STR = {
+        vi: {
+          navHome:'Trang chủ', navBook:'Đặt tour', navFest:'Lễ hội', navJourney:'Hành trình Bảo vật',
+          navDb:'Kho lưu trữ', navAbout:'Giới thiệu', navShop:'Cửa hàng',
+          navAiBtn:'Tour AI', navMapBtn:'Mở bản đồ',
+          eyebrow:'Viet Heritage · Đặt chỗ', h1a:'Đặt phòng &', h1b:'Di chuyển',
+          sub:'Lộ trình của bạn đã sẵn sàng. Chọn chỗ ở qua Booking.com ngay trên trang này — không rời khỏi Viet Heritage. Bạn có thể quay lại trợ lý Tour AI bất cứ lúc nào.',
+          itinTitle:'Hành trình của bạn', itinLoading:'Đang tải hành trình...',
+          accomTitle:'Nơi lưu trú — Booking.com', accomLoading:'Đang tải chỗ ở...',
+          transTitle:'Di chuyển',
+          backLink:'← Quay lại trợ lý Tour AI',
+          footCopy:'© 2026 Di sản văn hóa phi vật thể Việt Nam',
+          footData:'Dữ liệu: <em>Booking.com</em> · Bản đồ: <em>OpenStreetMap</em>',
+          noLocations:'Chưa có điểm đến chi tiết.',
+          dayLabel:'NGÀY ', destination:'Điểm đến',
+          noAccom:'Chưa có đề xuất chỗ ở trong kế hoạch này.',
+          city:'Thành phố',
+          accomNote:'Nếu bảng kết quả không hiển thị (Booking.com có thể chặn nhúng), bạn vẫn có thể ',
+          accomNoteLink:'mở danh sách chỗ ở {city} trên Booking.com ↗',
+          flightsQuery:'vé từ {from} đi {to}',
+          flightBlockTitle:'Máy bay không thể hiển thị trong cửa sổ',
+          flightBlockDesc:'Google Flights chặn nhúng trực tiếp (lỗi 403). Bạn vẫn có thể mở Google Flights để đặt vé.',
+          flightOpen:'Mở Google Flights ↗',
+          bus:'Xe khách', train:'Tàu hỏa', flight:'Máy bay', car:'Xe riêng',
+          viewLabel:'Xem {name} {from} đi {to}',
+          chooseTransport:'Chọn phương tiện',
+          transNote:'Nếu cửa sổ đặt vé không hiển thị, bạn vẫn có thể ',
+          transNoteLink:'mở {provider} để xem lịch trình {from} → {to} ↗',
+          noTransport:'Chưa có đề xuất di chuyển trong kế hoạch này.',
+          emptyPlan:'Không tìm thấy kế hoạch. Hãy quay lại trợ lý Tour AI, chốt một lộ trình rồi bấm "Đặt chỗ & Di chuyển ngay".'
+        },
+        en: {
+          navHome:'Home', navBook:'Book a trip', navFest:'Festivals', navJourney:'Treasure Journey',
+          navDb:'Archive', navAbout:'About', navShop:'Shop',
+          navAiBtn:'Tour AI', navMapBtn:'Open map',
+          eyebrow:'Viet Heritage · Booking', h1a:'Book your stay &', h1b:'Transport',
+          sub:'Your itinerary is ready. Choose accommodation via Booking.com right on this page — without leaving Viet Heritage. You can return to the Tour AI assistant anytime.',
+          itinTitle:'Your itinerary', itinLoading:'Loading itinerary...',
+          accomTitle:'Accommodation — Booking.com', accomLoading:'Loading accommodation...',
+          transTitle:'Transport',
+          backLink:'← Back to Tour AI assistant',
+          footCopy:'© 2026 Vietnam Intangible Cultural Heritage',
+          footData:'Data: <em>Booking.com</em> · Map: <em>OpenStreetMap</em>',
+          noLocations:'No detailed destinations yet.',
+          dayLabel:'DAY ', destination:'Destination',
+          noAccom:'No accommodation suggestions in this plan.',
+          city:'City',
+          accomNote:'If the results do not show (Booking.com may block embedding), you can still ',
+          accomNoteLink:'open the {city} accommodation list on Booking.com ↗',
+          flightsQuery:'flights from {from} to {to}',
+          flightBlockTitle:'Flights cannot be shown in this window',
+          flightBlockDesc:'Google Flights blocks direct embedding (error 403). You can still open Google Flights to book tickets.',
+          flightOpen:'Open Google Flights ↗',
+          bus:'Bus', train:'Train', flight:'Flight', car:'Car',
+          viewLabel:'View {name} {from} to {to}',
+          chooseTransport:'Choose transport',
+          transNote:'If the booking window does not show, you can still ',
+          transNoteLink:'open {provider} to view the schedule {from} → {to} ↗',
+          noTransport:'No transport suggestions in this plan.',
+          emptyPlan:'No plan found. Go back to the Tour AI assistant, confirm a route, then click "Book & Travel now".'
+        }
+      };
+      function t(k) { return STR[lang][k]; }
+      function fmt(s, map) {
+        return String(s).replace(/\{(\w+)\}/g, function (m, k) { return map[k] != null ? map[k] : m; });
+      }
 
       /* ── Parse the plan passed from the Tour AI planner (encoded JSON) ── */
       function readPlan() {
@@ -237,14 +308,14 @@
 
         var locs = Array.isArray(plan.locations) ? plan.locations : [];
         if (!locs.length) {
-          body.appendChild(el('div', 'empty', 'Chưa có điểm đến chi tiết.'));
+          body.appendChild(el('div', 'empty', t('noLocations')));
           return;
         }
         var ul = el('ul', 'loc-list');
         locs.forEach(function (l, i) {
           var li = el('li');
-          li.appendChild(el('span', 'loc-day', 'NGÀY ' + (l.day || (i + 1))));
-          li.appendChild(el('span', '', String(l.name || 'Điểm đến')));
+          li.appendChild(el('span', 'loc-day', t('dayLabel') + (l.day || (i + 1))));
+          li.appendChild(el('span', '', String(l.name || t('destination'))));
           ul.appendChild(li);
         });
         body.appendChild(ul);
@@ -256,7 +327,7 @@
         var acc = Array.isArray(plan.accommodation_links) ? plan.accommodation_links : [];
 
         if (!acc.length) {
-          body.appendChild(el('div', 'empty', 'Chưa có đề xuất chỗ ở trong kế hoạch này.'));
+          body.appendChild(el('div', 'empty', t('noAccom')));
           return;
         }
 
@@ -264,7 +335,7 @@
           var item = el('div', 'accom-item');
 
           var head = el('div', 'accom-head');
-          head.appendChild(el('div', 'accom-name', a.city || 'Thành phố'));
+          head.appendChild(el('div', 'accom-name', a.city || t('city')));
           head.appendChild(el('div', 'accom-dates',
             (a.checkin ? a.checkin : '—') + ' → ' + (a.checkout ? a.checkout : '—')));
           item.appendChild(head);
@@ -280,9 +351,9 @@
           item.appendChild(wrap);
 
           var note = el('div', 'iframe-note');
-          note.innerHTML = 'Nếu bảng kết quả không hiển thị (Booking.com có thể chặn nhúng), '
-            + 'bạn vẫn có thể '
-            + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">mở danh sách chỗ ở ' + esc(a.city) + ' trên Booking.com ↗</a>.';
+          note.innerHTML = t('accomNote')
+            + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">'
+            + fmt(t('accomNoteLink'), { city: esc(a.city) }) + '</a>.';
           item.appendChild(note);
 
           body.appendChild(item);
@@ -294,7 +365,7 @@
          bus_or_car      → Google Maps directions (reliably embeddable)      */
       function flightsUrl(from, to) {
         return 'https://www.google.com/travel/flights?q='
-          + encodeURIComponent('vé từ ' + from + ' đi ' + to);
+          + encodeURIComponent(fmt(t('flightsQuery'), { from: from, to: to }));
       }
 
       function mapsUrl(from, to, mode) {
@@ -314,12 +385,12 @@
           + 'height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;'
           + 'gap:12px;text-align:center;padding:24px;">'
           + '<div style="font-size:26px;">✈️</div>'
-          + '<div style="font-size:14px;color:#e8c96a;font-weight:600;">Máy bay không thể hiển thị trong cửa sổ</div>'
+          + '<div style="font-size:14px;color:#e8c96a;font-weight:600;">' + t('flightBlockTitle') + '</div>'
           + '<div style="font-size:12px;color:#8a7c5e;max-width:340px;line-height:1.6;">'
-          + 'Google Flights chặn nhúng trực tiếp (lỗi 403). Bạn vẫn có thể mở Google Flights để đặt vé.</div>'
+          + t('flightBlockDesc') + '</div>'
           + '<a href="' + url + '" target="_blank" rel="noopener noreferrer" '
           + 'style="background:#c9a84c;color:#1a1400;text-decoration:none;padding:10px 18px;'
-          + 'border-radius:8px;font-size:13px;font-weight:700;">Mở Google Flights ↗</a>'
+          + 'border-radius:8px;font-size:13px;font-weight:700;">' + t('flightOpen') + '</a>'
           + '</div>';
       }
 
@@ -328,16 +399,16 @@
            (no new tab) — the user stays on our page. ── */
       function transportOptions(from, to, iframe) {
         var opts = [
-          { ic: '🚌', name: 'Xe khách', prov: 'Google Maps', url: mapsUrl(from, to, 'r') },
-          { ic: '🚆', name: 'Tàu hỏa', prov: 'Google Maps', url: mapsUrl(from, to, 'r') },
-          { ic: '✈️', name: 'Máy bay', prov: 'Google Flights', url: flightsUrl(from, to), flight: true },
-          { ic: '🚗', name: 'Xe riêng', prov: 'Google Maps', url: mapsUrl(from, to, 'd') }
+          { ic: '🚌', name: t('bus'), prov: 'Google Maps', url: mapsUrl(from, to, 'r') },
+          { ic: '🚆', name: t('train'), prov: 'Google Maps', url: mapsUrl(from, to, 'r') },
+          { ic: '✈️', name: t('flight'), prov: 'Google Flights', url: flightsUrl(from, to), flight: true },
+          { ic: '🚗', name: t('car'), prov: 'Google Maps', url: mapsUrl(from, to, 'd') }
         ];
         var grid = el('div', 'trans-options');
         opts.forEach(function (o) {
           var a = el('a', 'trans-opt');
           a.href = o.url;
-          a.setAttribute('aria-label', 'Xem ' + o.name + ' ' + from + ' đi ' + to);
+          a.setAttribute('aria-label', fmt(t('viewLabel'), { name: o.name, from: from, to: to }));
           a.addEventListener('click', function (ev) {
             ev.preventDefault();
             if (!iframe) return;
@@ -363,7 +434,7 @@
         var segs = Array.isArray(plan.transport_segments) ? plan.transport_segments : [];
 
         if (!segs.length) {
-          body.appendChild(el('div', 'empty', 'Chưa có đề xuất di chuyển trong kế hoạch này.'));
+          body.appendChild(el('div', 'empty', t('noTransport')));
           return;
         }
 
@@ -379,7 +450,7 @@
 
           var head = el('div', 'accom-head');
           head.appendChild(el('div', 'accom-name', icon + ' ' + from + ' → ' + to));
-          head.appendChild(el('div', 'accom-dates', 'Chọn phương tiện'));
+          head.appendChild(el('div', 'accom-dates', t('chooseTransport')));
           item.appendChild(head);
 
           var wrap = el('div', 'iframe-wrap');
@@ -401,8 +472,9 @@
           item.insertBefore(transportOptions(from, to, iframe), wrap);
 
           var note = el('div', 'iframe-note');
-          note.innerHTML = 'Nếu cửa sổ đặt vé không hiển thị, bạn vẫn có thể '
-            + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">mở ' + provider + ' để xem lịch trình ' + esc(from) + ' → ' + esc(to) + ' ↗</a>.';
+          note.innerHTML = t('transNote')
+            + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">'
+            + fmt(t('transNoteLink'), { provider: provider, from: esc(from), to: esc(to) }) + '</a>.';
           item.appendChild(note);
 
           body.appendChild(item);
@@ -411,12 +483,65 @@
 
       function renderEmpty() {
         document.getElementById('itin-body').innerHTML =
-          '<div class="empty">Không tìm thấy kế hoạch. Hãy quay lại trợ lý Tour AI, '
-          + 'chốt một lộ trình rồi bấm "Đặt chỗ & Di chuyển ngay".</div>';
+          '<div class="empty">' + t('emptyPlan') + '</div>';
         document.getElementById('accom-body').innerHTML = '';
         document.getElementById('trans-body').innerHTML = '';
       }
 
+      /* ── Language toggle ── */
+      function applyLang() {
+        document.documentElement.lang = lang;
+        document.documentElement.classList.toggle('lang-vi', lang === 'vi');
+        document.title = lang === 'vi'
+          ? 'Đặt chỗ Tour — VietHeritage Map'
+          : 'Book a Tour — VietHeritage Map';
+
+        var set = function (id, v) { var el = document.getElementById(id); if (el) el.textContent = v; };
+        set('nav-home', t('navHome'));
+        set('nav-book-link', t('navBook'));
+        set('nav-fest-link', t('navFest'));
+        set('nav-journey-link', t('navJourney'));
+        set('nav-db-link', t('navDb'));
+        set('nav-about', t('navAbout'));
+        set('nav-shop', t('navShop'));
+        set('nav-ai-btn-text', t('navAiBtn'));
+        set('nav-map-btn-text', t('navMapBtn'));
+        set('hero-eyebrow', t('eyebrow'));
+        set('h1a', t('h1a'));
+        set('h1b', t('h1b'));
+        set('sub', t('sub'));
+        set('itin-title', t('itinTitle'));
+        set('itin-loading', t('itinLoading'));
+        set('accom-title', t('accomTitle'));
+        set('accom-loading', t('accomLoading'));
+        set('trans-title', t('transTitle'));
+        set('back-link', t('backLink'));
+        set('foot-copy', t('footCopy'));
+        document.getElementById('foot-data').innerHTML = t('footData');
+        document.querySelectorAll('.lang-btn').forEach(function (b) {
+          b.classList.toggle('active', b.dataset.lang === lang);
+        });
+
+        // Re-render dynamic content in the new language.
+        var plan = readPlan();
+        if (plan) {
+          renderItinerary(plan);
+          renderAccommodation(plan);
+          renderTransport(plan);
+        } else {
+          renderEmpty();
+        }
+      }
+
+      document.querySelectorAll('.lang-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          lang = btn.dataset.lang;
+          localStorage.setItem('vnmt_lang', lang);
+          applyLang();
+        });
+      });
+
+      /* ── Init ── */
       var plan = readPlan();
       if (plan) {
         renderItinerary(plan);
@@ -425,6 +550,7 @@
       } else {
         renderEmpty();
       }
+      applyLang();
     })();
   </script>
 <script src="vr360-popup.js"></script>

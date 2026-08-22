@@ -84,14 +84,14 @@
     <span id="nav-logo-text">VietHeritage Map</span>
   </a>
   <ul class="nav-links">
-    <li><a href="index.html">Trang chủ</a></li>
-    <li><a href="booking.html">Đặt tour</a></li>
-    <li><a href="festivals.html" class="active">Lễ hội</a></li>
-    <li><a href="journey.html">Hành trình Bảo vật</a></li>
-    <li><a href="database.html">Kho lưu trữ</a></li>
-    <li><a href="about.html">Giới thiệu</a></li>
-    <li><a href="lunar-calendar.html">Lịch Âm</a></li>
-    <li><a href="shop.html">Cửa hàng</a></li>
+    <li><a href="index.html" id="nav-home">Trang chủ</a></li>
+    <li><a href="booking.html" id="nav-book-link">Đặt tour</a></li>
+    <li><a href="festivals.html" class="active" id="nav-fest-link">Lễ hội</a></li>
+    <li><a href="journey.html" id="nav-journey-link">Hành trình Bảo vật</a></li>
+    <li><a href="database.html" id="nav-db-link">Kho lưu trữ</a></li>
+    <li><a href="about.html" id="nav-about">Giới thiệu</a></li>
+    <li><a href="lunar-calendar.html" id="nav-lunar">Lịch Âm</a></li>
+    <li><a href="shop.html" id="nav-shop">Cửa hàng</a></li>
   </ul>
   <div class="nav-right">
     <div class="lang-toggle">
@@ -100,10 +100,10 @@
     </div>
     <a href="planner.html" class="nav-ai-btn">
       <span class="ai-spark" aria-hidden="true">✦</span>
-      <span>Tour AI</span>
+      <span id="nav-ai-btn-text">Tour AI</span>
     </a>
     <a href="VNMT.html" class="nav-map-btn">
-      <span>⊞</span><span>Mở bản đồ</span>
+      <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
     </a>
   </div>
 </nav>
@@ -143,6 +143,9 @@
 
   const STR = {
     vi: {
+      navHome:'Trang chủ', navBook:'Đặt tour', navFest:'Lễ hội', navJourney:'Hành trình Bảo vật',
+      navDb:'Kho lưu trữ', navAbout:'Giới thiệu', navLunar:'Lịch Âm', navShop:'Cửa hàng',
+      navAiBtn:'Tour AI', navMapBtn:'Mở bản đồ',
       eyebrow:'Lịch lễ hội quanh năm', h1a:'Lễ hội', h1b:'Việt Nam',
       sub:'Khám phá các lễ hội truyền thống gắn liền với di sản UNESCO — từ Tết Nguyên Đán đến lễ hội Cồng Chiêng Tây Nguyên, trải dài suốt 12 tháng trong năm.',
       flabel:'Lọc theo vùng:', all:'Tất cả', empty:'Không có lễ hội nào trong vùng này.',
@@ -150,6 +153,9 @@
       lunar:'Âm lịch', related:'Di sản liên quan'
     },
     en: {
+      navHome:'Home', navBook:'Book a trip', navFest:'Festivals', navJourney:'Treasure Journey',
+      navDb:'Archive', navAbout:'About', navLunar:'Lunar Calendar', navShop:'Shop',
+      navAiBtn:'Tour AI', navMapBtn:'Open map',
       eyebrow:'Festival calendar all year', h1a:'Festivals', h1b:'of Vietnam',
       sub:'Discover traditional festivals tied to UNESCO heritage — from Lunar New Year to the Central Highlands Gong Festival, across all 12 months of the year.',
       flabel:'Filter by region:', all:'All', empty:'No festivals in this region.',
@@ -190,6 +196,16 @@
   function applyLang(){
     document.documentElement.lang = lang;
     document.title = lang==='vi' ? 'Lịch Lễ Hội — VietHeritage Map' : 'Festival Calendar — VietHeritage Map';
+    document.getElementById('nav-home').textContent = t('navHome');
+    document.getElementById('nav-book-link').textContent = t('navBook');
+    document.getElementById('nav-fest-link').textContent = t('navFest');
+    document.getElementById('nav-journey-link').textContent = t('navJourney');
+    document.getElementById('nav-db-link').textContent = t('navDb');
+    document.getElementById('nav-about').textContent = t('navAbout');
+    document.getElementById('nav-lunar').textContent = t('navLunar');
+    document.getElementById('nav-shop').textContent = t('navShop');
+    document.getElementById('nav-ai-btn-text').textContent = t('navAiBtn');
+    document.getElementById('nav-map-btn-text').textContent = t('navMapBtn');
     document.getElementById('eyebrow').textContent = t('eyebrow');
     document.getElementById('h1a').textContent = t('h1a');
     document.getElementById('h1b').textContent = t('h1b');

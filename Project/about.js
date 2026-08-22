@@ -332,26 +332,32 @@ const FOOTER_CTA = {
 };
 
 // ── Navigation labels (shared with other pages) ──────────────────
-const NAV_LABELS = {
-  vi: {
-    home: 'Trang chủ',
-    book: 'Đặt tour',
-    fest: 'Lễ hội',
-    map: 'Bản đồ di sản',
-    db: 'Kho lưu trữ',
-    about: 'Giới thiệu',
-    shop: 'Cửa hàng',
-  },
-  en: {
-    home: 'Home',
-    book: 'Book a Trip',
-    fest: 'Festivals',
-    map: 'Heritage Map',
-    db: 'Archive',
-    about: 'About',
-    shop: 'Shop',
-  }
-};
+ const NAV_LABELS = {
+   vi: {
+     home: 'Trang chủ',
+     book: 'Đặt tour',
+     fest: 'Lễ hội',
+     journey: 'Hành trình Bảo vật',
+     map: 'Bản đồ di sản',
+     db: 'Kho lưu trữ',
+     about: 'Giới thiệu',
+     lunar: 'Lịch Âm',
+     shop: 'Cửa hàng',
+     aiBtn: 'Tour AI',
+   },
+   en: {
+     home: 'Home',
+     book: 'Book a Trip',
+     fest: 'Festivals',
+     journey: 'Treasure Journey',
+     map: 'Heritage Map',
+     db: 'Archive',
+     about: 'About',
+     lunar: 'Lunar Calendar',
+     shop: 'Shop',
+     aiBtn: 'Tour AI',
+   }
+ };
 
 // ── Export all content as a single object ────────────────────────
 const ABOUT_CONTENT = {

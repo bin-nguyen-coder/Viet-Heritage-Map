@@ -22,7 +22,7 @@
       --nav-gold:   #c9a84c;
       --nav-text:   #e8dfc8;
       --nav-muted:  #8a7c5e;
-      --font-body: 'DM Sans', sans-serif;
+      --font-body: 'Merriweather', sans-serif;
       --font-heading: 'Merriweather', serif;
     }
 
@@ -432,6 +432,7 @@ function genreLabel(key, form='short') {
 const DB_STRINGS = {
   vi: {
     navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navBook: 'Đặt tour', navFest: 'Lễ hội', navShop: 'Cửa hàng',
+    navJourney: 'Hành trình Bảo vật', navAbout: 'Giới thiệu', navLunar: 'Lịch Âm',
     phEyebrow:'Cơ sở dữ liệu',
     phH1a:'Kho Lưu Trữ', phH1b:'Di Sản Phi Vật Thể',
     lblName:'Tìm theo tên',
@@ -457,6 +458,7 @@ const DB_STRINGS = {
   },
   en: {
     navHome: 'Home', navMap: 'Map', navDb: 'Database', navBook: 'Book a Trip', navFest: 'Festivals', navShop: 'Shop',
+    navJourney: 'Treasure Journey', navAbout: 'About', navLunar: 'Lunar Calendar',
     phEyebrow:'Database',
     phH1a:'Intangible Heritage', phH1b:'Archive',
     lblName:'Search by name',
@@ -491,7 +493,10 @@ function applyLang() {
   document.getElementById('nav-home').textContent  = s.navHome;
   document.getElementById('nav-book').textContent  = s.navBook;
   document.getElementById('nav-fest').textContent  = s.navFest;
+  document.getElementById('nav-journey').textContent = s.navJourney;
   document.getElementById('nav-db').textContent    = s.navDb;
+  document.getElementById('nav-about').textContent = s.navAbout;
+  document.getElementById('nav-lunar').textContent = s.navLunar;
   document.getElementById('nav-shop').textContent  = s.navShop;
   document.getElementById('ph-eyebrow').textContent = s.phEyebrow;
   document.getElementById('ph-h1a').textContent    = s.phH1a;
