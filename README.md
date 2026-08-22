@@ -5,7 +5,7 @@
 
 From the responsive harmonies of **Bắc Ninh Quan họ singing** to the rustic cadence of **Nghệ Tĩnh Hò work songs** and the resonance of **Central Highlands Gongs**, this journey connects communities across **5 core genres** (Instrumental, Singing, Belief, Festival, and Craft).
 
-The project was built for the **Build@Hub Hackathon 2026** effort to preserve and democratize access to Vietnamese cultural treasures using modern, cost-efficient AI.
+The project was built for the **AI Riser Vietnam x LotusHacks 2026** effort to preserve and democratize access to Vietnamese cultural treasures using modern, cost-efficient AI.
 
 ---
 
