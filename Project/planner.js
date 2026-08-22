@@ -52,7 +52,7 @@
     en: {
       navHome: 'Home', navBook: 'Book a trip', navFest: 'Festivals', navJourney: 'Treasure Journey',
       navDb: 'Archive', navAbout: 'About', navLunar: 'Lunar Calendar', navShop: 'Shop',
-      navAiBtn: 'Tour AI', navMapBtn: 'Open map',
+      navAiBtn: 'Tour AI', navMapBtn: 'OPEN MAP',
       statusReady: 'Ready',
       statusThinking: 'Thinking...',
       statusDemo: 'Demo mode (AI not connected)',

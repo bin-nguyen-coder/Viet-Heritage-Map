@@ -981,7 +981,7 @@
       <span>Tour AI</span>
     </a>
     <a href="VNMT.html" class="nav-map-btn">
-      <span>⊞</span><span>Mở bản đồ</span>
+      <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
     </a>
   </div>
 </nav>
@@ -1212,6 +1212,7 @@ const STRINGS = {
     quoteEmpty:'[ Chưa có mô tả chi tiết. Thêm trường quote vào data.js để hiển thị ở đây. ]',
     expTitle:'Ca trù — Khám phá tương tác',
     expBtn:'Trải nghiệm 3D',
+    navMapBtn:'Mở bản đồ',
   },
   en: {
     navHome:'Home', navMap:'Map', navDb:'Database', navBook:'Book a Trip', navFest:'Festivals',
@@ -1227,6 +1228,7 @@ const STRINGS = {
     quoteEmpty:'[ No detailed quote yet. Add a quote field to data.js to display it here. ]',
     expTitle:'Ca trù — Interactive Discovery',
     expBtn:'3D Experience',
+    navMapBtn:'OPEN MAP',
   },
 };
 const S = k => STRINGS[lang][k];
@@ -1241,6 +1243,7 @@ function applyLang() {
   set('lbl-coords', S('lblCoords')); set('lbl-era', S('lblEra'));
   set('lbl-type', S('lblType')); set('lbl-century', S('lblCentury'));
   set('lbl-year', S('lblYear'));
+  set('nav-map-btn-text', S('navMapBtn'));
   const bvm = document.getElementById('btn-view-map');
   if (bvm) bvm.textContent = S('btnViewMap');
   const errBack = document.getElementById('err-back-link');

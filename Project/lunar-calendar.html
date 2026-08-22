@@ -251,7 +251,7 @@
       <span>Tour AI</span>
     </a>
     <a href="VNMT.html" class="nav-map-btn">
-      <span>⊞</span><span>Mở bản đồ</span>
+      <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
     </a>
   </div>
 </nav>
@@ -377,7 +377,7 @@
   var UI = {
     vi: {
       navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navLunar: 'Lịch Âm',
-      navBook: 'Đặt tour', navFest: 'Lễ hội', navJourney: 'Hành trình Bảo vật', navShop: 'Cửa hàng',
+      navBook: 'Đặt tour', navFest: 'Lễ hội', navJourney: 'Hành trình Bảo vật', navShop: 'Cửa hàng', navMapBtn: 'Mở bản đồ',
       phEy: 'Lịch Âm Dương', phH1a: 'Lịch Âm Việt Nam', phH1b: '& Chuyển Đổi Dương Lịch',
       phDesc: 'Xem nhanh các ngày lễ quan trọng theo lịch âm của Việt Nam và cách chúng tương ứng với ngày dương lịch, để bạn sắp xếp các sự kiện văn hóa vào kế hoạch du lịch của mình.',
       cvTitle: 'Chuyển đổi giữa lịch Dương và lịch Âm',
@@ -402,7 +402,7 @@
     },
     en: {
       navHome: 'Home', navMap: 'Map', navDb: 'Database', navAbout: 'About', navLunar: 'Lunar Calendar',
-      navBook: 'Book a Trip', navFest: 'Festivals', navJourney: 'Treasure Journey', navShop: 'Shop',
+      navBook: 'Book a Trip', navFest: 'Festivals', navJourney: 'Treasure Journey', navShop: 'Shop', navMapBtn: 'OPEN MAP',
       phEy: 'Lunar & Solar', phH1a: 'Vietnamese Lunar', phH1b: '& Gregorian Converter',
       phDesc: 'Quickly see how important Vietnamese lunar dates map to Western (Gregorian) dates, so you can match cultural events to your travel plans.',
       cvTitle: 'Convert between Western (Gregorian) and Vietnamese lunar dates',
@@ -873,6 +873,7 @@
     setText('nav-about', ui.navAbout);
     setText('nav-lunar', ui.navLunar);
     setText('nav-shop', ui.navShop);
+    setText('nav-map-btn-text', ui.navMapBtn);
     setText('ph-eyebrow', ui.phEy);
     setHTML('ph-h1a', ui.phH1a);
     setHTML('ph-h1b', ui.phH1b);

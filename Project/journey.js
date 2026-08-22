@@ -8,7 +8,7 @@
 const STRINGS = {
   vi: {
     navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navAbout: 'Giới thiệu', navJourney: 'Hành trình Bảo vật', navBook: 'Đặt tour', navFest: 'Lễ hội',
-    navLunar: 'Lịch Âm', navShop: 'Cửa hàng', navAiBtn: 'Tour AI',
+    navLunar: 'Lịch Âm', navShop: 'Cửa hàng', navAiBtn: 'Tour AI', navMapBtn: 'Mở bản đồ',
     pageTitle: 'Hành trình Bảo vật — VietHeritage Map',
     eyebrow: 'Bảo Vật Quốc Gia Việt Nam',
     title1: 'Hành trình',
@@ -29,8 +29,8 @@ const STRINGS = {
     step: 'Chặng',
   },
   en: {
-    navHome: 'Home', navMap: 'Map', navDb: 'Database', navAbout: 'About', navJourney: 'Treasures Journey', navBook: 'Book a Trip', navFest: 'Festivals',
-    navLunar: 'Lunar Calendar', navShop: 'Shop', navAiBtn: 'Tour AI',
+    navHome: 'Home', navMap: 'OPEN MAP', navDb: 'Database', navAbout: 'About', navJourney: 'Treasures Journey', navBook: 'Book a Trip', navFest: 'Festivals',
+    navLunar: 'Lunar Calendar', navShop: 'Shop', navAiBtn: 'Tour AI', navMapBtn: 'OPEN MAP',
     pageTitle: 'Treasures Journey — VietHeritage Map',
     eyebrow: 'National Treasures of Vietnam',
     title1: 'Treasures',
@@ -230,7 +230,7 @@ function applyLang() {
   set('nav-home', t('navHome'));
   set('nav-book', t('navBook'));
   set('nav-fest', t('navFest'));
-  set('nav-map', t('navMap'));
+  set('nav-map-btn-text', t('navMapBtn'));
   set('nav-db', t('navDb'));
   set('nav-about', t('navAbout'));
   set('nav-journey', t('navJourney'));

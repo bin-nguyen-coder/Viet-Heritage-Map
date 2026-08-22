@@ -335,6 +335,7 @@ const SHOP_NAV_LABELS = {
     about: 'Giới thiệu',
     lunar: 'Lịch Âm',
     shop: 'Cửa hàng',
+    mapBtn: 'Mở bản đồ',
   },
   en: {
     home: 'Home',
@@ -345,6 +346,7 @@ const SHOP_NAV_LABELS = {
     about: 'About',
     lunar: 'Lunar Calendar',
     shop: 'Shop',
+    mapBtn: 'OPEN MAP',
   }
 };
 

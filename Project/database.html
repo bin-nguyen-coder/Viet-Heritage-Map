@@ -286,7 +286,7 @@
       <span>Tour AI</span>
     </a>
     <a href="VNMT.html" class="nav-map-btn">
-      <span>⊞</span><span>Mở bản đồ</span>
+      <span>⊞</span><span id="nav-map-btn-text">Mở bản đồ</span>
     </a>
   </div>
 </nav>
@@ -432,7 +432,7 @@ function genreLabel(key, form='short') {
 const DB_STRINGS = {
   vi: {
     navHome: 'Trang chủ', navMap: 'Bản đồ', navDb: 'Kho lưu trữ', navBook: 'Đặt tour', navFest: 'Lễ hội', navShop: 'Cửa hàng',
-    navJourney: 'Hành trình Bảo vật', navAbout: 'Giới thiệu', navLunar: 'Lịch Âm',
+    navJourney: 'Hành trình Bảo vật', navAbout: 'Giới thiệu', navLunar: 'Lịch Âm', navMapBtn: 'Mở bản đồ',
     phEyebrow:'Cơ sở dữ liệu',
     phH1a:'Kho Lưu Trữ', phH1b:'Di Sản Phi Vật Thể',
     lblName:'Tìm theo tên',
@@ -458,7 +458,7 @@ const DB_STRINGS = {
   },
   en: {
     navHome: 'Home', navMap: 'Map', navDb: 'Database', navBook: 'Book a Trip', navFest: 'Festivals', navShop: 'Shop',
-    navJourney: 'Treasure Journey', navAbout: 'About', navLunar: 'Lunar Calendar',
+    navJourney: 'Treasure Journey', navAbout: 'About', navLunar: 'Lunar Calendar', navMapBtn: 'OPEN MAP',
     phEyebrow:'Database',
     phH1a:'Intangible Heritage', phH1b:'Archive',
     lblName:'Search by name',
@@ -498,6 +498,7 @@ function applyLang() {
   document.getElementById('nav-about').textContent = s.navAbout;
   document.getElementById('nav-lunar').textContent = s.navLunar;
   document.getElementById('nav-shop').textContent  = s.navShop;
+  document.getElementById('nav-map-btn-text').textContent = s.navMapBtn;
   document.getElementById('ph-eyebrow').textContent = s.phEyebrow;
   document.getElementById('ph-h1a').textContent    = s.phH1a;
   document.getElementById('ph-h1b').textContent    = s.phH1b;

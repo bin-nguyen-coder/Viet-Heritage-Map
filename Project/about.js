@@ -344,6 +344,7 @@ const FOOTER_CTA = {
      lunar: 'Lịch Âm',
      shop: 'Cửa hàng',
      aiBtn: 'Tour AI',
+     mapBtn: 'Mở bản đồ',
    },
    en: {
      home: 'Home',
@@ -356,6 +357,7 @@ const FOOTER_CTA = {
      lunar: 'Lunar Calendar',
      shop: 'Shop',
      aiBtn: 'Tour AI',
+     mapBtn: 'OPEN MAP',
    }
  };
 
